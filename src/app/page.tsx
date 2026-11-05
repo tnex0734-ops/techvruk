@@ -98,7 +98,7 @@ export default function Home() {
   );
 }
 
-/* ── 4 Corners Kinetic Border Box: Inner red box continuously travels in perimeter loop ── */
+/* ── 4 Corners Kinetic Border Box: Restrained, architectural registration mark ── */
 function KineticCornerBox({
   className = "",
   initialCorner = "top-left",
@@ -110,24 +110,24 @@ function KineticCornerBox({
     switch (initialCorner) {
       case "top-right":
         return {
-          x: ["135%", "135%", "0%", "0%", "135%"],
-          y: ["0%", "135%", "135%", "0%", "0%"],
+          x: ["100%", "100%", "0%", "0%", "100%"],
+          y: ["0%", "100%", "100%", "0%", "0%"],
         };
       case "bottom-right":
         return {
-          x: ["135%", "0%", "0%", "135%", "135%"],
-          y: ["135%", "135%", "0%", "0%", "135%"],
+          x: ["100%", "0%", "0%", "100%", "100%"],
+          y: ["100%", "100%", "0%", "0%", "100%"],
         };
       case "bottom-left":
         return {
-          x: ["0%", "0%", "135%", "135%", "0%"],
-          y: ["135%", "0%", "0%", "135%", "135%"],
+          x: ["0%", "0%", "100%", "100%", "0%"],
+          y: ["100%", "0%", "0%", "100%", "100%"],
         };
       case "top-left":
       default:
         return {
-          x: ["0%", "135%", "135%", "0%", "0%"],
-          y: ["0%", "0%", "135%", "135%", "0%"],
+          x: ["0%", "100%", "100%", "0%", "0%"],
+          y: ["0%", "0%", "100%", "100%", "0%"],
         };
     }
   };
@@ -136,7 +136,7 @@ function KineticCornerBox({
 
   return (
     <div
-      className={`relative w-8 h-8 sm:w-16 sm:h-16 md:w-20 md:h-20 border-2 border-[#e52424] bg-white/20 overflow-hidden shadow-2xs ${className}`}
+      className={`relative w-5 h-5 sm:w-7 sm:h-7 md:w-8 md:h-8 border border-[var(--color-red)]/50 bg-white/40 overflow-hidden shadow-2xs ${className}`}
     >
       <motion.div
         animate={{
@@ -149,11 +149,8 @@ function KineticCornerBox({
           ease: "easeInOut",
           times: [0, 0.25, 0.5, 0.75, 1],
         }}
-        className="absolute top-0.5 left-0.5 w-3.5 h-3.5 sm:w-7 sm:h-7 md:w-8 md:h-8 bg-[#e52424] flex items-center justify-center shadow-xs"
-      >
-        <span className="w-1 h-1 sm:w-2 sm:h-2 rounded-full bg-white block" />
-      </motion.div>
-      <div className="absolute bottom-0.5 right-0.5 w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-[#e52424]/40" />
+        className="absolute top-0.5 left-0.5 w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-2.5 md:h-2.5 bg-[var(--color-red)] flex items-center justify-center shadow-xs"
+      />
     </div>
   );
 }
@@ -162,30 +159,26 @@ function HeroSection() {
   return (
     <section
       id="hero"
-      className="relative overflow-hidden min-h-[85vh] sm:min-h-[90vh] pt-16 sm:pt-20 pb-8 sm:pb-12 flex items-center justify-center bg-[var(--paper)] select-none"
+      className="relative overflow-hidden min-h-[85vh] sm:min-h-[90vh] pt-16 sm:pt-20 pb-6 sm:pb-10 flex flex-col items-center justify-center bg-[var(--paper)] select-none"
     >
-      {/* 4 Corner Kinetic Border Boxes with Perimeter Motion Loop */}
-      {/* Top Left Corner */}
-      <div className="absolute top-4 left-4 sm:top-8 sm:left-8 z-20 pointer-events-none">
+      {/* 4 Corner Kinetic Marks — Architectural Framing */}
+      <div className="absolute top-3 left-3 sm:top-6 sm:left-6 z-20 pointer-events-none">
         <KineticCornerBox initialCorner="top-left" />
       </div>
 
-      {/* Top Right Corner */}
-      <div className="absolute top-4 right-4 sm:top-8 sm:right-8 z-20 pointer-events-none">
+      <div className="absolute top-3 right-3 sm:top-6 sm:right-6 z-20 pointer-events-none">
         <KineticCornerBox initialCorner="top-right" />
       </div>
 
-      {/* Bottom Left Corner */}
-      <div className="absolute bottom-4 left-4 sm:bottom-8 sm:left-8 z-20 pointer-events-none hidden sm:block">
+      <div className="absolute bottom-6 left-6 sm:bottom-8 sm:left-8 z-20 pointer-events-none hidden md:block">
         <KineticCornerBox initialCorner="bottom-left" />
       </div>
 
-      {/* Bottom Right Corner */}
-      <div className="absolute bottom-4 right-4 sm:bottom-8 sm:right-8 z-20 pointer-events-none hidden sm:block">
+      <div className="absolute bottom-6 right-6 sm:bottom-8 sm:right-8 z-20 pointer-events-none hidden md:block">
         <KineticCornerBox initialCorner="bottom-right" />
       </div>
 
-      <div className="section-shell relative z-10 w-full max-w-6xl mx-auto px-2 sm:px-6">
+      <div className="section-shell relative z-10 w-full max-w-6xl mx-auto px-3 sm:px-6">
         <div className="relative flex flex-col items-center justify-center">
           {/* Main Poster Typography Frame */}
           <motion.div
@@ -195,41 +188,41 @@ function HeroSection() {
             transition={{ duration: 0.7, ease: softEase }}
           >
             {/* Top Frame Bar */}
-            <div className="relative flex items-center justify-between text-[#e52424] font-black text-[9px] xs:text-[10px] sm:text-xs md:text-sm tracking-wider uppercase mb-2 sm:mb-3 px-1 sm:px-2">
-              <span className="flex items-center gap-1 sm:gap-2 font-bold">
+            <div className="relative w-full flex items-center justify-between text-[var(--color-red)] font-mono text-[9px] xs:text-[10px] sm:text-xs md:text-sm tracking-wider uppercase mb-2 sm:mb-4 px-1 sm:px-2 overflow-hidden">
+              <span className="flex items-center gap-1 sm:gap-2 font-bold shrink-0">
                 TAUSHIK CHANDANA
-                <motion.span animate={{ scale: [1, 1.4, 1], opacity: [0.8, 1, 0.8] }} transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }} className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#e52424] inline-block shadow-xs" />
+                <motion.span animate={{ scale: [1, 1.4, 1], opacity: [0.8, 1, 0.8] }} transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }} className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[var(--color-red)] inline-block shadow-xs" />
               </span>
-              <div className="flex-1 mx-1.5 sm:mx-6 h-[1.5px] bg-[#e52424]" />
-              <span className="flex items-center gap-1 sm:gap-2 font-bold">
-                <motion.span animate={{ scale: [1, 1.4, 1], opacity: [0.8, 1, 0.8] }} transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }} className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#e52424] inline-block shadow-xs" />
+              <div className="flex-1 mx-2 sm:mx-6 h-[1px] bg-[var(--color-red)] min-w-[20px]" />
+              <span className="flex items-center gap-1 sm:gap-2 font-bold shrink-0">
+                <motion.span animate={{ scale: [1, 1.4, 1], opacity: [0.8, 1, 0.8] }} transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }} className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[var(--color-red)] inline-block shadow-xs" />
                 2026
               </span>
             </div>
 
-            {/* DESKTOP HERO VIEW (md and up) */}
-            <div className="hidden md:flex relative items-center justify-center min-h-[420px] lg:min-h-[480px]">
+            {/* DESKTOP & TABLET HERO VIEW (md and up) */}
+            <div className="hidden md:flex relative items-center justify-center min-h-[360px] lg:min-h-[460px] xl:min-h-[500px]">
               {/* Left Side Typography: P O / F O with subtle ambient drift */}
               <motion.div
                 animate={{ y: [0, -5, 0] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                className="z-10 flex flex-col justify-between items-end text-[#e52424] display-font select-none md:mr-[-40px] lg:mr-[-70px]"
+                className="z-10 flex flex-col justify-between items-end text-[var(--color-red)] display-font select-none md:mr-[-15px] lg:mr-[-40px] xl:mr-[-60px]"
               >
-                <div className="flex gap-2 text-[8rem] lg:text-[11rem] xl:text-[13rem] font-black leading-[0.78] tracking-tighter">
+                <div className="flex gap-1.5 lg:gap-2 text-[4.5rem] lg:text-[8.5rem] xl:text-[11.5rem] font-black leading-[0.78] tracking-tighter">
                   <span>P</span>
                   <span>O</span>
                 </div>
-                <div className="flex gap-2 text-[8rem] lg:text-[11rem] xl:text-[13rem] font-black leading-[0.78] tracking-tighter mt-2">
+                <div className="flex gap-1.5 lg:gap-2 text-[4.5rem] lg:text-[8.5rem] xl:text-[11.5rem] font-black leading-[0.78] tracking-tighter mt-1 lg:mt-2">
                   <span>F</span>
                   <span>O</span>
                 </div>
               </motion.div>
 
-              {/* Center Column: Character Illustration */}
-              <div className="relative z-20 flex flex-col items-center justify-center shrink-0 my-[-25px]">
+              {/* Center Column: Character Illustration with High Contrast & Subtle Shadow */}
+              <div className="relative z-20 flex flex-col items-center justify-center shrink-0 my-[-15px] lg:my-[-25px]">
                 <motion.div
-                  className="w-[280px] md:w-[340px] lg:w-[420px] shrink-0 mix-blend-multiply"
-                  initial={{ y: 50, opacity: 0, scale: 0.9 }}
+                  className="w-[200px] md:w-[220px] lg:w-[320px] xl:w-[400px] shrink-0"
+                  initial={{ y: 40, opacity: 0, scale: 0.92 }}
                   animate={{
                     y: [0, -8, 0],
                     opacity: 1,
@@ -245,25 +238,25 @@ function HeroSection() {
                   <img
                     src="/character_straight.png"
                     alt="Taushik Chandana character illustration"
-                    className="w-full h-auto object-contain mix-blend-multiply filter contrast-105"
+                    className="w-full h-auto object-contain filter contrast-125 brightness-95 drop-shadow-[0_4px_16px_rgba(201,31,43,0.08)]"
                   />
                 </motion.div>
 
                 {/* TAUSHIK Stamp Badge */}
                 <motion.div
-                  className="relative cursor-pointer mt-3"
+                  className="relative cursor-pointer mt-2 lg:mt-3"
                   initial={{ scale: 0, rotate: -20 }}
                   animate={{ scale: 1, rotate: -6 }}
                   transition={{ type: "spring", stiffness: 120, delay: 0.6 }}
                   whileHover={{ scale: 1.15, rotate: 0 }}
                 >
-                  <div className="px-5 py-2 rounded-full border-2 border-[#e52424] bg-[var(--paper)] text-[#e52424] font-black text-sm uppercase tracking-widest shadow-[3px_3px_0_#e52424]">
+                  <div className="px-4 lg:px-5 py-1.5 lg:py-2 rounded-full border-2 border-[var(--color-red)] bg-[var(--paper)] text-[var(--color-red)] font-black text-xs lg:text-sm uppercase tracking-widest shadow-[3px_3px_0_var(--color-red)]">
                     TAUSHIK
                   </div>
                   <motion.span
                     animate={{ rotate: 360 }}
                     transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                    className="absolute -top-2 -right-2 text-[#e52424] font-black text-xs inline-block origin-center"
+                    className="absolute -top-2 -right-2 text-[var(--color-red)] font-black text-xs inline-block origin-center"
                   >
                     ✦
                   </motion.span>
@@ -274,13 +267,13 @@ function HeroSection() {
               <motion.div
                 animate={{ y: [0, 5, 0] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                className="z-10 flex flex-col justify-between items-start text-[#e52424] display-font select-none md:ml-[-40px] lg:ml-[-70px]"
+                className="z-10 flex flex-col justify-between items-start text-[var(--color-red)] display-font select-none md:ml-[-15px] lg:ml-[-40px] xl:ml-[-60px]"
               >
-                <div className="flex gap-2 text-[8rem] lg:text-[11rem] xl:text-[13rem] font-black leading-[0.78] tracking-tighter">
+                <div className="flex gap-1.5 lg:gap-2 text-[4.5rem] lg:text-[8.5rem] xl:text-[11.5rem] font-black leading-[0.78] tracking-tighter">
                   <span>R</span>
                   <span>T</span>
                 </div>
-                <div className="flex gap-2 text-[8rem] lg:text-[11rem] xl:text-[13rem] font-black leading-[0.78] tracking-tighter mt-2">
+                <div className="flex gap-1.5 lg:gap-2 text-[4.5rem] lg:text-[8.5rem] xl:text-[11.5rem] font-black leading-[0.78] tracking-tighter mt-1 lg:mt-2">
                   <span>L</span>
                   <span>I</span>
                   <span>O</span>
@@ -288,17 +281,17 @@ function HeroSection() {
               </motion.div>
             </div>
 
-            {/* MOBILE HERO VIEW (< md, applies to all mobile resolutions from 320px to 767px) */}
-            <div className="flex md:hidden flex-col items-center justify-center py-3 xs:py-5 relative select-none w-full">
-              {/* 1. TEXT ON TOP: Large, high-impact PORTFOLIO title */}
-              <div className="text-center display-font text-[#e52424] font-black leading-[0.78] tracking-tighter text-[4.2rem] xs:text-[5.4rem] sm:text-[7.2rem]">
-                <div className="tracking-tight">PORT</div>
-                <div className="tracking-tight mt-1">FOLIO</div>
+            {/* MOBILE HERO VIEW (< md, tailored specifically for mobile viewports down to 320px) */}
+            <div className="flex md:hidden flex-col items-center justify-center py-2 sm:py-4 relative select-none w-full">
+              {/* 1. TEXT ON TOP: Large, high-impact 2-line PORTFOLIO title without overflow */}
+              <div className="text-center display-font text-[var(--color-red)] font-black leading-[0.82] tracking-tight text-[3.8rem] xs:text-[4.6rem] sm:text-[5.8rem]">
+                <div>PORT</div>
+                <div className="mt-0.5">FOLIO</div>
               </div>
 
-              {/* 2. IMAGE BELOW TEXT: Large, prominent character illustration */}
+              {/* 2. IMAGE BELOW TEXT: Crisp, rich-contrast character illustration */}
               <motion.div
-                className="relative z-10 w-[210px] xs:w-[250px] sm:w-[300px] max-w-[85%] mt-4 xs:mt-6 mix-blend-multiply"
+                className="relative z-10 w-[190px] xs:w-[220px] sm:w-[260px] max-w-[75%] mt-3 sm:mt-4"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{
                   y: [0, -6, 0],
@@ -312,17 +305,17 @@ function HeroSection() {
                 <img
                   src="/character_straight.png"
                   alt="Taushik Chandana character illustration"
-                  className="w-full h-auto object-contain mix-blend-multiply filter contrast-105"
+                  className="w-full h-auto object-contain filter contrast-125 brightness-95 drop-shadow-[0_4px_16px_rgba(201,31,43,0.08)]"
                 />
               </motion.div>
 
               {/* 3. NAME STAMP DIRECTLY BELOW IMAGE */}
               <motion.div
-                className="relative cursor-pointer z-20 mt-4 xs:mt-5"
+                className="relative cursor-pointer z-20 mt-3 sm:mt-4"
                 initial={{ scale: 0.9, rotate: -6 }}
                 whileHover={{ scale: 1.1, rotate: 0 }}
               >
-                <div className="px-6 py-2.5 rounded-full border-3 border-[#e52424] bg-[var(--paper)] text-[#e52424] font-black text-sm xs:text-base uppercase tracking-widest shadow-[4px_4px_0_#e52424] flex items-center justify-center gap-1.5">
+                <div className="px-5 py-2 rounded-full border-2 border-[var(--color-red)] bg-[var(--paper)] text-[var(--color-red)] font-black text-xs xs:text-sm uppercase tracking-widest shadow-[3px_3px_0_var(--color-red)] flex items-center justify-center gap-1.5">
                   <span>TAUSHIK</span>
                   <motion.span
                     animate={{ rotate: 360 }}
@@ -337,18 +330,30 @@ function HeroSection() {
             </div>
 
             {/* Bottom Frame Bar */}
-            <div className="relative flex items-center justify-between text-[#e52424] font-black text-[9px] xs:text-[10px] sm:text-xs md:text-sm tracking-wider uppercase mt-4 sm:mt-6 px-1 sm:px-2">
-              <span className="flex items-center gap-1 sm:gap-2 font-bold">
+            <div className="relative w-full flex items-center justify-between text-[var(--color-red)] font-mono text-[9px] xs:text-[10px] sm:text-xs md:text-sm tracking-wider uppercase mt-3 sm:mt-6 px-1 sm:px-2 overflow-hidden">
+              <span className="flex items-center gap-1 sm:gap-2 font-bold shrink-0">
                 UI/UX DESIGNER
-                <motion.span animate={{ scale: [1, 1.4, 1], opacity: [0.8, 1, 0.8] }} transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }} className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#e52424] inline-block shadow-xs" />
+                <motion.span animate={{ scale: [1, 1.4, 1], opacity: [0.8, 1, 0.8] }} transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }} className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[var(--color-red)] inline-block shadow-xs" />
               </span>
-              <div className="flex-1 mx-1.5 sm:mx-6 h-[1.5px] bg-[#e52424]" />
-              <span className="flex items-center gap-1 sm:gap-2 font-bold">
-                <motion.span animate={{ scale: [1, 1.4, 1], opacity: [0.8, 1, 0.8] }} transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }} className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#e52424] inline-block shadow-xs" />
+              <div className="flex-1 mx-2 sm:mx-6 h-[1px] bg-[var(--color-red)] min-w-[20px]" />
+              <span className="flex items-center gap-1 sm:gap-2 font-bold shrink-0">
+                <motion.span animate={{ scale: [1, 1.4, 1], opacity: [0.8, 1, 0.8] }} transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }} className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[var(--color-red)] inline-block shadow-xs" />
                 PRODUCT DESIGNER
               </span>
             </div>
           </motion.div>
+
+          {/* Deliberate Editorial Chapter Bridge into Following Red Section */}
+          <div className="pt-6 sm:pt-8 pb-1 flex flex-col items-center justify-center text-center select-none">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[var(--color-border)] bg-[var(--color-bg-subtle)] text-[10px] sm:text-xs font-mono font-bold tracking-widest uppercase text-[var(--color-muted)] shadow-2xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-red)] animate-pulse" />
+              <span>01 // ABOUT TAUSHIK</span>
+            </div>
+            <div className="mt-1.5 text-[11px] font-mono text-[var(--color-muted)] flex items-center gap-1.5">
+              <span>Scroll to explore</span>
+              <motion.span animate={{ y: [0, 3, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>↓</motion.span>
+            </div>
+          </div>
 
         </div>
       </div>
@@ -403,7 +408,7 @@ function BrutalistSectionDivider({ variant = "zigzag", className = "" }: { varia
   if (variant === "ripped") {
     return (
       <div aria-hidden="true" className={`w-full overflow-hidden leading-none select-none my-6 ${className}`}>
-        <svg className="relative block w-full h-8 sm:h-12 text-[#e52424]" viewBox="0 0 1200 120" preserveAspectRatio="none" fill="currentColor">
+        <svg className="relative block w-full h-8 sm:h-12 text-[var(--color-red)]" viewBox="0 0 1200 120" preserveAspectRatio="none" fill="currentColor">
           <path d="M0,0 L30,40 L60,10 L100,50 L140,20 L180,60 L230,15 L280,55 L320,25 L370,65 L420,10 L480,50 L530,20 L580,70 L640,15 L690,60 L750,20 L810,65 L870,25 L920,55 L980,10 L1040,60 L1100,20 L1150,50 L1200,0 L1200,120 L0,120 Z" />
         </svg>
       </div>
@@ -422,7 +427,7 @@ function BrutalistSectionDivider({ variant = "zigzag", className = "" }: { varia
 
   return (
     <div aria-hidden="true" className={`w-full overflow-hidden leading-none select-none my-6 ${className}`}>
-      <svg className="relative block w-full h-6 sm:h-10 text-[#e52424]" viewBox="0 0 1200 40" preserveAspectRatio="none" fill="none" stroke="currentColor" strokeWidth="4">
+      <svg className="relative block w-full h-6 sm:h-10 text-[var(--color-red)]" viewBox="0 0 1200 40" preserveAspectRatio="none" fill="none" stroke="currentColor" strokeWidth="4">
         <path d="M0,20 L50,5 L100,35 L150,10 L200,30 L250,5 L300,35 L350,15 L400,30 L450,5 L500,35 L550,10 L600,30 L650,5 L700,35 L750,15 L800,30 L850,5 L900,35 L950,10 L1000,30 L1050,5 L1100,35 L1150,15 L1200,20" />
       </svg>
     </div>
@@ -437,7 +442,7 @@ function StarburstBadge({ text, className = "" }: { text: string; className?: st
       className={`relative inline-flex items-center justify-center p-3 text-center cursor-pointer ${className}`}
     >
       <div
-        className="absolute inset-0 bg-[#e52424] shadow-[3px_3px_0_#220608]"
+        className="absolute inset-0 bg-[var(--color-red)] shadow-[3px_3px_0_#220608]"
         style={{
           clipPath:
             "polygon(50% 0%, 63% 15%, 83% 4%, 81% 25%, 100% 35%, 88% 52%, 98% 72%, 78% 77%, 71% 98%, 53% 86%, 35% 97%, 30% 77%, 9% 74%, 18% 54%, 2% 38%, 21% 27%, 15% 7%, 37% 13%)",
@@ -453,7 +458,7 @@ function StarburstBadge({ text, className = "" }: { text: string; className?: st
 function HandDoodle({ type = "underline", className = "" }: { type?: "underline" | "arrow" | "squiggle" | "burst"; className?: string }) {
   if (type === "underline") {
     return (
-      <svg aria-hidden="true" className={`w-full h-3 sm:h-4 text-[#e52424] overflow-visible ${className}`} viewBox="0 0 200 12" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round">
+      <svg aria-hidden="true" className={`w-full h-3 sm:h-4 text-[var(--color-red)] overflow-visible ${className}`} viewBox="0 0 200 12" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round">
         <path d="M3 8 Q 50 2, 100 8 T 197 5" />
       </svg>
     );
@@ -461,7 +466,7 @@ function HandDoodle({ type = "underline", className = "" }: { type?: "underline"
 
   if (type === "arrow") {
     return (
-      <svg aria-hidden="true" className={`w-10 h-10 sm:w-12 sm:h-12 text-[#e52424] overflow-visible ${className}`} viewBox="0 0 60 60" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round">
+      <svg aria-hidden="true" className={`w-10 h-10 sm:w-12 sm:h-12 text-[var(--color-red)] overflow-visible ${className}`} viewBox="0 0 60 60" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round">
         <path d="M10 50 Q 25 15, 45 10 M 32 6 L 48 10 L 44 24" />
       </svg>
     );
@@ -469,7 +474,7 @@ function HandDoodle({ type = "underline", className = "" }: { type?: "underline"
 
   if (type === "squiggle") {
     return (
-      <svg aria-hidden="true" className={`w-12 h-12 text-[#e52424]/70 ${className}`} viewBox="0 0 60 60" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
+      <svg aria-hidden="true" className={`w-12 h-12 text-[var(--color-red)]/70 ${className}`} viewBox="0 0 60 60" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
         <path d="M10 30 C 15 10, 30 10, 25 30 C 20 50, 40 50, 45 25 C 50 10, 55 40, 55 45" />
       </svg>
     );
@@ -539,7 +544,7 @@ function UxUiProjectsSection() {
                 <div className="flex items-start justify-between border-b-2 border-[var(--ink)] pb-4 gap-4">
                   <div>
                     <div className="flex items-center gap-2 mb-1.5">
-                      <span className="font-mono text-xs font-black text-white bg-[#e52424] px-2 py-0.5 rounded shadow-[2px_2px_0_#220608]">
+                      <span className="font-mono text-xs font-black text-white bg-[var(--color-red)] px-2 py-0.5 rounded shadow-[2px_2px_0_#220608]">
                         {selectedProject.number}
                       </span>
                       <span className="font-mono text-xs font-black uppercase text-[var(--muted)]">
@@ -557,7 +562,7 @@ function UxUiProjectsSection() {
                   <button
                     type="button"
                     onClick={() => setSelectedProject(null)}
-                    className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border-2 border-[var(--ink)] bg-white text-[var(--ink)] shadow-[3px_3px_0_#220608] hover:bg-[#e52424] hover:text-white hover:border-[#e52424] transition-all"
+                    className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border-2 border-[var(--ink)] bg-white text-[var(--ink)] shadow-[3px_3px_0_#220608] hover:bg-[var(--color-red)] hover:text-white hover:border-[var(--color-red)] transition-all"
                     aria-label="Close dialog"
                   >
                     <X size={20} />
@@ -582,7 +587,7 @@ function UxUiProjectsSection() {
                         </div>
 
                         <div className="mt-4">
-                          <span className="font-mono text-[10px] font-black uppercase tracking-wider text-[#e52424]">
+                          <span className="font-mono text-[10px] font-black uppercase tracking-wider text-[var(--color-red)]">
                             {part.badge}
                           </span>
                           <h3 className="text-lg sm:text-xl font-black uppercase text-[var(--ink)] mt-1">
@@ -599,7 +604,7 @@ function UxUiProjectsSection() {
                           href={part.link}
                           target="_blank"
                           rel="noreferrer"
-                          className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl border-2 border-[var(--ink)] bg-[#e52424] text-white font-black text-xs sm:text-sm uppercase tracking-wider shadow-[3px_3px_0_#220608] hover:bg-[var(--ink)] hover:border-[var(--ink)] transition-all"
+                          className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl border-2 border-[var(--ink)] bg-[var(--color-red)] text-white font-black text-xs sm:text-sm uppercase tracking-wider shadow-[3px_3px_0_#220608] hover:bg-[var(--ink)] hover:border-[var(--ink)] transition-all"
                         >
                           <BrandIcon
                             name={part.type === "ux" ? "Miro" : "Stitch"}
@@ -617,7 +622,7 @@ function UxUiProjectsSection() {
                   <button
                     type="button"
                     onClick={() => setSelectedProject(null)}
-                    className="subtle-link text-[#e52424]"
+                    className="subtle-link text-[var(--color-red)]"
                   >
                     Back to portfolio [ESC]
                   </button>

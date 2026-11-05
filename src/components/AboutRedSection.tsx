@@ -134,8 +134,8 @@ export function AboutRedSection() {
   });
 
   // Parallax sheet lift effect (smooth rising curve like Zainab Kabira reference)
-  const yParallax = useTransform(scrollYProgress, [0, 1], [40, 0]);
-  const sheetScale = useTransform(scrollYProgress, [0, 1], [0.985, 1]);
+  const yParallax = useTransform(scrollYProgress, [0, 1], [30, 0]);
+  const sheetScale = useTransform(scrollYProgress, [0, 1], [0.99, 1]);
 
   return (
     <motion.section
@@ -145,18 +145,26 @@ export function AboutRedSection() {
         y: yParallax,
         scale: sheetScale,
         backgroundImage: `
-          linear-gradient(to right, rgba(255, 255, 255, 0.14) 1px, transparent 1px),
-          linear-gradient(to bottom, rgba(255, 255, 255, 0.14) 1px, transparent 1px)
+          linear-gradient(to right, rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(255, 255, 255, 0.12) 1px, transparent 1px)
         `,
-        backgroundSize: "38px 38px",
+        backgroundSize: "36px 36px",
       }}
-      className="relative z-20 w-full pt-20 pb-16 sm:pt-28 sm:pb-24 bg-[#e52424] -mt-10 sm:-mt-16 rounded-t-[36px] sm:rounded-t-[56px] shadow-[0_-20px_50px_rgba(229,36,36,0.22)] overflow-hidden select-none scroll-mt-16 transition-shadow duration-300"
+      className="relative z-20 w-full pt-12 pb-16 sm:pt-20 sm:pb-24 bg-[var(--color-red)] mt-0 rounded-t-[32px] sm:rounded-t-[48px] border-t border-white/20 shadow-[0_-12px_40px_rgba(201,31,43,0.18)] overflow-x-clip select-none scroll-mt-16 transition-shadow duration-300"
     >
+      {/* ── Top Architectural Section Index Lip ── */}
+      <div className="w-full flex items-center justify-center -translate-y-8 sm:-translate-y-10 pointer-events-none">
+        <div className="px-4 py-1 rounded-full bg-[var(--color-red-deep)] text-white/95 font-mono text-[10px] font-bold tracking-widest uppercase border border-white/25 shadow-sm flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-white" />
+          <span>01 // DIRECTION &amp; CRAFT</span>
+        </div>
+      </div>
+
       {/* ── Top Arched Accent Wave / Parallax Lip ── */}
       <div className="absolute top-0 inset-x-0 h-4 bg-gradient-to-b from-black/10 to-transparent pointer-events-none" />
 
       {/* ── 1. Scattered Retro Pixel Art Flowers Across the Grid ── */}
-      <div aria-hidden="true" className="absolute inset-0 pointer-events-none z-10">
+      <div aria-hidden="true" className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
         {/* Top-Left: Red Tulip */}
         <div className="absolute left-[5%] top-[8%] pointer-events-auto">
           <PixelTulipRed />
@@ -193,13 +201,13 @@ export function AboutRedSection() {
         <div className="flex flex-col items-center justify-center pt-2 pb-10 sm:pb-14 border-b border-white/20">
           
           {/* Top-Left Tag above name: UI/UX & PRODUCT DESIGNER */}
-          <div className="w-full max-w-4xl flex items-start justify-start mb-2 sm:mb-4 px-2">
+          <div className="w-full max-w-4xl flex items-start justify-start mb-2 sm:mb-4 px-1 sm:px-2">
             <motion.div
               initial={{ opacity: 0, y: -8 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="font-mono text-[10px] sm:text-xs md:text-sm font-bold tracking-[0.26em] text-white/90 uppercase"
+              className="font-mono text-[9px] xs:text-[10px] sm:text-xs md:text-sm font-bold tracking-[0.16em] sm:tracking-[0.26em] text-white/90 uppercase"
             >
               UI/UX &amp; PRODUCT DESIGNER
             </motion.div>
@@ -211,19 +219,19 @@ export function AboutRedSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.45 }}
-            className="font-mono text-xs sm:text-sm md:text-base lg:text-lg font-black tracking-[0.3em] text-white uppercase mb-1 sm:mb-2 text-center"
+            className="font-mono text-xs sm:text-sm md:text-base lg:text-lg font-black tracking-[0.25em] sm:tracking-[0.3em] text-white uppercase mb-1 sm:mb-2 text-center"
           >
             HI, I AM
           </motion.div>
 
           {/* Centerpiece Name: Taush + [Pixel Sunflower] + k (Letter 'i' removed) */}
-          <div className="relative flex items-baseline justify-center">
+          <div className="relative flex items-baseline justify-center max-w-full overflow-hidden">
             <motion.h2
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="font-editorial-italic text-[3.5rem] xs:text-[4.5rem] sm:text-[6.8rem] md:text-[9.5rem] lg:text-[12rem] xl:text-[14rem] leading-[0.85] text-white tracking-[-0.03em] select-none flex items-baseline justify-center font-normal drop-shadow-[0_4px_24px_rgba(0,0,0,0.18)]"
+              className="font-editorial-italic text-[2.75rem] xs:text-[3.5rem] sm:text-[5.5rem] md:text-[8rem] lg:text-[11rem] xl:text-[13rem] leading-[0.85] text-white tracking-[-0.03em] select-none flex items-baseline justify-center font-normal drop-shadow-[0_4px_24px_rgba(0,0,0,0.18)]"
             >
               <span>Taush</span>
               {/* Signature Pixel Sunflower in place of the letter 'i' */}
@@ -235,13 +243,13 @@ export function AboutRedSection() {
           </div>
 
           {/* Bottom-Right Tag below name: BASED IN HYDERABAD */}
-          <div className="w-full max-w-4xl flex items-end justify-end mt-2 sm:mt-4 px-2">
+          <div className="w-full max-w-4xl flex items-end justify-end mt-2 sm:mt-4 px-1 sm:px-2">
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="font-mono text-[10px] sm:text-xs md:text-sm font-bold tracking-[0.22em] text-white/90 uppercase flex items-center gap-1.5"
+              className="font-mono text-[9px] xs:text-[10px] sm:text-xs md:text-sm font-bold tracking-[0.14em] sm:tracking-[0.22em] text-white/90 uppercase flex items-center gap-1.5"
             >
               <MapPin size={13} className="text-white/80" />
               <span>BASED IN HYDERABAD</span>
