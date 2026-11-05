@@ -55,7 +55,7 @@ export function FloatingNavbar() {
     };
   }, []);
 
-  // Handle escape key to close mobile menu
+  // Handle escape key to close menu
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isMobileMenuOpen) {
@@ -66,7 +66,7 @@ export function FloatingNavbar() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isMobileMenuOpen]);
 
-  // Handle click outside to close mobile menu
+  // Handle click outside to close menu
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -116,7 +116,7 @@ export function FloatingNavbar() {
         className="pointer-events-auto flex flex-col items-center w-full max-w-fit mx-auto"
       >
         {/* Main Floating Pill */}
-        <div className="flex items-center justify-between gap-2.5 sm:gap-6 rounded-full bg-white/95 backdrop-blur-md border border-[var(--color-border)] px-3 py-1.5 sm:px-4 sm:py-2 shadow-[0_4px_24px_rgba(23,21,21,0.06)] transition-all duration-300 w-full">
+        <div className="flex items-center justify-between gap-2.5 sm:gap-4 lg:gap-6 rounded-full bg-white/95 backdrop-blur-md border border-[var(--color-border)] px-3 py-1.5 sm:px-4 sm:py-2 shadow-[0_4px_24px_rgba(23,21,21,0.06)] transition-all duration-300 w-full">
 
           {/* LEFT: Mascot Avatar & Wordmark */}
           <a
@@ -128,7 +128,7 @@ export function FloatingNavbar() {
             {/* Avatar with subtle red tinted ring */}
             <div className="relative flex items-center justify-center p-0.5">
               <div className="absolute inset-0 bg-[var(--color-red-light)] rounded-full scale-105 transition-transform duration-300 group-hover:scale-110" />
-              <div className="relative w-7 h-7 sm:w-9 sm:h-9 rounded-full overflow-hidden border border-[var(--color-border)] bg-white shadow-xs">
+              <div className="relative w-7 h-7 sm:w-8 sm:h-8 lg:w-9 lg:h-9 rounded-full overflow-hidden border border-[var(--color-border)] bg-white shadow-xs">
                 <Image
                   src="/mascot_avatar.png"
                   alt="Taushik Mascot"
@@ -146,8 +146,8 @@ export function FloatingNavbar() {
             </span>
           </a>
 
-          {/* MIDDLE: Desktop Navigation Links (hidden on <sm) */}
-          <nav className="hidden sm:flex items-center gap-1 sm:gap-1.5" aria-label="Main Navigation">
+          {/* MIDDLE: Desktop Navigation Links (active on lg: 1024px and up) */}
+          <nav className="hidden lg:flex items-center gap-1.5" aria-label="Main Navigation">
             {defaultNavItems.map((item) => (
               <a
                 key={item.label}
@@ -163,8 +163,8 @@ export function FloatingNavbar() {
             ))}
           </nav>
 
-          {/* RIGHT (Desktop): Full Audio Button + "Let's talk" CTA */}
-          <div className="hidden sm:flex items-center gap-2">
+          {/* RIGHT (Desktop): Full Audio Button + "Let's talk" CTA (lg: 1024px and up) */}
+          <div className="hidden lg:flex items-center gap-2">
             {/* Audio Toggle */}
             <button
               onClick={toggleAudio}
@@ -212,13 +212,13 @@ export function FloatingNavbar() {
             </a>
           </div>
 
-          {/* RIGHT (Mobile): Ultra-compact buttons (< sm) */}
-          <div className="flex sm:hidden items-center gap-1.5">
+          {/* RIGHT (Mobile & Tablet): Compact navigation layout (< lg: under 1024px) */}
+          <div className="flex lg:hidden items-center gap-1.5 sm:gap-2">
             {/* Compact Audio Toggle Icon Button */}
             <button
               onClick={toggleAudio}
               type="button"
-              className={`relative grid h-8 w-8 place-items-center rounded-full border transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-red)] ${
+              className={`relative grid h-8 w-8 sm:h-9 sm:w-9 place-items-center rounded-full border transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-red)] ${
                 isPlaying
                   ? "bg-[var(--color-red)] border-[var(--color-red)] text-white shadow-xs"
                   : "bg-[var(--color-bg-subtle)] border-[var(--color-border)] text-[var(--color-ink)] hover:border-[var(--color-red)]"
@@ -240,18 +240,18 @@ export function FloatingNavbar() {
             <a
               href="#contact"
               onClick={(e) => scrollToSection(e, "#contact")}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-[var(--color-ink)] text-white text-xs font-semibold tracking-tight active:scale-95"
+              className="flex items-center gap-1 px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-full bg-[var(--color-ink)] text-white text-xs sm:text-sm font-semibold tracking-tight active:scale-95"
               aria-label="Contact"
             >
               <span>Talk</span>
-              <ArrowUpRight size={11} />
+              <ArrowUpRight size={11} className="sm:w-3 sm:h-3" />
             </a>
 
-            {/* Mobile Menu Hamburger Toggle */}
+            {/* Menu Hamburger Toggle */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               type="button"
-              className="grid h-8 w-8 place-items-center rounded-full border border-[var(--color-border)] bg-[var(--color-bg-subtle)] text-[var(--color-ink)] hover:text-[var(--color-red)] hover:border-[var(--color-red)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-red)] cursor-pointer"
+              className="grid h-8 w-8 sm:h-9 sm:w-9 place-items-center rounded-full border border-[var(--color-border)] bg-[var(--color-bg-subtle)] text-[var(--color-ink)] hover:text-[var(--color-red)] hover:border-[var(--color-red)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-red)] cursor-pointer"
               aria-expanded={isMobileMenuOpen}
               aria-label="Toggle navigation menu"
             >
@@ -261,7 +261,7 @@ export function FloatingNavbar() {
 
         </div>
 
-        {/* Accessible Mobile Dropdown Menu Drawer (< sm) */}
+        {/* Accessible Mobile & Tablet Dropdown Menu Drawer (< lg) */}
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
@@ -269,9 +269,9 @@ export function FloatingNavbar() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -8, scale: 0.98 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
-              className="w-full mt-2 rounded-2xl bg-white/98 backdrop-blur-lg border border-[var(--color-border)] p-3 shadow-xl sm:hidden"
+              className="w-full max-w-sm mt-2 rounded-2xl bg-white/98 backdrop-blur-lg border border-[var(--color-border)] p-3 sm:p-4 shadow-xl lg:hidden"
             >
-              <nav className="flex flex-col gap-1" aria-label="Mobile Navigation">
+              <nav className="flex flex-col gap-1" aria-label="Tablet & Mobile Navigation">
                 {defaultNavItems.map((item) => (
                   <a
                     key={item.label}
@@ -286,7 +286,7 @@ export function FloatingNavbar() {
                         setIsMobileMenuOpen(false);
                       }
                     }}
-                    className="flex items-center justify-between px-3.5 py-2 rounded-xl text-sm font-semibold text-[var(--color-ink)] hover:text-[var(--color-red)] hover:bg-[var(--color-red-light)] transition-colors"
+                    className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold text-[var(--color-ink)] hover:text-[var(--color-red)] hover:bg-[var(--color-red-light)] transition-colors"
                   >
                     <span>{item.label}</span>
                     {item.isDownload ? (
