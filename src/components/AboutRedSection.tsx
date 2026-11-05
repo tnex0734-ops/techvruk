@@ -143,7 +143,7 @@ export function AboutRedSection() {
               <span>01 // DIRECTION &amp; CRAFT</span>
             </span>
             <span className="hidden sm:inline-block text-[var(--color-muted)] text-[11px]">
-              TAUSHIK CHANDANA // CODEX 2026
+              TAUSHIK CHANDANA // PRODUCT DESIGNER &amp; BUILDER
             </span>
           </div>
 
@@ -367,10 +367,11 @@ export function AboutRedSection() {
                   <stop offset="0%" stop-color="#6B0A13" />
                   <stop offset="100%" stop-color="#4F050D" />
                 </linearGradient>
-                <linearGradient id="mobFoldGradComp" x1="0%" y1="0%" x2="100%" y2="100%">
+                <linearGradient id="mobOrganicFoldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
                   <stop offset="0%" stop-color="#8E101D" />
-                  <stop offset="50%" stop-color="#550A11" />
-                  <stop offset="100%" stop-color="#3A0308" />
+                  <stop offset="40%" stop-color="#6E0C16" />
+                  <stop offset="75%" stop-color="#8E101D" />
+                  <stop offset="100%" stop-color="#A81624" />
                 </linearGradient>
                 <filter id="mobElevationComp" x="-5%" y="-10%" width="110%" height="135%" filterUnits="userSpaceOnUse">
                   <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#8E101D" flood-opacity="0.18" />
@@ -390,8 +391,23 @@ export function AboutRedSection() {
               <path d="M 5,185 C 105,100 255,100 385,185" stroke="#C91F2B" stroke-width="1.2" stroke-opacity="0.25" stroke-dasharray="3 5" fill="none" />
               <path d="M 5,265 C 125,350 265,350 385,265" stroke="#971724" stroke-width="1.2" stroke-opacity="0.2" stroke-dasharray="3 5" fill="none" />
 
-              {/* 3D Fold Twist at Right Edge */}
-              <path d="M 345,130 C 382,160 388,235 345,285 L 320,260 C 348,220 342,170 320,150 Z" fill="url(#mobFoldGradComp)" />
+              {/* ── ORGANIC 3D FOLD LOOP (Smooth C-curve transition at right edge) ── */}
+              <path
+                d="M 378,125 C 388,140 390,185 388,225 C 386,265 382,295 372,325 C 362,310 354,285 356,250 C 358,215 365,165 378,125 Z"
+                fill="url(#mobOrganicFoldGrad)"
+              />
+              <path
+                d="M 368,145 C 378,180 376,245 358,285 C 352,270 348,245 352,220 C 356,195 360,165 368,145 Z"
+                fill="#550A11"
+                opacity="0.4"
+              />
+              <path
+                d="M 378,125 C 388,140 390,185 388,225 C 386,265 382,295 372,325"
+                stroke="#FFFFFF"
+                stroke-width="1.2"
+                stroke-opacity="0.35"
+                fill="none"
+              />
 
               {/* ── UPPER RIBBON TIER ── */}
               <path d="M 8,175 C 110,90 260,90 382,175 L 382,183 C 260,98 110,98 8,183 Z" fill="url(#mobExtrusionGradComp)" />
