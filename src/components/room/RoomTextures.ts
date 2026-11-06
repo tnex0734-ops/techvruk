@@ -322,12 +322,13 @@ export function getQuotePrintTexture2(): THREE.CanvasTexture | null {
 }
 
 /**
- * Procedural Natural Wood Grain Bump / Roughness Texture
+ * Procedural Natural Scandinavian Birch Wood Grain Texture
+ * Features deterministic organic growth rings, cathedral arches, and fine fiber pores.
  */
 export function getWoodGrainTexture(): THREE.CanvasTexture | null {
   if (typeof document === "undefined") return null;
 
-  const key = "wood-grain";
+  const key = "wood-grain-birch";
   if (textureCache.has(key)) return textureCache.get(key)!;
 
   const canvas = document.createElement("canvas");
@@ -336,32 +337,48 @@ export function getWoodGrainTexture(): THREE.CanvasTexture | null {
   const ctx = canvas.getContext("2d");
   if (!ctx) return null;
 
-  // Base Warm Birch
-  ctx.fillStyle = "#D5C5B1";
+  // Base Light Scandinavian Birch Tone
+  ctx.fillStyle = "#D6C7B3";
   ctx.fillRect(0, 0, 512, 512);
 
-  // Grain Lines
-  ctx.fillStyle = "rgba(180, 160, 140, 0.18)";
-  for (let i = 0; i < 512; i += 3) {
-    const wave = Math.sin(i * 0.05) * 8;
-    ctx.fillRect(0, i + wave, 512, 1.5);
+  // Soft Organic Longitudinal Grain Waves & Cathedrals
+  for (let y = 0; y < 512; y += 2) {
+    const v = y / 512;
+    // Cathedral arch modulation
+    const cathedral = Math.sin(v * Math.PI * 4.2) * Math.cos(v * Math.PI * 1.8) * 16;
+    const wave = Math.sin(v * 28 + cathedral * 0.1) * 6;
+    const alpha = 0.04 + 0.08 * Math.sin(v * Math.PI * 14 + wave * 0.2);
+
+    ctx.fillStyle = `rgba(164, 142, 120, ${alpha.toFixed(3)})`;
+    ctx.fillRect(0, y, 512, 1.8);
   }
 
-  // Soft Organic Knots / Noise
-  for (let j = 0; j < 30; j++) {
-    const x = Math.random() * 512;
-    const y = Math.random() * 512;
-    const r = 4 + Math.random() * 12;
-    ctx.fillStyle = "rgba(160, 140, 120, 0.12)";
+  // Fine Micro-Fiber Streaks (Pores)
+  ctx.fillStyle = "rgba(142, 122, 102, 0.05)";
+  for (let i = 0; i < 400; i++) {
+    const seedX = (Math.sin(i * 12.9898) * 43758.5453) % 1;
+    const seedY = (Math.cos(i * 78.233) * 43758.5453) % 1;
+    const x = Math.abs(seedX) * 512;
+    const y = Math.abs(seedY) * 512;
+    const len = 8 + Math.abs(Math.sin(i)) * 24;
+    ctx.fillRect(x, y, 1.2, len);
+  }
+
+  // Soft Cathedral Arches in Center
+  ctx.strokeStyle = "rgba(155, 133, 112, 0.06)";
+  ctx.lineWidth = 2.5;
+  for (let c = 0; c < 5; c++) {
+    const centerY = 100 + c * 80;
     ctx.beginPath();
-    ctx.ellipse(x, y, r * 2.5, r, Math.PI / 4, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.moveTo(0, centerY + 60);
+    ctx.quadraticCurveTo(256, centerY - 40, 512, centerY + 60);
+    ctx.stroke();
   }
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(2, 2);
+  texture.repeat.set(1.5, 1.5);
   textureCache.set(key, texture);
 
   return texture;
@@ -373,7 +390,7 @@ export function getWoodGrainTexture(): THREE.CanvasTexture | null {
 export function getFabricTexture(): THREE.CanvasTexture | null {
   if (typeof document === "undefined") return null;
 
-  const key = "fabric-weave";
+  const key = "fabric-linen";
   if (textureCache.has(key)) return textureCache.get(key)!;
 
   const canvas = document.createElement("canvas");
@@ -385,20 +402,199 @@ export function getFabricTexture(): THREE.CanvasTexture | null {
   ctx.fillStyle = "#FAF8F5";
   ctx.fillRect(0, 0, 256, 256);
 
-  // Cross-hatch weave
-  ctx.strokeStyle = "rgba(0, 0, 0, 0.04)";
+  // Soft organic cross-hatch linen weave
+  ctx.strokeStyle = "rgba(40, 30, 20, 0.035)";
   ctx.lineWidth = 1;
-  for (let x = 0; x < 256; x += 4) {
+  for (let x = 0; x < 256; x += 3) {
     ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 256); ctx.stroke();
   }
-  for (let y = 0; y < 256; y += 4) {
+  for (let y = 0; y < 256; y += 3) {
     ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(256, y); ctx.stroke();
+  }
+
+  // Alternating warp/weft slub accents
+  ctx.fillStyle = "rgba(0, 0, 0, 0.02)";
+  for (let s = 0; s < 60; s++) {
+    const sx = ((s * 47) % 256);
+    const sy = ((s * 83) % 256);
+    ctx.fillRect(sx, sy, 4, 1.5);
+  }
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(6, 6);
+  textureCache.set(key, texture);
+
+  return texture;
+}
+
+/**
+ * Procedural Wool Knit / Twill Throw Blanket Micro-Texture
+ */
+export function getWoolTexture(): THREE.CanvasTexture | null {
+  if (typeof document === "undefined") return null;
+
+  const key = "wool-knit";
+  if (textureCache.has(key)) return textureCache.get(key)!;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = 256;
+  canvas.height = 256;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return null;
+
+  ctx.fillStyle = "#D6CDBD";
+  ctx.fillRect(0, 0, 256, 256);
+
+  // Diagonal twill weave pattern
+  ctx.strokeStyle = "rgba(60, 50, 40, 0.06)";
+  ctx.lineWidth = 1.5;
+  for (let d = -256; d < 512; d += 6) {
+    ctx.beginPath(); ctx.moveTo(d, 0); ctx.lineTo(d + 256, 256); ctx.stroke();
+  }
+  ctx.strokeStyle = "rgba(60, 50, 40, 0.04)";
+  for (let d = 512; d > -256; d -= 6) {
+    ctx.beginPath(); ctx.moveTo(d, 0); ctx.lineTo(d - 256, 256); ctx.stroke();
   }
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
   texture.repeat.set(8, 8);
+  textureCache.set(key, texture);
+
+  return texture;
+}
+
+/**
+ * Procedural Botanical Leaf Surface Texture
+ * Features organic primary/secondary vein lines and chlorophyll tone depth.
+ */
+export function getLeafTexture(): THREE.CanvasTexture | null {
+  if (typeof document === "undefined") return null;
+
+  const key = "botanical-leaf";
+  if (textureCache.has(key)) return textureCache.get(key)!;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = 512;
+  canvas.height = 512;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return null;
+
+  // Lush Gradient Background (Deep Emerald to Fresh Botanical Green)
+  const grad = ctx.createLinearGradient(0, 0, 512, 0);
+  grad.addColorStop(0, "#244F32");
+  grad.addColorStop(0.5, "#2E5D3C");
+  grad.addColorStop(1, "#244F32");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 512, 512);
+
+  // Central Midrib Vein
+  ctx.strokeStyle = "rgba(100, 160, 110, 0.35)";
+  ctx.lineWidth = 3.5;
+  ctx.beginPath();
+  ctx.moveTo(256, 0);
+  ctx.lineTo(256, 512);
+  ctx.stroke();
+
+  // Lateral Secondary Arching Veins
+  ctx.strokeStyle = "rgba(90, 150, 100, 0.18)";
+  ctx.lineWidth = 1.8;
+  for (let y = 30; y < 512; y += 38) {
+    // Left arch
+    ctx.beginPath();
+    ctx.moveTo(256, y);
+    ctx.quadraticCurveTo(128, y - 24, 30, y - 10);
+    ctx.stroke();
+    // Right arch
+    ctx.beginPath();
+    ctx.moveTo(256, y);
+    ctx.quadraticCurveTo(384, y - 24, 482, y - 10);
+    ctx.stroke();
+  }
+
+  const texture = new THREE.CanvasTexture(canvas);
+  textureCache.set(key, texture);
+
+  return texture;
+}
+
+/**
+ * Procedural Exterior Daylight Window Horizon View
+ * Generates a soft atmospheric daylight sky with subtle distant horizon depth.
+ */
+export function getDaylightBackdropTexture(): THREE.CanvasTexture | null {
+  if (typeof document === "undefined") return null;
+
+  const key = "daylight-backdrop-view";
+  if (textureCache.has(key)) return textureCache.get(key)!;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = 512;
+  canvas.height = 512;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return null;
+
+  // Soft Daylight Sky Gradient
+  const skyGrad = ctx.createLinearGradient(0, 0, 0, 512);
+  skyGrad.addColorStop(0, "#D6EAF8");     // Soft morning atmospheric sky
+  skyGrad.addColorStop(0.55, "#EDF6FC");  // Luminous daylight horizon
+  skyGrad.addColorStop(0.78, "#F7FBFD");  // Warm sun mist near horizon
+  skyGrad.addColorStop(1.0, "#E2ECE5");    // Subtle distant garden tree canopy tone
+  ctx.fillStyle = skyGrad;
+  ctx.fillRect(0, 0, 512, 512);
+
+  // Faint Soft Distant Tree Line Silhouette
+  ctx.fillStyle = "rgba(185, 205, 192, 0.35)";
+  ctx.beginPath();
+  ctx.moveTo(0, 512);
+  ctx.lineTo(0, 420);
+  for (let x = 0; x <= 512; x += 32) {
+    const wave = Math.sin(x * 0.04) * 16 + Math.cos(x * 0.08) * 8;
+    ctx.lineTo(x, 410 + wave);
+  }
+  ctx.lineTo(512, 512);
+  ctx.closePath();
+  ctx.fill();
+
+  const texture = new THREE.CanvasTexture(canvas);
+  textureCache.set(key, texture);
+  return texture;
+}
+
+/**
+ * Procedural Warm Architectural Plaster Micro-Bump Texture
+ */
+export function getPlasterTexture(): THREE.CanvasTexture | null {
+  if (typeof document === "undefined") return null;
+
+  const key = "plaster-micro";
+  if (textureCache.has(key)) return textureCache.get(key)!;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = 256;
+  canvas.height = 256;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return null;
+
+  ctx.fillStyle = "#F6F4F0";
+  ctx.fillRect(0, 0, 256, 256);
+
+  // Subtle stipple noise
+  for (let i = 0; i < 600; i++) {
+    const x = Math.floor(((i * 73) % 256));
+    const y = Math.floor(((i * 127) % 256));
+    const shade = (i % 2 === 0) ? "rgba(0,0,0,0.018)" : "rgba(255,255,255,0.03)";
+    ctx.fillStyle = shade;
+    ctx.fillRect(x, y, 2, 2);
+  }
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(4, 4);
   textureCache.set(key, texture);
 
   return texture;

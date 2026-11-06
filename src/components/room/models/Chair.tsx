@@ -100,6 +100,8 @@ export function Chair({ materials }: ChairProps) {
           radius={0.020}
           smoothness={4}
           material={materials.chairFabric}
+          castShadow
+          receiveShadow
         />
         {/* Ergonomic Waterfall Front Edge */}
         <mesh position={[0, -0.01, 0.23]} rotation={[0.4, 0, 0]} material={materials.chairFabric}>

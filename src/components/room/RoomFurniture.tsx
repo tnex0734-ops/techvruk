@@ -11,19 +11,21 @@ import { Bed } from "./models/Bed";
 import { Window } from "./models/Window";
 import { Door } from "./models/Door";
 import { HangingQuotes } from "./models/HangingQuotes";
-import { OrganicProxies } from "./models/OrganicProxies";
+import { Fishbowl } from "./models/Fishbowl";
+import { Plant } from "./models/Plant";
 
 /**
- * Modular Furniture & Architectural Asset Composer (Phase 3B.1)
+ * Modular Furniture & Architectural Asset Composer (Phase 3B.2)
  * 
- * Assembles all high-fidelity hard-surface models:
+ * Assembles all high-fidelity hard-surface and organic models:
  * - Wardrobe (Left Storage & Archive)
  * - Workstation Suite: Desk, Apple MacBook Pro on stand, Peripherals, Task Chair
- * - Platform Bed & Upholstered Headboard (Right Rest Zone)
+ * - High-Fidelity Glass Fishbowl with animated swimming goldfish
+ * - Realistic Desk & Floor Botanical Plants with curved leaves and ceramic pots
+ * - Platform Bed with sculpted draped linen duvet, cushioned pillows & wool throw
  * - Architectural 4-Pane Window with Daylight Box (Right Daylight Zone)
  * - Detailed Architectural Door (Right Entrance Zone)
  * - Archival Typography Wall Prints
- * - Clean Organic Proxies (Fishbowl, Plants — for Phase 3B.2)
  *
  * Every component is modular and independently interactive for Phase 3C.
  */
@@ -42,13 +44,14 @@ export function RoomFurniture() {
       <Chair materials={materials} />
       <HangingQuotes materials={materials} />
 
-      {/* ── 3. Right Rest & Architectural Envelope ── */}
+      {/* ── 3. Organic Assets (Fishbowl & Botanicals) ── */}
+      <Fishbowl materials={materials} />
+      <Plant materials={materials} />
+
+      {/* ── 4. Right Rest & Architectural Envelope ── */}
       <Bed materials={materials} />
       <Window materials={materials} />
       <Door materials={materials} />
-
-      {/* ── 4. Organic Placeholders (Targeted for Phase 3B.2) ── */}
-      <OrganicProxies materials={materials} />
     </group>
   );
 }

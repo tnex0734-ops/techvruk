@@ -51,7 +51,7 @@ export const ROOM_DIMENSIONS = {
     keyboardPos: [-2.05, 0.746, -1.62] as [number, number, number],
     mousePos: [-1.68, 0.746, -1.62] as [number, number, number],
     fishbowlPos: [-1.42, 0.74, -1.98] as [number, number, number],
-    plantPos: [-2.95, 0, -2.25] as [number, number, number],
+    plantPos: [-3.18, 0, -2.38] as [number, number, number],
     hangingQuotesPos: [-2.05, 1.50, -2.68] as [number, number, number],
   },
 
@@ -61,7 +61,7 @@ export const ROOM_DIMENSIONS = {
     length: 2.15,   // along Z
     mattressHeight: 0.52,
     headboardHeight: 1.05,
-    position: [1.85, 0.26, -1.45] as [number, number, number],
+    position: [1.85, 0, -1.45] as [number, number, number],
   },
 
   window: {

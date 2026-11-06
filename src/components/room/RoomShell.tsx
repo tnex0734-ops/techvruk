@@ -29,7 +29,7 @@ export function RoomShell() {
       <mesh
         position={[0, -ft / 2, 0]}
         material={materials.floor}
-        receiveShadow={false}
+        receiveShadow
       >
         <boxGeometry args={[d.width + wt * 2, ft, d.depth + wt]} />
       </mesh>
@@ -38,7 +38,7 @@ export function RoomShell() {
       <mesh
         position={[0, h / 2, -halfD - wt / 2]}
         material={materials.wall}
-        receiveShadow={false}
+        receiveShadow
       >
         <boxGeometry args={[d.width + wt * 2, h, wt]} />
       </mesh>
@@ -47,7 +47,7 @@ export function RoomShell() {
       <mesh
         position={[-halfW - wt / 2, h / 2, 0]}
         material={materials.wall}
-        receiveShadow={false}
+        receiveShadow
       >
         <boxGeometry args={[wt, h, d.depth + wt]} />
       </mesh>

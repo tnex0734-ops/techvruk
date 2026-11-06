@@ -13,35 +13,52 @@ import React from "react";
 export function RoomLighting() {
   return (
     <group name="room-lighting">
-      {/* ── 1. Soft Ambient Hemispheric Fill (Sky/Ground) ── */}
+      {/* ── 1. Soft Ambient Hemispheric Fill (Sky/Ground Architectural Bounce) ── */}
       <hemisphereLight
-        color="#F8FAFC"
-        groundColor="#EAE5DE"
-        intensity={1.05}
+        color="#F5F8FC"
+        groundColor="#ECE6DE"
+        intensity={1.15}
       />
 
       {/* ── 2. Primary Natural Daylight (Entering through the Right Window) ── */}
       <directionalLight
-        position={[6.0, 4.2, -0.65]}
-        intensity={2.2}
-        color="#FFF7EE"
-        castShadow={false}
+        position={[5.5, 4.0, -0.65]}
+        intensity={2.3}
+        color="#FFF9F2"
+        castShadow
+        shadow-mapSize-width={2048}
+        shadow-mapSize-height={2048}
+        shadow-camera-near={0.5}
+        shadow-camera-far={14}
+        shadow-camera-left={-4.5}
+        shadow-camera-right={4.5}
+        shadow-camera-top={3.8}
+        shadow-camera-bottom={-2.2}
+        shadow-bias={-0.00015}
       />
 
-      {/* ── 3. Front Fill (Illuminates Open Front Cutaway & Architectural Details) ── */}
+      {/* ── 3. Soft Window Aperture Rim Bounce ── */}
       <directionalLight
-        position={[2.0, 4.5, 6.0]}
-        intensity={0.65}
-        color="#F2F5FA"
+        position={[4.0, 2.4, 0.6]}
+        intensity={0.55}
+        color="#F0F5FA"
         castShadow={false}
       />
 
-      {/* ── 4. Workstation Spotlight (Accents Laptop Screen, Accessories & Quotes) ── */}
+      {/* ── 4. Front Fill (Illuminates Open Front Cutaway & Architecture) ── */}
+      <directionalLight
+        position={[1.8, 4.2, 5.5]}
+        intensity={0.45}
+        color="#F4F6FA"
+        castShadow={false}
+      />
+
+      {/* ── 5. Workstation Soft Accent (Illuminates Laptop Screen, Keycaps & Art) ── */}
       <pointLight
-        position={[-2.05, 1.55, -1.75]}
-        intensity={0.75}
-        color="#FFF3E6"
-        distance={3.5}
+        position={[-2.05, 1.65, -1.75]}
+        intensity={0.60}
+        color="#FFF5E8"
+        distance={3.2}
         decay={2}
       />
     </group>

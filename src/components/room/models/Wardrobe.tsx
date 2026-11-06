@@ -80,6 +80,8 @@ export function Wardrobe({ materials }: WardrobeProps) {
             radius={0.004}
             smoothness={4}
             material={materials.woodLight}
+            castShadow
+            receiveShadow
           />
 
           {/* Recessed Shaker Inset Accent Line */}

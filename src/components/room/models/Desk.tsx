@@ -33,6 +33,8 @@ export function Desk({ materials }: DeskProps) {
         smoothness={4}
         material={materials.woodLight}
         position={[0, 0, 0]}
+        castShadow
+        receiveShadow
       />
 
       {/* ── 2. Flush Cable Grommet Port (Rear Right) ── */}

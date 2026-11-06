@@ -1,6 +1,7 @@
 "use client";
 
 import React, { Component, ReactNode, Suspense } from "react";
+import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
 import { RoomScene, RoomSceneProps } from "./RoomScene";
 
@@ -52,6 +53,7 @@ export function RoomCanvas({
         className={className}
         frameloop="demand" // On-demand rendering: static scene renders only on resize or state change
         dpr={[1, 1.75]}   // Capped device pixel ratio for performance
+        shadows={{ type: THREE.PCFSoftShadowMap }}
         gl={{
           antialias: true,
           alpha: true,

@@ -1,7 +1,7 @@
 # Implementation Log
 
 ## Current Phase
-Phase 3B.1 — High-Fidelity Hard-Surface Furniture & Architectural Modelling (Completed & Verified)
+Phase 3B.2 — Organic Assets, Soft Textiles & Environmental Realism (Completed & Verified)
 
 ---
 
@@ -13,39 +13,37 @@ Phase 3B.1 — High-Fidelity Hard-Surface Furniture & Architectural Modelling (C
 - **2026-11-05 [Phase 2.1 About Polish]** — Replaced metadata label with "TAUSHIK CHANDANA // PRODUCT DESIGNER & BUILDER". Refined mobile ribbon fold at the right edge into an organic 3D continuous loop with subtle bevel and shadow, preserving composition and central negative space. (Commit: `2008658`)
 - **2026-11-06 [Phase 3A 3D Room Blockout]** — Implemented normalized metric architectural interior blockout ($7.2\text{m} \times 5.4\text{m} \times 2.8\text{m}$) of Taushik's workspace. Integrated Three.js + R3F + Drei with demand-based rendering loop, responsive camera presets, dev inspection route (`/preview-room`), and accessible semantic HTML companion. (Commit: `159aa3b`, Gating: `bdb2c6b`)
 - **2026-11-06 [Phase 3A.1 Room Composition & Camera Refinement]** — Refined mobile camera framing (`fov: 56°`, `pos: [2.1, 5.0, 8.4]`) achieving 100% room visibility with zero cropping. Stepped down right wall cutaway ($1.15\text{m}$ partition + $0.12\text{m}$ curb) opening sightlines to the bed and interior. Transformed window (architectural casing, cross mullions, daylight plane) and door (3-sided frame, $18^\circ$ ajar oak leaf, lever handle). Enhanced workstation (charcoal desk mat, silver laptop with screen wireframe, keyboard/mouse, fishbowl swimmer proxy, plant, wall quotes). Converted `/preview-room` to server-gated dynamic route via `ENABLE_DEV_PREVIEW`. (Commit: `c79da85`)
-- **2026-11-06 [Phase 3B.1 High-Fidelity Hard-Surface Modelling]** — Upgraded room blockout to modular hard-surface furniture components (`src/components/room/models/`): 3-door wardrobe with shadow reveals and graphite handles; architectural desk with square-tube trestle legs, leveling feet, cable grommet, and stitched desk mat; Apple MacBook Pro on aluminum stand with individual QWERTY keycaps, glass trackpad, and active Retina IDE screen texture; studio ergonomic chair with 5-star wheeled base, pneumatic lift, mesh back, and signature red cushion; floating platform bed with tufted headboard, piped mattress, draped duvet, and throw blanket; architectural window with casing, mullions, birch sill, and daylight plane; architectural door swung $18^\circ$ ajar with threshold and lever handle; framed archival typography prints. In-memory procedural PBR textures for Retina IDE, wall prints, wood grain, and fabric weave.
+- **2026-11-06 [Phase 3B.1 High-Fidelity Hard-Surface Modelling]** — Upgraded room blockout to modular hard-surface furniture components (`src/components/room/models/`): 3-door wardrobe with shadow reveals and graphite handles; architectural desk with square-tube trestle legs, leveling feet, cable grommet, and stitched desk mat; Apple MacBook Pro on aluminum stand with individual QWERTY keycaps, glass trackpad, and active Retina IDE screen texture; studio ergonomic chair with 5-star wheeled base, pneumatic lift, mesh back, and signature red cushion; floating platform bed with tufted headboard, piped mattress, draped duvet, and throw blanket; architectural window with casing, mullions, birch sill, and daylight plane; architectural door swung $18^\circ$ ajar with threshold and lever handle; framed archival typography prints. In-memory procedural PBR textures for Retina IDE, wall prints, wood grain, and fabric weave. (Commit: `14c5f61`)
+- **2026-11-06 [Phase 3B.2 Organic Assets, Soft Textiles & Environmental Realism]** — Replaced procedural proxies with dedicated lathe glass fishbowl, refractive water volume, aquarium flora and pebbles, detailed goldfish with bifurcated fan tail and lightweight idle swimming physics (`Fishbowl.tsx`); multi-leaf botanical desk plant in tapered ceramic pot with open soil bed plus corner floor planter (`Plant.tsx`); grounded platform bed on floor with sculpted draped linen duvet (`createDrapedDuvetGeometry`), lofted Oxford flanged pillows, and layered heavy wool throw (`Bed.tsx`); procedural PBR textures for leaf venation, wool twill weave, plaster stipple, and daylight horizon (`RoomTextures.ts`); enabled `PCFSoftShadowMap` with window daylight directional key light casting realistic contact shadows under bed, desk, and wardrobe (`RoomLighting.tsx`, `RoomCanvas.tsx`, `RoomShell.tsx`); recalibrated close-up cameras for wardrobe, bed, fishbowl, plant, and door/window (`RoomCamera.tsx`).
 
 ---
 
-## Completed Work (Phase 3B.1 Hard-Surface Furniture & Architecture)
-1. **Modular Model Hierarchy (`src/components/room/models/`):** Decoupled monolithic geometry into 10 modular components (`Wardrobe.tsx`, `Desk.tsx`, `Laptop.tsx`, `Peripherals.tsx`, `Chair.tsx`, `Bed.tsx`, `Window.tsx`, `Door.tsx`, `HangingQuotes.tsx`, `OrganicProxies.tsx`).
-2. **Procedural PBR Textures (`RoomTextures.ts`):** 100% resolution-independent, in-memory canvas textures for Laptop Retina IDE (VS Code theme + React code + live prototype preview), typography manifesto posters ("MAKE IDEAS REAL." and "DESIGN WITH INTENT."), subtle Scandinavian birch grain, and linen fabric micro-weave.
-3. **Ergonomic Studio Chair & Workstation Suite:** Square-tube steel trestle desk with leveling feet, cable grommet, stitched charcoal desk pad; Apple MacBook Pro on aluminum stand with open display lid ($110^\circ$), individual QWERTY keycaps, glass trackpad; studio ergonomic chair with 5-star wheeled base, pneumatic lift cylinder, mesh backrest, and signature red cushion (`#C91F2B`).
-4. **Architectural Platform Bed:** Floating birch platform frame, 3-panel channel-tufted upholstered headboard, piped edge mattress, draped natural cotton duvet with folded collar, throw blanket, and lofted pillows.
-5. **Architectural Openings:** 4-sided window casing with 4-pane mullions, deep birch sill shelf, double glazing, exterior daylight backdrop; 3-sided door casing with hardwood threshold, $18^\circ$ ajar oak door leaf, butt hinges, and graphite lever handle with escutcheon.
-6. **Framed Typography Manifesto:** Archival museum white matting with high-contrast printed typography posters mounted above workstation.
-7. **Camera Calibration:** Workstation close-up calibrated frontally at `[-1.95, 1.22, -1.05]` facing `[-2.05, 0.98, -1.88]` ($46^\circ$ FOV), capturing the glowing screen, keyboard, peripherals, and wall quotes. Dedicated preset switcher in `/preview-room`.
+## Completed Work (Phase 3B.2 Organic Assets & Realism)
+1. **Glass Fishbowl & Swimmer (`Fishbowl.tsx`):** Lathe-turned blown glass bowl with open rolled rim, physical water volume with reflective meniscus disk, aquarium river pebbles, aquatic botanical sprig, and detailed goldfish (torpedo body, pearlescent belly, dual-lobe fan caudal fin, dorsal/pectoral fins, anatomical eyes). Dynamic gliding trajectory with tangent yaw alignment and caudal flutter, paused when hidden or on reduced motion, operating within demand rendering.
+2. **Botanical House Plants (`Plant.tsx`):** Workstation desk plant with matte white ceramic pot, drainage saucer, hollow rim revealing organic dark soil mix, 9 individually curved botanical leaves with midrib grooves and stems, backed by procedural leaf venation texture. Floor-standing large ceramic planter in the far corner.
+3. **Soft Bed Textile Architecture (`Bed.tsx`):** Grounded platform frame directly on floor (`position[1] = 0`); sculpted $28 \times 28$ vertex mesh duvet with realistic down filling loft, rolling top folds, rounded waterfall side drapes, and organic rolled collar; 3D lofted sleeping pillows with sleep impression depressions and $25\text{mm}$ Oxford flanged border seams; layered heavy wool throw blanket with procedural twill weave.
+4. **Natural Daylight & Soft Shadows (`RoomLighting.tsx`, `RoomCanvas.tsx`):** Three.js `PCFSoftShadowMap` enabled with high-res ($2048 \times 2048$) directional daylight key light streaming through the right window, casting crisp soft contact shadows under bed, wardrobe plinth, desk trestles, and chair casters. Balanced with architectural hemispheric fill and aperture rim bounce.
+5. **Procedural PBR Maps (`RoomTextures.ts` & `RoomMaterials.ts`):** High-res in-memory canvas maps for botanical leaf veins, heavy wool twill, wall plaster micro-stipple, and exterior daylight horizon backdrop.
+6. **Recalibrated Close-Up Inspection Cameras (`RoomCamera.tsx`):** Five dedicated inspection views (`wardrobe` wider full-door view, `bed` grounded textile view, `fishbowl` macro macro view, `plant` macro view, `doorWindow` architectural view) accessible via `/preview-room`.
 
 ---
 
 ## Files Changed
-- `src/components/room/models/Wardrobe.tsx` — 3-door wardrobe with shadow reveals, plinth kickboard, and extruded graphite handles.
-- `src/components/room/models/Desk.tsx` — Birch desktop, square-tube trestle legs, leveling feet, rear stretcher bar, cable grommet, desk mat.
-- `src/components/room/models/Laptop.tsx` — Apple MacBook Pro, aluminum riser stand, individual QWERTY keycaps, glass trackpad, open lid ($110^\circ$), active Retina IDE screen.
-- `src/components/room/models/Peripherals.tsx` — Low-profile wireless keyboard and ergonomic sculpted mouse.
-- `src/components/room/models/Chair.tsx` — 5-star wheeled base, pneumatic cylinder, mesh backrest, red cushion.
-- `src/components/room/models/Bed.tsx` — Birch platform, channel-tufted headboard, piped mattress, draped duvet with folded collar, pillows, throw blanket.
-- `src/components/room/models/Window.tsx` — 4-sided casing, cross mullions, deep birch sill shelf, double glazing, daylight plane.
-- `src/components/room/models/Door.tsx` — 3-sided architrave, hardwood threshold, $18^\circ$ ajar oak door, hinges, lever handle.
-- `src/components/room/models/HangingQuotes.tsx` — Black timber frames, archival matting, high-res typography prints.
-- `src/components/room/models/OrganicProxies.tsx` — Isolated placeholders for fishbowl and plant (for Phase 3B.2).
-- `src/components/room/RoomTextures.ts` — Procedural canvas texture generator (Retina IDE, quote prints, wood grain, fabric weave).
-- `src/components/room/RoomMaterials.ts` — PBR materials linking procedural maps and architectural finishes.
-- `src/components/room/RoomFurniture.tsx` — Modular orchestrator assembling the model components.
-- `src/components/room/RoomCamera.tsx` — Calibrated camera presets (frontal workstation close-up).
-- `src/app/preview-room/PreviewRoomClient.tsx` — Dedicated preset switcher for all 8 zones.
-- `docs/PHASE_3B_1_HARD_SURFACE_MODELLING_REPORT.md` — Verification report.
-- `screenshots/phase-3b-1/*` — 10 high-resolution verification screenshots across 5 destinations.
+- `src/components/room/models/Fishbowl.tsx` — Lathe glass bowl, water volume, river stones, aquatic plant, detailed goldfish with swimming trajectory.
+- `src/components/room/models/Plant.tsx` — Parametric curved leaf geometry, hollow ceramic pot, potting soil, 9 leaves, corner floor planter.
+- `src/components/room/models/Bed.tsx` — Grounded platform frame, sculpted draped linen duvet, Oxford flanged pillows, wool throw blanket.
+- `src/components/room/models/OrganicProxies.tsx` — Deleted deprecated blockout proxies.
+- `src/components/room/RoomTextures.ts` — In-memory procedural maps for leaf venation, wool twill weave, plaster stipple, daylight horizon.
+- `src/components/room/RoomMaterials.ts` — PBR material shaders for glass, water, river stones, fish, plant foliage, soil, and wool throw.
+- `src/components/room/RoomLighting.tsx` — Directional daylight key light with $2048 \times 2048$ soft shadows, hemispheric fill, window aperture rim light.
+- `src/components/room/RoomCanvas.tsx` — Enabled `shadows={{ type: THREE.PCFSoftShadowMap }}`.
+- `src/components/room/RoomShell.tsx` — Enabled `receiveShadow={true}` on floor slab and walls for contact shadows.
+- `src/components/room/RoomFurniture.tsx` — Modular orchestrator mounting `Fishbowl` and `Plant`.
+- `src/components/room/RoomCamera.tsx` — Recalibrated inspection cameras for wardrobe, bed, fishbowl, plant, and door/window.
+- `src/app/preview-room/PreviewRoomClient.tsx` — Added preset switcher buttons for `fishbowl` and `plant`.
+- `src/components/room/roomDimensions.ts` — Grounded bed base to floor level (`position[1] = 0`).
+- `docs/PHASE_3B_2_ORGANIC_ASSETS_REPORT.md` — Full verification report.
+- `screenshots/phase-3b-2/*` — 10 high-resolution verification screenshots across 5 destinations.
 
 ---
 
@@ -55,7 +53,10 @@ Phase 3B.1 — High-Fidelity Hard-Surface Furniture & Architectural Modelling (C
 | `tsc --noEmit` | **0 errors** | Clean types across all components |
 | `next build` (Turbopack) | **Compiled successfully** | 6 static routes, 1 dynamic route (`ƒ /preview-room`) |
 | `git diff --check` | **0 issues** | Zero trailing whitespace |
-| Desktop (1440x900) CDP | **`overflowAmount: 0`** | Complete room with illuminated laptop, open door, window casing |
-| Workstation Close-Up CDP | **Frontal View** | Active Retina IDE display, QWERTY keys, trackpad, mouse, wall quotes |
-| Mobile (390x844) CDP | **`overflowAmount: 0`** | All 3 zones fully visible with zero cropping |
+| Desktop (1440x900) CDP | **`overflowAmount: 0`** | Grounded bed, contact shadows, detailed fishbowl and plant |
+| Workstation Close-Up CDP | **Frontal View** | Active Retina screen, glass fishbowl with swimming fish, potted plant |
+| Bed Close-Up CDP | **Calibrated View** | Grounded platform, draped linen duvet, Oxford pillows, wool throw |
+| Fishbowl Close-Up CDP | **Macro View** | Refractive water, river pebbles, fan tail goldfish with eyes |
+| Plant Close-Up CDP | **Macro View** | Ceramic pot, dark potting soil, 9 curved leaves with visible midribs |
+| Mobile (390x844) CDP | **`overflowAmount: 0`** | Complete room framed with zero horizontal overflow |
 | Screenshots Saved | **10 files** | Synced to Desktop, OneDrive, techvruk, and repo folders |

@@ -46,6 +46,8 @@ export default function PreviewRoomClient() {
               "workstation",
               "wardrobe",
               "bed",
+              "fishbowl",
+              "plant",
               "doorWindow",
             ] as CameraPreset[]
           ).map((preset) => (

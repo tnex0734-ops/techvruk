@@ -12,6 +12,8 @@ export type CameraPreset =
   | "workstation"
   | "wardrobe"
   | "bed"
+  | "fishbowl"
+  | "plant"
   | "doorWindow";
 
 export interface CameraConfig {
@@ -46,23 +48,35 @@ export const CAMERA_CONFIGS: Record<CameraPreset, CameraConfig> = {
     target: [0.0, 1.05, -0.35],
     fov: 56,
   },
-  // Workstation Close-Up: Frontal perspective directly facing the laptop screen, keyboard, peripherals and wall art
+  // Workstation Close-Up: Frontal perspective centering the open laptop screen, flanked by plant & fishbowl
   workstation: {
-    position: [-1.95, 1.22, -1.05],
-    target: [-2.05, 0.98, -1.88],
+    position: [-2.05, 1.20, -1.00],
+    target: [-2.05, 0.96, -1.88],
+    fov: 44,
+  },
+  // Wardrobe Close-Up: Recalibrated wider framing to show the entire 3-door wardrobe, reveals, plinth and handles
+  wardrobe: {
+    position: [0.10, 1.45, 2.75],
+    target: [-2.95, 1.10, 0.40],
     fov: 46,
   },
-  // Wardrobe Close-Up: 3-door wardrobe with handles, reveals and plinth
-  wardrobe: {
-    position: [-1.15, 1.45, 1.85],
-    target: [-3.05, 1.25, 0.70],
-    fov: 42,
-  },
-  // Bed Close-Up: Platform bed, upholstered headboard, draped duvet, pillows and throw
+  // Bed Close-Up: Recalibrated framing showcasing the platform frame, tufted headboard, soft pillows & draped duvet
   bed: {
-    position: [0.25, 1.45, 0.45],
-    target: [1.85, 0.65, -1.45],
-    fov: 42,
+    position: [-0.20, 1.45, 0.95],
+    target: [1.90, 0.48, -1.35],
+    fov: 46,
+  },
+  // Fishbowl Close-Up: Focused inspection of curved glass bowl, water volume, swimming goldfish and pebbles
+  fishbowl: {
+    position: [-1.47, 0.98, -1.60],
+    target: [-1.47, 0.86, -2.01],
+    fov: 34,
+  },
+  // Plant Close-Up: Focused inspection of ceramic pot, drainage saucer, soil and curved botanical leaves
+  plant: {
+    position: [-2.20, 1.05, -1.35],
+    target: [-2.60, 0.88, -1.95],
+    fov: 32,
   },
   // Door & Window Close-Up: Architectural window casing, cross mullions, daylight plane and ajar door
   doorWindow: {
