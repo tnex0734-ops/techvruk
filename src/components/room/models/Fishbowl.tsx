@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useRef, useEffect } from "react";
+import React, { useMemo, useRef, useState, useEffect } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { ROOM_DIMENSIONS } from "../roomDimensions";
@@ -11,14 +11,14 @@ interface FishbowlProps {
 }
 
 /**
- * High-Fidelity Glass Fishbowl with Detailed Goldfish (Phase 3B.2.1 Refined)
+ * High-Fidelity Glass Fishbowl with Detailed Goldfish (Phase 3C.2 Interactive)
  * 
  * Features:
  * - Crystal clear blown glass bowl with open rolled rim generated via LatheGeometry.
  * - Deep refractive water volume with physical IOR (1.333) and organic liquid meniscus.
  * - Realistic anatomical goldfish: sculpted dorsal ridge, pearlescent belly, contoured head,
  *   bifurcated double-lobe fan tail fin, delicate fins, and glossy eyes with golden iris rings.
- * - Delicate curled aquatic flora rooted among smooth river pebbles.
+ * - Interactive response: on pointer hover or tap, goldfish accelerates with energetic tail flutter.
  * - Gentle circular swimming trajectory with tangent heading, banking, and caudal tail flutter.
  * - Throttles automatically when offscreen, hidden, or on prefers-reduced-motion.
  */
@@ -37,6 +37,9 @@ export function Fishbowl({ materials }: FishbowlProps) {
   const fishGroupRef = useRef<THREE.Group>(null);
   const tailRef = useRef<THREE.Group>(null);
   const prefersReducedMotionRef = useRef(false);
+  const [isExcited, setIsExcited] = useState(false);
+  const speedFactorRef = useRef(1.0);
+  const swimAngleRef = useRef(0);
 
   // Check prefers-reduced-motion on mount
   useEffect(() => {
@@ -96,22 +99,32 @@ export function Fishbowl({ materials }: FishbowlProps) {
   ], []);
 
   // 4. Lightweight Swimming Animation Loop (Throttled & Demand-Safe)
-  useFrame((state) => {
+  useFrame((state, delta) => {
     if (prefersReducedMotionRef.current) return;
     if (typeof document !== "undefined" && document.hidden) return;
 
     const t = state.clock.getElapsedTime();
 
+    // Lerp speed factor on hover/interaction
+    const targetFactor = isExcited ? 2.4 : 1.0;
+    speedFactorRef.current = THREE.MathUtils.lerp(
+      speedFactorRef.current,
+      targetFactor,
+      Math.min(1, delta * 4.0)
+    );
+
+    // Advance swimming angle based on current speed
+    swimAngleRef.current += delta * 0.72 * speedFactorRef.current;
+    const angle = swimAngleRef.current;
+
     if (fishGroupRef.current) {
       // Gentle circular orbit inside water volume (radius = 0.046m, water radius is 0.12m)
-      const orbitSpeed = 0.72;
-      const angle = t * orbitSpeed;
       const radiusX = 0.046;
       const radiusZ = 0.040;
 
       const posX = Math.cos(angle) * radiusX;
       const posZ = Math.sin(angle) * radiusZ;
-      const posY = 0.088 + Math.sin(t * 1.5) * 0.012;
+      const posY = 0.088 + Math.sin(t * 1.5 * speedFactorRef.current) * 0.012;
 
       fishGroupRef.current.position.set(posX, posY, posZ);
 
@@ -120,12 +133,13 @@ export function Fishbowl({ materials }: FishbowlProps) {
       fishGroupRef.current.rotation.y = heading - Math.PI / 2;
 
       // Subtle body banking into turns
-      fishGroupRef.current.rotation.z = Math.sin(t * 1.5) * 0.07;
-      fishGroupRef.current.rotation.x = Math.cos(t * 1.5) * 0.04;
+      fishGroupRef.current.rotation.z = Math.sin(t * 1.5 * speedFactorRef.current) * 0.09;
+      fishGroupRef.current.rotation.x = Math.cos(t * 1.5 * speedFactorRef.current) * 0.05;
 
-      // Rhythmic caudal tail fin flutter
+      // Rhythmic caudal tail fin flutter (speeds up dynamically on excitement)
       if (tailRef.current) {
-        tailRef.current.rotation.y = Math.sin(t * 7.2) * 0.32;
+        const flutterFreq = 7.2 * Math.min(2.0, speedFactorRef.current);
+        tailRef.current.rotation.y = Math.sin(t * flutterFreq) * (0.32 * Math.min(1.4, speedFactorRef.current));
       }
 
       // Invalidate demand render loop
@@ -135,6 +149,28 @@ export function Fishbowl({ materials }: FishbowlProps) {
 
   return (
     <group position={bowlPosition} name="fishbowl-module">
+      {/* Invisible Generous Touch / Hover Hitbox */}
+      <mesh
+        position={[0, 0.10, 0]}
+        visible={false}
+        onPointerOver={(e) => {
+          e.stopPropagation();
+          document.body.style.cursor = "pointer";
+          setIsExcited(true);
+        }}
+        onPointerOut={() => {
+          document.body.style.cursor = "auto";
+          setIsExcited(false);
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsExcited(true);
+          setTimeout(() => setIsExcited(false), 2400);
+        }}
+      >
+        <sphereGeometry args={[0.18, 12, 12]} />
+        <meshBasicMaterial transparent opacity={0} />
+      </mesh>
       
       {/* ── 1. Turned Scandinavian Birch Base Ring ── */}
       <group position={[0, 0.009, 0]} name="wooden-stand">

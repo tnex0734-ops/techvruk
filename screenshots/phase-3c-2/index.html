@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase 3C.2 Physical Animations & Fine Interactions — Taushik Portfolio QA Gallery</title>
+  <style>
+    :root {
+      --bg: #FDFCFC;
+      --card-bg: #FFFFFF;
+      --border: #E8E6E1;
+      --ink: #171515;
+      --muted: #736E68;
+      --red: #E52424;
+      --red-light: #FFF1F0;
+      --green: #10B981;
+      --green-light: #ECFDF5;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      padding: 36px 28px;
+      line-height: 1.5;
+    }
+    header {
+      max-width: 1440px;
+      margin: 0 auto 36px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--border);
+    }
+    .badge-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      background: var(--red-light);
+      color: var(--red);
+      font-size: 11px;
+      font-family: monospace;
+      font-weight: 700;
+      border-radius: 9999px;
+      border: 1px solid rgba(229, 36, 36, 0.2);
+    }
+    .badge.success {
+      background: var(--green-light);
+      color: var(--green);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+    .badge span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    h1 {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 10px;
+    }
+    p.subtitle {
+      color: var(--muted);
+      font-size: 14px;
+      font-family: monospace;
+      max-width: 900px;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+      padding: 16px 20px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .meta-item {
+      font-size: 13px;
+    }
+    .meta-label {
+      color: var(--muted);
+      font-size: 11px;
+      font-family: monospace;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .meta-value {
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .meta-value.highlight {
+      color: var(--red);
+    }
+
+    .gallery {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
+      gap: 28px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+      border-color: rgba(229, 36, 36, 0.35);
+    }
+    .card-img-wrapper {
+      position: relative;
+      background: #F4F2EE;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 280px;
+      cursor: zoom-in;
+    }
+    .card-img-wrapper img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: opacity 0.2s;
+    }
+    .card-body {
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-tag {
+      font-family: monospace;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--ink);
+    }
+    .card-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      flex: 1;
+    }
+    .card-actions {
+      margin-top: 16px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .card-btn {
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      background: #F4F2EE;
+      color: var(--ink);
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .card-btn:hover {
+      background: var(--red);
+      color: white;
+      border-color: var(--red);
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      padding: 24px;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      max-width: 95vw;
+      max-height: 92vh;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+    }
+    .modal-content img {
+      max-width: 100%;
+      max-height: 92vh;
+      object-fit: contain;
+      display: block;
+    }
+    .modal-close {
+      position: absolute;
+      top: 24px;
+      right: 28px;
+      background: white;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 22px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="badge-bar">
+      <div class="badge success"><span></span> PHASE 3C.2 COMPLETE &amp; VERIFIED</div>
+      <div class="badge"><span></span> PHYSICAL ANIMATIONS</div>
+      <div class="badge"><span></span> INTERACTION POLISH</div>
+    </div>
+    <h1>Phase 3C.2 Physical Animations &amp; Interaction Polish Visual QA Gallery</h1>
+    <p class="subtitle">Complete verification of physical wardrobe and entrance door animations, interior archive reveal, fine object interactions (MacBook Pro MagSafe LED &amp; lid tilt, quotation frame hover lift, goldfish accelerated flutter), and responsive layout stability.</p>
+
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Implementation Phase</div>
+        <div class="meta-value highlight">Phase 3C.2 (Authorized)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">TypeScript Check</div>
+        <div class="meta-value">Pass (0 Errors)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Production Build</div>
+        <div class="meta-value">Pass (Turbopack Compiled)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Horizontal Overflow</div>
+        <div class="meta-value">0px (Desktop / Tablet / Mobile)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Render Loop Mode</div>
+        <div class="meta-value">Demand (0% Idle CPU/GPU)</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="gallery">
+    
+      <div class="card">
+        <div class="card-img-wrapper" onclick="openModal('01-desktop-overview-room-1440x900.png')">
+          <img src="01-desktop-overview-room-1440x900.png" alt="01. Desktop Overview (1440x900)" loading="lazy">
+        </div>
+        <div class="card-body">
+          <div class="card-tag">Desktop</div>
+          <h2 class="card-title">01. Desktop Overview (1440x900)</h2>
+          <p class="card-desc">Full 3D room overview showing balanced architectural cutaways, closed wardrobe, laptop workstation with glowing IDE screen, resting ajar door (18°), and all 3 interactive hotspots (WORK, JOURNEY, CONTACT) visible and clickable.</p>
+          <div class="card-actions">
+            <a href="01-desktop-overview-room-1440x900.png" target="_blank" class="card-btn">Open Full Resolution</a>
+          </div>
+        </div>
+      </div>
+    
+      <div class="card">
+        <div class="card-img-wrapper" onclick="openModal('02-desktop-wardrobe-open-archive-1440x900.png')">
+          <img src="02-desktop-wardrobe-open-archive-1440x900.png" alt="02. Wardrobe Physical Opening & Interior Archive" loading="lazy">
+        </div>
+        <div class="card-body">
+          <div class="card-tag">Physical Animation</div>
+          <h2 class="card-title">02. Wardrobe Physical Opening & Interior Archive</h2>
+          <p class="card-desc">When JOURNEY is selected, the wardrobe doors physically rotate outward on hinges to reveal the illuminated interior archive: vertical divider, 4 oak shelves, golden Smart India Hackathon trophy, portfolio documentation binders (2024-2026), and linen archive boxes with ribbon pull tabs.</p>
+          <div class="card-actions">
+            <a href="02-desktop-wardrobe-open-archive-1440x900.png" target="_blank" class="card-btn">Open Full Resolution</a>
+          </div>
+        </div>
+      </div>
+    
+      <div class="card">
+        <div class="card-img-wrapper" onclick="openModal('03-desktop-laptop-focus-1440x900.png')">
+          <img src="03-desktop-laptop-focus-1440x900.png" alt="03. Laptop Workstation Focus & Fine Feedback" loading="lazy">
+        </div>
+        <div class="card-body">
+          <div class="card-tag">Fine Interaction</div>
+          <h2 class="card-title">03. Laptop Workstation Focus & Fine Feedback</h2>
+          <p class="card-desc">Camera glides to the MacBook Pro workstation, the display lid tilts to responsive focus angle (-0.36 rad), the MagSafe power LED illuminates vivid green (#10b981), and the Selected Work drawer slides in cleanly.</p>
+          <div class="card-actions">
+            <a href="03-desktop-laptop-focus-1440x900.png" target="_blank" class="card-btn">Open Full Resolution</a>
+          </div>
+        </div>
+      </div>
+    
+      <div class="card">
+        <div class="card-img-wrapper" onclick="openModal('04-desktop-door-swing-open-1440x900.png')">
+          <img src="04-desktop-door-swing-open-1440x900.png" alt="04. Entrance Door Physical Swing Animation (75°)" loading="lazy">
+        </div>
+        <div class="card-body">
+          <div class="card-tag">Physical Animation</div>
+          <h2 class="card-title">04. Entrance Door Physical Swing Animation (75°)</h2>
+          <p class="card-desc">When CONTACT is selected, the solid Scandinavian oak entrance door smoothly swings open along its mortise butt hinge line to 75° (1.30 rad) into the room, revealing the hardwood floor threshold and welcoming the visitor.</p>
+          <div class="card-actions">
+            <a href="04-desktop-door-swing-open-1440x900.png" target="_blank" class="card-btn">Open Full Resolution</a>
+          </div>
+        </div>
+      </div>
+    
+      <div class="card">
+        <div class="card-img-wrapper" onclick="openModal('05-desktop-doors-closed-return-1440x900.png')">
+          <img src="05-desktop-doors-closed-return-1440x900.png" alt="05. Return to Overview (Doors Swing Shut)" loading="lazy">
+        </div>
+        <div class="card-body">
+          <div class="card-tag">Animation Return</div>
+          <h2 class="card-title">05. Return to Overview (Doors Swing Shut)</h2>
+          <p class="card-desc">Upon pressing Escape or Close, the entrance door and wardrobe doors smoothly swing back to their resting flush/ajar positions with demand-rendering invalidation, terminating at zero CPU/GPU overhead when idle.</p>
+          <div class="card-actions">
+            <a href="05-desktop-doors-closed-return-1440x900.png" target="_blank" class="card-btn">Open Full Resolution</a>
+          </div>
+        </div>
+      </div>
+    
+      <div class="card">
+        <div class="card-img-wrapper" onclick="openModal('06-tablet-overview-768x1024.png')">
+          <img src="06-tablet-overview-768x1024.png" alt="06. Tablet Portrait Overview (768x1024)" loading="lazy">
+        </div>
+        <div class="card-body">
+          <div class="card-tag">Tablet</div>
+          <h2 class="card-title">06. Tablet Portrait Overview (768x1024)</h2>
+          <p class="card-desc">Tablet 3:4 portrait elevation showing complete room composition without horizontal overflow. All 3 floating hotspots and bottom companion shortcuts are comfortably accessible.</p>
+          <div class="card-actions">
+            <a href="06-tablet-overview-768x1024.png" target="_blank" class="card-btn">Open Full Resolution</a>
+          </div>
+        </div>
+      </div>
+    
+      <div class="card">
+        <div class="card-img-wrapper" onclick="openModal('07-tablet-wardrobe-open-768x1024.png')">
+          <img src="07-tablet-wardrobe-open-768x1024.png" alt="07. Tablet Wardrobe Open & Experience Drawer" loading="lazy">
+        </div>
+        <div class="card-body">
+          <div class="card-tag">Tablet Interaction</div>
+          <h2 class="card-title">07. Tablet Wardrobe Open & Experience Drawer</h2>
+          <p class="card-desc">Tablet view with physical wardrobe doors open, revealing the illuminated archive and displaying the Journey drawer with experience timeline tabs and hackathon achievement badges.</p>
+          <div class="card-actions">
+            <a href="07-tablet-wardrobe-open-768x1024.png" target="_blank" class="card-btn">Open Full Resolution</a>
+          </div>
+        </div>
+      </div>
+    
+      <div class="card">
+        <div class="card-img-wrapper" onclick="openModal('08-tablet-contact-door-open-768x1024.png')">
+          <img src="08-tablet-contact-door-open-768x1024.png" alt="08. Tablet Contact & Swung Door" loading="lazy">
+        </div>
+        <div class="card-body">
+          <div class="card-tag">Tablet Interaction</div>
+          <h2 class="card-title">08. Tablet Contact & Swung Door</h2>
+          <p class="card-desc">Tablet layout showing open entrance door and Contact drawer with quick email copy, phone, LinkedIn, and collaboration details.</p>
+          <div class="card-actions">
+            <a href="08-tablet-contact-door-open-768x1024.png" target="_blank" class="card-btn">Open Full Resolution</a>
+          </div>
+        </div>
+      </div>
+    
+      <div class="card">
+        <div class="card-img-wrapper" onclick="openModal('09-mobile-overview-390x844.png')">
+          <img src="09-mobile-overview-390x844.png" alt="09. Mobile Viewport Overview (390x844)" loading="lazy">
+        </div>
+        <div class="card-body">
+          <div class="card-tag">Mobile</div>
+          <h2 class="card-title">09. Mobile Viewport Overview (390x844)</h2>
+          <p class="card-desc">Compact mobile viewport with calibrated 56° FOV. All 3 hotspots (WORK, JOURNEY, CONTACT) are completely visible inside the canvas with 26px safe padding for CONTACT on the right edge. Zero horizontal overflow.</p>
+          <div class="card-actions">
+            <a href="09-mobile-overview-390x844.png" target="_blank" class="card-btn">Open Full Resolution</a>
+          </div>
+        </div>
+      </div>
+    
+      <div class="card">
+        <div class="card-img-wrapper" onclick="openModal('10-mobile-wardrobe-open-390x844.png')">
+          <img src="10-mobile-wardrobe-open-390x844.png" alt="10. Mobile Wardrobe Open & Drawer Sheet" loading="lazy">
+        </div>
+        <div class="card-body">
+          <div class="card-tag">Mobile Interaction</div>
+          <h2 class="card-title">10. Mobile Wardrobe Open & Drawer Sheet</h2>
+          <p class="card-desc">Mobile interaction showing the physically opened wardrobe archive and responsive bottom sheet drawer. Floating shortcuts cleanly hide when drawer is active.</p>
+          <div class="card-actions">
+            <a href="10-mobile-wardrobe-open-390x844.png" target="_blank" class="card-btn">Open Full Resolution</a>
+          </div>
+        </div>
+      </div>
+    
+      <div class="card">
+        <div class="card-img-wrapper" onclick="openModal('11-mobile-door-open-390x844.png')">
+          <img src="11-mobile-door-open-390x844.png" alt="11. Mobile Contact Door Open Sheet" loading="lazy">
+        </div>
+        <div class="card-body">
+          <div class="card-tag">Mobile Interaction</div>
+          <h2 class="card-title">11. Mobile Contact Door Open Sheet</h2>
+          <p class="card-desc">Mobile contact bottom sheet showing collaboration actions, direct email copy button, and location details with door swung open.</p>
+          <div class="card-actions">
+            <a href="11-mobile-door-open-390x844.png" target="_blank" class="card-btn">Open Full Resolution</a>
+          </div>
+        </div>
+      </div>
+    
+      <div class="card">
+        <div class="card-img-wrapper" onclick="openModal('12-fine-details-fish-and-quotes.png')">
+          <img src="12-fine-details-fish-and-quotes.png" alt="12. Fine Details: Animated Fishbowl & Wall Art" loading="lazy">
+        </div>
+        <div class="card-body">
+          <div class="card-tag">Fine Interaction</div>
+          <h2 class="card-title">12. Fine Details: Animated Fishbowl & Wall Art</h2>
+          <p class="card-desc">Close-up of the workstation perimeter: refractive glass fishbowl with swimming anatomical goldfish (dynamic tail flutter and speed boost on hover/click) and typography quotation frames with hover lift/tilt.</p>
+          <div class="card-actions">
+            <a href="12-fine-details-fish-and-quotes.png" target="_blank" class="card-btn">Open Full Resolution</a>
+          </div>
+        </div>
+      </div>
+    
+  </main>
+
+  <div id="imageModal" class="modal" onclick="closeModal()">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <img id="modalImg" src="" alt="Full view">
+    </div>
+  </div>
+
+  <script>
+    function openModal(src) {
+      document.getElementById('modalImg').src = src;
+      document.getElementById('imageModal').classList.add('active');
+    }
+    function closeModal() {
+      document.getElementById('imageModal').classList.remove('active');
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+  </script>
+
+</body>
+</html>

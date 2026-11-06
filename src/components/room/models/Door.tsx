@@ -1,6 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useRef, useEffect } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
+import * as THREE from "three";
 import { RoundedBox } from "@react-three/drei";
 import { ROOM_DIMENSIONS } from "../roomDimensions";
 import { RoomMaterials } from "../RoomMaterials";
@@ -14,15 +16,18 @@ interface DoorProps {
 }
 
 /**
- * High-Fidelity Architectural Interior Wooden Door
+ * High-Fidelity Architectural Interior Wooden Door (Phase 3C.2 Animated)
  * 
  * Features:
  * - 3-sided architectural architrave casing with 16cm jamb depth and hardwood floor threshold.
  * - Solid Scandinavian oak door leaf with 45mm thickness and recessed architectural panel fields.
- * - Swung 18° ajar into the room on interior hinge line for immediate realism.
- * - Mortise butt hinges on jamb.
+ * - Resting ajar at 18° (0.314 rad) into the room for architectural depth.
+ * - Physical swing animation: swings smoothly open to 75° (1.30 rad) when Contact is selected.
+ * - Gentle hover nudge to 26° (0.45 rad).
+ * - Mortise butt hinges with precision pivot alignment.
  * - Matte dark graphite lever handle with rectangular escutcheon backplate.
- * - Interactive pointer selection and hover feedback for Phase 3C.1.
+ * - Demand-rendering compliant (invalidates strictly while swinging).
+ * - Full reduced-motion accessibility support.
  */
 export function Door({
   materials,
@@ -37,6 +42,57 @@ export function Door({
   const leafWidth = d.width - 0.08;   // ~0.82m
   const leafHeight = d.height - 0.06; // ~2.09m
   const leafThickness = 0.045;
+
+  const { invalidate } = useThree();
+  const doorPivotRef = useRef<THREE.Group>(null);
+  const angleRef = useRef(0.314);
+  const isMovingRef = useRef(false);
+  const prefersReducedMotionRef = useRef(false);
+
+  // Check prefers-reduced-motion
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+      prefersReducedMotionRef.current = mq.matches;
+      const handler = (e: MediaQueryListEvent) => {
+        prefersReducedMotionRef.current = e.matches;
+      };
+      mq.addEventListener("change", handler);
+      return () => mq.removeEventListener("change", handler);
+    }
+  }, []);
+
+  // Trigger animation when selection or hover state changes
+  useEffect(() => {
+    isMovingRef.current = true;
+    invalidate();
+  }, [isSelected, isHovered, invalidate]);
+
+  // Smooth lerp swing animation strictly integrated with demand rendering
+  useFrame((_, delta) => {
+    if (!isMovingRef.current) return;
+
+    const targetAngle = isSelected ? 1.30 : (isHovered ? 0.45 : 0.314);
+
+    if (prefersReducedMotionRef.current) {
+      angleRef.current = targetAngle;
+      isMovingRef.current = false;
+    } else {
+      const speed = Math.min(1, delta * 4.6);
+      angleRef.current = THREE.MathUtils.lerp(angleRef.current, targetAngle, speed);
+
+      if (Math.abs(angleRef.current - targetAngle) < 0.003) {
+        angleRef.current = targetAngle;
+        isMovingRef.current = false;
+      } else {
+        invalidate();
+      }
+    }
+
+    if (doorPivotRef.current) {
+      doorPivotRef.current.rotation.y = angleRef.current;
+    }
+  });
 
   return (
     <group
@@ -115,10 +171,11 @@ export function Door({
         </group>
       ))}
 
-      {/* ── 3. Oak Door Leaf — Swung 18° Ajar into Room ── */}
+      {/* ── 3. Oak Door Leaf — Physical Swing Pivot on Hinge Line ── */}
       <group
+        ref={doorPivotRef}
         position={[-d.width / 2 + jambWidth, 0, 0.02]}
-        rotation={[0, 0.314, 0]} // 18 degrees ajar
+        rotation={[0, 0.314, 0]}
         name="door-leaf-assembly"
       >
         {/* Main Solid Oak Door Slab */}

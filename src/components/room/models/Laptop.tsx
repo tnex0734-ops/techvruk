@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useRef, useEffect } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
+import * as THREE from "three";
 import { RoundedBox } from "@react-three/drei";
 import { ROOM_DIMENSIONS } from "../roomDimensions";
 import { RoomMaterials } from "../RoomMaterials";
@@ -14,17 +16,18 @@ interface LaptopProps {
 }
 
 /**
- * High-Fidelity Apple MacBook Pro on Aluminum Ergonomic Stand
+ * High-Fidelity Apple MacBook Pro on Aluminum Ergonomic Stand (Phase 3C.2 Animated)
  * 
  * Features:
  * - Precision aluminum riser stand with angled cradle and retaining lips.
  * - MacBook Pro wedge unibody chassis with rounded corners.
  * - Recessed dark keyboard well with individual QWERTY keycaps and tactile spacebar.
  * - Precision glass trackpad with tactile click perimeter.
- * - Cylindrical display hinge barrel.
- * - Display lid open at 110° viewing angle with dark edge-to-edge glass bezel.
+ * - MagSafe power connector with dynamic amber/green status LED.
+ * - Display lid open at 110° viewing angle with responsive tilt feedback on interaction.
  * - High-resolution active Retina display screen rendering Taushik's Portfolio IDE.
- * - Interactive pointer selection and hover feedback for Phase 3C.1.
+ * - Demand-rendering compliant (invalidates strictly while transitioning).
+ * - Full reduced-motion accessibility support.
  */
 export function Laptop({
   materials,
@@ -35,6 +38,57 @@ export function Laptop({
 }: LaptopProps) {
   const d = ROOM_DIMENSIONS.laptop;
   const deskY = ROOM_DIMENSIONS.desk.position[1] + ROOM_DIMENSIONS.desk.topThickness / 2;
+
+  const { invalidate } = useThree();
+  const lidPivotRef = useRef<THREE.Group>(null);
+  const lidAngleRef = useRef(-0.30);
+  const isMovingRef = useRef(false);
+  const prefersReducedMotionRef = useRef(false);
+
+  // Check prefers-reduced-motion
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+      prefersReducedMotionRef.current = mq.matches;
+      const handler = (e: MediaQueryListEvent) => {
+        prefersReducedMotionRef.current = e.matches;
+      };
+      mq.addEventListener("change", handler);
+      return () => mq.removeEventListener("change", handler);
+    }
+  }, []);
+
+  // Trigger smooth tilt on selection or hover
+  useEffect(() => {
+    isMovingRef.current = true;
+    invalidate();
+  }, [isSelected, isHovered, invalidate]);
+
+  // Responsive lid tilt animation strictly integrated with demand rendering
+  useFrame((_, delta) => {
+    if (!isMovingRef.current) return;
+
+    const targetAngle = isSelected ? -0.36 : (isHovered ? -0.33 : -0.30);
+
+    if (prefersReducedMotionRef.current) {
+      lidAngleRef.current = targetAngle;
+      isMovingRef.current = false;
+    } else {
+      const speed = Math.min(1, delta * 5.2);
+      lidAngleRef.current = THREE.MathUtils.lerp(lidAngleRef.current, targetAngle, speed);
+
+      if (Math.abs(lidAngleRef.current - targetAngle) < 0.002) {
+        lidAngleRef.current = targetAngle;
+        isMovingRef.current = false;
+      } else {
+        invalidate();
+      }
+    }
+
+    if (lidPivotRef.current) {
+      lidPivotRef.current.rotation.x = lidAngleRef.current;
+    }
+  });
 
   // Keycap grid layout definitions
   const keyRows = useMemo(() => {
@@ -194,6 +248,17 @@ export function Laptop({
           </mesh>
         </group>
 
+        {/* MagSafe Power Connector LED Indicator */}
+        <group position={[-d.baseWidth / 2 - 0.002, 0.002, -d.baseDepth / 2 + 0.05]} name="magsafe-led">
+          <mesh material={materials.metalSilver}>
+            <boxGeometry args={[0.004, 0.005, 0.012]} />
+          </mesh>
+          <mesh position={[-0.0025, 0, 0]}>
+            <sphereGeometry args={[0.002, 8, 8]} />
+            <meshBasicMaterial color={isSelected ? "#10b981" : (isHovered ? "#34d399" : "#f59e0b")} />
+          </mesh>
+        </group>
+
         {/* Display Hinge Barrel */}
         <mesh
           position={[0, d.baseHeight / 2 + 0.002, -d.baseDepth / 2 + 0.006]}
@@ -203,8 +268,13 @@ export function Laptop({
           <cylinderGeometry args={[0.005, 0.005, 0.24, 16]} />
         </mesh>
 
-        {/* ── 2B. Display Lid (Open at 110° viewing angle relative to chassis) ── */}
-        <group position={[0, 0.006, -d.baseDepth / 2]} rotation={[-0.30, 0, 0]} name="display-lid">
+        {/* ── 2B. Display Lid (Responsive Tilt Pivot on Hinge Line) ── */}
+        <group
+          ref={lidPivotRef}
+          position={[0, 0.006, -d.baseDepth / 2]}
+          rotation={[-0.30, 0, 0]}
+          name="display-lid"
+        >
           
           {/* Outer Aluminum Lid Enclosure */}
           <RoundedBox

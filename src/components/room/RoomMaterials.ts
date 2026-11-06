@@ -31,10 +31,12 @@ export const ROOM_PALETTE = {
   metalDark: "#222226",     // Dark graphite / anodized aluminum (desk frame, window trim)
   metalSilver: "#C5C7CC",   // Laptop hinge & stand highlights
   metalAluminum: "#D8DADE", // Apple-style matte anodized aluminum for laptop body
+  metalGold: "#D4AF37",     // Polished gold trophy finish
   fabricWhite: "#F8F8F9",   // Crisp cotton bed linen
   fabricDuvet: "#EDE7DE",   // Warm natural natural linen duvet fabric
   fabricPillow: "#FAF8F5",  // Soft lofted linen pillows
   fabricThrow: "#C7BDAE",   // Neutral wool throw blanket
+  fabricBeige: "#D8CEBE",   // Natural woven linen for storage boxes
   glass: "#DCEEF7",         // Architectural window glass
   fishbowlGlass: "#FFFFFF", // Crystal clear refractive fishbowl glass
   daylightBackdrop: "#F2F7FA", // Soft daylight plane outside window
@@ -124,6 +126,11 @@ export function createRoomMaterials() {
       roughness: 0.30,
       metalness: 0.75,
     }),
+    metalGold: new THREE.MeshStandardMaterial({
+      color: ROOM_PALETTE.metalGold,
+      roughness: 0.22,
+      metalness: 0.88,
+    }),
     fabricWhite: new THREE.MeshStandardMaterial({
       color: ROOM_PALETTE.fabricWhite,
       map: fabricTexture,
@@ -146,6 +153,12 @@ export function createRoomMaterials() {
       color: ROOM_PALETTE.fabricThrow,
       map: woolTexture,
       roughness: 0.95,
+      metalness: 0.0,
+    }),
+    fabricBeige: new THREE.MeshStandardMaterial({
+      color: ROOM_PALETTE.fabricBeige,
+      map: fabricTexture,
+      roughness: 0.92,
       metalness: 0.0,
     }),
     glass: new THREE.MeshPhysicalMaterial({
