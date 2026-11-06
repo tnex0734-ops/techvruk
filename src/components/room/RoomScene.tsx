@@ -88,18 +88,35 @@ function WebGLStatsCollector() {
   return null;
 }
 
+import { RoomInteractionTarget } from "./roomInteractionTypes";
+
 export interface RoomSceneProps {
   cameraPreset?: CameraPreset;
+  activeTarget?: RoomInteractionTarget;
+  hoveredTarget?: RoomInteractionTarget;
+  onSelect?: (target: "laptop" | "wardrobe" | "door") => void;
+  onHover?: (target: "laptop" | "wardrobe" | "door" | null) => void;
   enableOrbit?: boolean;
 }
 
-export function RoomScene({ cameraPreset, enableOrbit = false }: RoomSceneProps) {
+export function RoomScene({
+  cameraPreset,
+  activeTarget = null,
+  hoveredTarget = null,
+  onSelect,
+  onHover,
+  enableOrbit = false,
+}: RoomSceneProps) {
   return (
     <>
       <WebGLStatsCollector />
 
-      {/* ── Responsive Perspective Camera ── */}
-      <RoomCamera forcedPreset={cameraPreset} enableOrbit={enableOrbit} />
+      {/* ── Responsive Perspective Camera with Smooth Focus Animation ── */}
+      <RoomCamera
+        forcedPreset={cameraPreset}
+        activeTarget={activeTarget}
+        enableOrbit={enableOrbit}
+      />
 
       {/* ── Optional Dev / Inspection Orbit Controls ── */}
       {enableOrbit && (
@@ -118,8 +135,13 @@ export function RoomScene({ cameraPreset, enableOrbit = false }: RoomSceneProps)
       {/* ── Open-Front Architectural Cutaway Room Shell ── */}
       <RoomShell />
 
-      {/* ── Specified Furniture Blockout (Left / Corner / Right) ── */}
-      <RoomFurniture />
+      {/* ── Specified Furniture Blockout & Interactive Hotspots ── */}
+      <RoomFurniture
+        activeTarget={activeTarget}
+        hoveredTarget={hoveredTarget}
+        onSelect={onSelect}
+        onHover={onHover}
+      />
     </>
   );
 }

@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useThree } from "@react-three/fiber";
+import { useThree, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { RoomInteractionTarget, ROOM_HOTSPOTS } from "./roomInteractionTypes";
 
 export type CameraPreset =
   | "desktop"
@@ -50,8 +51,8 @@ export const CAMERA_CONFIGS: Record<CameraPreset, CameraConfig> = {
   },
   // Workstation Close-Up: Frontal perspective centering the open laptop screen, flanked by plant & fishbowl
   workstation: {
-    position: [-2.05, 1.20, -1.00],
-    target: [-2.05, 0.96, -1.88],
+    position: [-2.05, 1.20, -1.05],
+    target: [-2.05, 0.98, -1.88],
     fov: 44,
   },
   // Wardrobe Close-Up: Recalibrated wider framing to show the entire 3-door wardrobe, reveals, plinth and handles
@@ -80,8 +81,8 @@ export const CAMERA_CONFIGS: Record<CameraPreset, CameraConfig> = {
   },
   // Door & Window Close-Up: Architectural window casing, cross mullions, daylight plane and ajar door
   doorWindow: {
-    position: [1.35, 1.65, 0.75],
-    target: [3.60, 1.45, 0.55],
+    position: [1.35, 1.60, 0.85],
+    target: [3.50, 1.25, 0.55],
     fov: 46,
   },
 };
@@ -93,31 +94,108 @@ export function getPresetForWidth(width: number): CameraPreset {
   return "mobile";
 }
 
+export interface RoomCameraProps {
+  forcedPreset?: CameraPreset;
+  activeTarget?: RoomInteractionTarget;
+  enableOrbit?: boolean;
+}
+
 export function RoomCamera({
   forcedPreset,
+  activeTarget,
   enableOrbit = false,
-}: {
-  forcedPreset?: CameraPreset;
-  enableOrbit?: boolean;
-}) {
+}: RoomCameraProps) {
   const { camera, size, invalidate } = useThree();
-  const currentPresetRef = useRef<CameraPreset | null>(null);
 
+  const currentLookAtRef = useRef<THREE.Vector3>(new THREE.Vector3(-0.2, 1.0, -0.3));
+  const targetPosRef = useRef<THREE.Vector3>(new THREE.Vector3());
+  const targetLookAtRef = useRef<THREE.Vector3>(new THREE.Vector3());
+  const targetFovRef = useRef<number>(44);
+  const isTransitioningRef = useRef<boolean>(false);
+  const prefersReducedMotionRef = useRef<boolean>(false);
+
+  // Check prefers-reduced-motion
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+      prefersReducedMotionRef.current = mq.matches;
+      const handler = (e: MediaQueryListEvent) => {
+        prefersReducedMotionRef.current = e.matches;
+      };
+      mq.addEventListener("change", handler);
+      return () => mq.removeEventListener("change", handler);
+    }
+  }, []);
+
+  // Calculate target configuration whenever activeTarget, forcedPreset or size changes
   useEffect(() => {
     if (enableOrbit) return;
 
-    const preset = forcedPreset || getPresetForWidth(size.width);
-    const config = CAMERA_CONFIGS[preset];
+    let config: CameraConfig;
+
+    if (activeTarget && ROOM_HOTSPOTS[activeTarget]) {
+      const hotspot = ROOM_HOTSPOTS[activeTarget];
+      config = {
+        position: hotspot.cameraPosition,
+        target: hotspot.cameraTarget,
+        fov: hotspot.cameraFov,
+      };
+    } else {
+      const preset = forcedPreset || getPresetForWidth(size.width);
+      config = CAMERA_CONFIGS[preset];
+    }
+
+    targetPosRef.current.set(...config.position);
+    targetLookAtRef.current.set(...config.target);
+    targetFovRef.current = config.fov;
 
     const perspCam = camera as THREE.PerspectiveCamera;
-    perspCam.fov = config.fov;
-    perspCam.position.set(...config.position);
-    perspCam.lookAt(...config.target);
+
+    // Instant snap if reduced motion
+    if (prefersReducedMotionRef.current) {
+      perspCam.position.copy(targetPosRef.current);
+      currentLookAtRef.current.copy(targetLookAtRef.current);
+      perspCam.lookAt(currentLookAtRef.current);
+      perspCam.fov = targetFovRef.current;
+      perspCam.updateProjectionMatrix();
+      isTransitioningRef.current = false;
+    } else {
+      isTransitioningRef.current = true;
+    }
+
+    invalidate();
+  }, [camera, size.width, forcedPreset, activeTarget, enableOrbit, invalidate]);
+
+  // Smooth lerp animation loop strictly integrated with demand rendering
+  useFrame((_, delta) => {
+    if (enableOrbit || !isTransitioningRef.current) return;
+
+    const perspCam = camera as THREE.PerspectiveCamera;
+    const t = Math.min(1, delta * 4.2);
+
+    perspCam.position.lerp(targetPosRef.current, t);
+    currentLookAtRef.current.lerp(targetLookAtRef.current, t);
+    perspCam.lookAt(currentLookAtRef.current);
+
+    perspCam.fov = THREE.MathUtils.lerp(perspCam.fov, targetFovRef.current, t);
     perspCam.updateProjectionMatrix();
 
-    currentPresetRef.current = preset;
-    invalidate();
-  }, [camera, size.width, forcedPreset, enableOrbit, invalidate]);
+    const distPos = perspCam.position.distanceTo(targetPosRef.current);
+    const distLook = currentLookAtRef.current.distanceTo(targetLookAtRef.current);
+    const diffFov = Math.abs(perspCam.fov - targetFovRef.current);
+
+    // Stop transitioning when within threshold
+    if (distPos < 0.005 && distLook < 0.005 && diffFov < 0.05) {
+      perspCam.position.copy(targetPosRef.current);
+      currentLookAtRef.current.copy(targetLookAtRef.current);
+      perspCam.lookAt(currentLookAtRef.current);
+      perspCam.fov = targetFovRef.current;
+      perspCam.updateProjectionMatrix();
+      isTransitioningRef.current = false;
+    } else {
+      invalidate();
+    }
+  });
 
   return null;
 }

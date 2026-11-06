@@ -43,6 +43,10 @@ export interface RoomCanvasProps extends RoomSceneProps {
 
 export function RoomCanvas({
   cameraPreset,
+  activeTarget = null,
+  hoveredTarget = null,
+  onSelect,
+  onHover,
   enableOrbit = false,
   className = "w-full h-full",
   fallback = null,
@@ -61,7 +65,14 @@ export function RoomCanvas({
         }}
       >
         <Suspense fallback={null}>
-          <RoomScene cameraPreset={cameraPreset} enableOrbit={enableOrbit} />
+          <RoomScene
+            cameraPreset={cameraPreset}
+            activeTarget={activeTarget}
+            hoveredTarget={hoveredTarget}
+            onSelect={onSelect}
+            onHover={onHover}
+            enableOrbit={enableOrbit}
+          />
         </Suspense>
       </Canvas>
     </CanvasErrorBoundary>

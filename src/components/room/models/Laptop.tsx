@@ -7,6 +7,10 @@ import { RoomMaterials } from "../RoomMaterials";
 
 interface LaptopProps {
   materials: RoomMaterials;
+  isHovered?: boolean;
+  isSelected?: boolean;
+  onSelect?: () => void;
+  onHover?: (hovered: boolean) => void;
 }
 
 /**
@@ -20,8 +24,15 @@ interface LaptopProps {
  * - Cylindrical display hinge barrel.
  * - Display lid open at 110° viewing angle with dark edge-to-edge glass bezel.
  * - High-resolution active Retina display screen rendering Taushik's Portfolio IDE.
+ * - Interactive pointer selection and hover feedback for Phase 3C.1.
  */
-export function Laptop({ materials }: LaptopProps) {
+export function Laptop({
+  materials,
+  isHovered = false,
+  isSelected = false,
+  onSelect,
+  onHover,
+}: LaptopProps) {
   const d = ROOM_DIMENSIONS.laptop;
   const deskY = ROOM_DIMENSIONS.desk.position[1] + ROOM_DIMENSIONS.desk.topThickness / 2;
 
@@ -41,7 +52,31 @@ export function Laptop({ materials }: LaptopProps) {
     <group
       position={[d.position[0], deskY, d.position[2]]}
       name="laptop-stand-module"
+      onClick={(e) => {
+        if (onSelect) {
+          e.stopPropagation();
+          onSelect();
+        }
+      }}
+      onPointerOver={(e) => {
+        if (onHover) {
+          e.stopPropagation();
+          document.body.style.cursor = "pointer";
+          onHover(true);
+        }
+      }}
+      onPointerOut={() => {
+        if (onHover) {
+          document.body.style.cursor = "auto";
+          onHover(false);
+        }
+      }}
     >
+      {/* Invisible Generous Touch / Click Hitbox */}
+      <mesh position={[0, 0.16, 0]} visible={false}>
+        <boxGeometry args={[0.52, 0.45, 0.48]} />
+        <meshBasicMaterial transparent opacity={0} />
+      </mesh>
       {/* ══════════════════════════════════════════════════════════════ */}
       {/*  1. ALUMINUM RISER STAND                                       */}
       {/* ══════════════════════════════════════════════════════════════ */}

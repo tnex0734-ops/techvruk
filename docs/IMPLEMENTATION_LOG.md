@@ -1,7 +1,7 @@
 # Implementation Log
 
 ## Current Phase
-Phase 3B.2.1 — Final Visual Polish & WebGL Performance Audit (Completed & Verified)
+Phase 3C.1 — Interactive 3D Hotspots, Camera Focus & Portfolio Navigation (Completed & Verified)
 
 ---
 
@@ -15,44 +15,50 @@ Phase 3B.2.1 — Final Visual Polish & WebGL Performance Audit (Completed & Veri
 - **2026-11-06 [Phase 3A.1 Room Composition & Camera Refinement]** — Refined mobile camera framing (`fov: 56°`, `pos: [2.1, 5.0, 8.4]`) achieving 100% room visibility with zero cropping. Stepped down right wall cutaway ($1.15\text{m}$ partition + $0.12\text{m}$ curb) opening sightlines to the bed and interior. Transformed window (architectural casing, cross mullions, daylight plane) and door (3-sided frame, $18^\circ$ ajar oak leaf, lever handle). Enhanced workstation (charcoal desk mat, silver laptop with screen wireframe, keyboard/mouse, fishbowl swimmer proxy, plant, wall quotes). Converted `/preview-room` to server-gated dynamic route via `ENABLE_DEV_PREVIEW`. (Commit: `c79da85`)
 - **2026-11-06 [Phase 3B.1 High-Fidelity Hard-Surface Modelling]** — Upgraded room blockout to modular hard-surface furniture components (`src/components/room/models/`): 3-door wardrobe with shadow reveals and graphite handles; architectural desk with square-tube trestle legs, leveling feet, cable grommet, and stitched desk mat; Apple MacBook Pro on aluminum stand with individual QWERTY keycaps, glass trackpad, and active Retina IDE screen texture; studio ergonomic chair with 5-star wheeled base, pneumatic lift, mesh back, and signature red cushion; floating platform bed with tufted headboard, piped mattress, draped duvet, and throw blanket; architectural window with casing, mullions, birch sill, and daylight plane; architectural door swung $18^\circ$ ajar with threshold and lever handle; framed archival typography prints. In-memory procedural PBR textures for Retina IDE, wall prints, wood grain, and fabric weave. (Commit: `14c5f61`)
 - **2026-11-06 [Phase 3B.2 Organic Assets, Soft Textiles & Environmental Realism]** — Replaced procedural proxies with dedicated lathe glass fishbowl, refractive water volume, aquarium flora and pebbles, detailed goldfish with bifurcated fan tail and lightweight idle swimming physics (`Fishbowl.tsx`); multi-leaf botanical desk plant in tapered ceramic pot with open soil bed plus corner floor planter (`Plant.tsx`); grounded platform bed on floor with sculpted draped linen duvet (`createDrapedDuvetGeometry`), lofted Oxford flanged pillows, and layered heavy wool throw (`Bed.tsx`); procedural PBR textures for leaf venation, wool twill weave, plaster stipple, and daylight horizon (`RoomTextures.ts`); enabled `PCFSoftShadowMap` with window daylight directional key light casting realistic contact shadows under bed, desk, and wardrobe (`RoomLighting.tsx`, `RoomCanvas.tsx`, `RoomShell.tsx`); recalibrated close-up cameras for wardrobe, bed, fishbowl, plant, and door/window (`RoomCamera.tsx`). (Commit: `085687c`)
-- **2026-11-06 [Phase 3B.2.1 Final Visual Polish & Performance Audit]** — Executed focused design refinements across the 5 review priorities: (1) Sculpted flowing draped wool blanket with side waterfalls (`createDrapedThrowGeometry`) and organic double-curved cushioned pillows with sleep depressions (`createOrganicPillowGeometry`); (2) Upgraded botanical leaves to 9 cross-sectional vertex points, 16 longitudinal segments with spine twist, and 3 distinct PBR leaf materials (`plantLeafMature`, `plantLeafMedium`, `plantLeafYoung`); (3) Replaced flat opaque water disk with curved liquid meniscus profile and specular contact boundary ring, boosted glass transmission to 0.98, and sculpted detailed anatomical goldfish (dorsal ridge, pearlescent belly, dual fan caudal fin, golden iris); (4) Softened lighting with `shadow-radius={2.8}`, balanced daylight key (`1.90`), and boosted ambient fill (`1.38`); (5) Conducted WebGL performance audit via CDP instrumentation recording 130 draw calls, 69,192 triangles, 25.66 MB texture memory, 58–61 FPS, and verified offscreen/tab-hidden/reduced-motion throttling.
+- **2026-11-06 [Phase 3B.2.1 Final Visual Polish & Performance Audit]** — Executed focused design refinements across the 5 review priorities: (1) Sculpted flowing draped wool blanket with side waterfalls (`createDrapedThrowGeometry`) and organic double-curved cushioned pillows with sleep depressions (`createOrganicPillowGeometry`); (2) Upgraded botanical leaves to 9 cross-sectional vertex points, 16 longitudinal segments with spine twist, and 3 distinct PBR leaf materials (`plantLeafMature`, `plantLeafMedium`, `plantLeafYoung`); (3) Replaced flat opaque water disk with curved liquid meniscus profile and specular contact boundary ring, boosted glass transmission to 0.98, and sculpted detailed anatomical goldfish (dorsal ridge, pearlescent belly, dual fan caudal fin, golden iris); (4) Softened lighting with `shadow-radius={2.8}`, balanced daylight key (`1.90`), and boosted ambient fill (`1.38`); (5) Conducted WebGL performance audit via CDP instrumentation recording 130 draw calls, 69,192 triangles, 25.66 MB texture memory, 58–61 FPS, and verified offscreen/tab-hidden/reduced-motion throttling. (Commit: `06bcf2c`)
+- **2026-11-06 [Phase 3C.1 Interactive 3D Hotspots & Portfolio Navigation]** — Transformed 3D workspace into an interactive navigation environment: (1) Laptop selection connects to Selected Work slide-over panel with verified AI Products (Dev Atlas, Abtalks, Creonix, PrepBlitz) and UX/UI projects (Nexus GG, Palmist.io, Equifiz); (2) Wardrobe selection connects to Experience & Journey panel with verified roles (RamScript, Acquiq, The Regiment, UI/UX Hyderabad) and hackathon championships (Uxplosion 3.0, CVR, Signal Labs, SCIENT); (3) Door selection connects to Contact panel with email, phone, LinkedIn, Hyderabad coordinates; (4) Delta-timed smooth camera lerp in `RoomCamera.tsx` with demand rendering (`invalidate()` active only during motion, 0 FPS when settled); (5) Accessible HTML companion navigation buttons and keyboard shortcuts (Enter/Space to select, Escape to dismiss); (6) Generous 3D hitboxes and dual-layer HTML hotspots; (7) Verified across desktop, tablet, and mobile viewports with 0 console errors and 0px overflow.
 
 ---
 
-## Completed Work (Phase 3B.2.1 Visual Polish & Performance Audit)
-1. **Bed Textiles (`Bed.tsx`):** Bespoke parametric draped throw blanket with rolling cross-folds and side waterfall drapes; organic plump double-sided cushioned pillows with natural sleep indentations and $25\text{mm}$ Oxford flanged edges; softened duvet transitions and rounded rolled collar.
-2. **Botanical Foliage (`Plant.tsx`):** 9-point transverse leaf cross-section with parabolic curvature and sunken midrib; 16 longitudinal segments with natural arch and 3D twist; 3 botanical materials for depth; preserved workstation sightlines.
-3. **Fishbowl Realism (`Fishbowl.tsx`):** Liquid meniscus profile and specular contact ring; ultra-clear glass (0.98 transmission); detailed anatomical goldfish with dorsal ridge, pearlescent belly, double-fan caudal lobes, and metallic gold iris; clustered submerged aquatic flora sprigs and river pebbles.
-4. **Natural Interior Lighting (`RoomLighting.tsx`):** Key light calibrated to `1.90` with PCF `shadow-radius: 2.8` eliminating harsh dark edges; hemispheric ambient fill boosted to `1.38` lifting deep shadows into natural ambient occlusion tones; balanced front fill `0.58`.
-5. **WebGL Performance Audit (`RoomScene.tsx` & CDP):** Measured live metrics: 130 draw calls, 69,192 triangles, 299 geometries, 13 textures, 25.66 MB texture memory, 58–61 active FPS; verified canvas throttling when scrolled offscreen ($Y = 2500\text{px}$, rect top $-2346\text{px}$), document hidden throttling, and `prefers-reduced-motion` freeze.
+## Completed Work (Phase 3C.1 Interaction Foundation)
+1. **Interaction State & Spatial Target Architecture (`roomInteractionTypes.ts`):** Defined stateful interaction targets (`laptop`, `wardrobe`, `door`, `null`), calibrated world-space hotspot locations, camera focus coordinates, and accessible labels. Content dynamically sourced from `src/lib/content.ts`.
+2. **Smooth Cinematic Camera Lerp (`RoomCamera.tsx`):** Delta-timed exponential easing for position, target lookAt, and FOV. Demands frames via `invalidate()` only while moving; snaps and stops all render calls when within threshold ($< 5\text{mm}$). Instantly respects `prefers-reduced-motion`.
+3. **Dual-Layer 3D Hotspots (`RoomHotspot.tsx`):** 3D planar ring markers in Three.js space coupled with Drei `<Html>` interactive pill buttons. Monospace badge labels, pulsing red indicators, expanding tooltips on hover, and mobile touch support.
+4. **Generous Touch/Pointer Hitboxes:** Embedded invisible bounding boxes in `Laptop.tsx`, `Wardrobe.tsx`, and `Door.tsx` for effortless mouse clicking and mobile tapping.
+5. **Contextual Slide-Over Navigation Panel (`RoomContextPanel.tsx`):** Single reusable Framer Motion component. Slides over from right edge on desktop ($520\text{px}$ width) preserving the illuminated 3D room on the left; full-screen touch drawer on mobile. Features category filter tabs, live external links, direct contact copy cards, and Escape key dismissal.
+6. **Accessible Companion Navigation Bar (`RoomHero.tsx`):** Companion HTML button pill bar (`WORK [LAPTOP]`, `JOURNEY [CUPBOARDS]`, `CONTACT [DOOR]`, `RESET OVERVIEW`) enabling keyboard users to navigate seamlessly with full screen-reader compliance.
 
 ---
 
 ## Files Changed
-- `src/components/room/models/Bed.tsx` — Draped wool blanket geometry, organic plump cushioned pillows with sleep dent, softened duvet collar.
-- `src/components/room/models/Plant.tsx` — 9-point parabolic leaf cross-section, 16 longitudinal segments with 3D twist, 3 botanical leaf materials.
-- `src/components/room/models/Fishbowl.tsx` — Curved liquid meniscus profile, crystal glass (0.98 transmission), detailed goldfish anatomy, aquatic flora.
-- `src/components/room/RoomLighting.tsx` — Directional key light softened (`1.90`, `shadow-radius: 2.8`), ambient fill boosted (`1.38`).
-- `src/components/room/RoomMaterials.ts` — New PBR materials (`plantLeafMature`, `plantLeafMedium`, `plantLeafYoung`, `fishDorsal`, refined `fishbowlGlass`, `water`, `waterSurface`).
-- `src/components/room/RoomScene.tsx` — High-precision WebGL stats collector measuring draw calls, triangles, texture memory, and frame timing.
-- `docs/PHASE_3B_2_1_VISUAL_POLISH_REPORT.md` — Complete verification and performance audit report.
-- `screenshots/phase-3b-2-1/*` — 6 verification screenshots across 5 destinations.
+- `src/components/room/roomInteractionTypes.ts` — Interaction targets, hotspot coordinates, camera configurations.
+- `src/components/room/RoomHotspot.tsx` — 3D and HTML hotspot markers.
+- `src/components/room/RoomContextPanel.tsx` — Reusable slide-over panel for Work, Experience, and Contact.
+- `src/components/room/RoomCamera.tsx` — Delta-timed smooth camera lerp with demand-rendering control.
+- `src/components/room/RoomHero.tsx` — State orchestrator, accessible companion navigation bar, panel integration.
+- `src/components/room/RoomFurniture.tsx` — Mounted hotspots and interaction callbacks.
+- `src/components/room/RoomScene.tsx` — Passed interaction states.
+- `src/components/room/RoomCanvas.tsx` — Canvas props interface.
+- `src/components/room/models/Laptop.tsx` — Hitbox and pointer events.
+- `src/components/room/models/Wardrobe.tsx` — Hitbox and pointer events.
+- `src/components/room/models/Door.tsx` — Hitbox and pointer events.
+- `docs/PHASE_3C_1_INTERACTION_FOUNDATION_REPORT.md` — Complete verification report.
+- `screenshots/phase-3c-1/*` — 8 verification screenshots across 5 destinations.
 
 ---
 
 ## Verification & Audit Metrics
-| Metric / Check | Measured Result | Status |
-|---|---|---|
-| `tsc --noEmit` | **0 errors** | Clean TypeScript types |
-| `next build` (Turbopack) | **Compiled successfully** | 6 static routes, 1 dynamic route (`ƒ /preview-room`) |
-| `git diff --check` | **0 issues** | Clean whitespace & formatting |
-| Draw Calls | **130** | Optimal ($< 180$) |
-| Triangles (Render Pass) | **69,192** | Optimal ($< 80,000$) |
-| Triangles (Scene Meshes) | **58,950** | Optimal ($< 65,000$) |
-| Geometry Allocations | **299** | Healthy ($< 350$) |
-| Texture Memory | **25.66 MB** | Lightweight ($< 45\text{ MB}$) |
-| Active FPS (Fish Swimming) | **58 – 61 FPS** | Smooth 60 FPS baseline |
-| Desktop Viewport ($1440 \times 900$) | **`overflowAmount: 0px`**, DPR 1.0 | Complete room with soft shadows |
-| Mobile Viewport ($390 \times 844$) | **`overflowAmount: 0px`**, DPR 2.0 | Zero cropping, balanced margins |
-| Offscreen Canvas ($Y = 2500\text{px}$) | `isOffscreen: true` (top $-2346\text{px}$) | Render loop & animation throttle |
-| Prefers Reduced Motion | `reducedMotionMatches: true` | Freezes animation to 0 FPS |
+| Check / Test | Method | Result | Notes |
+|---|---|---|---|
+| `tsc --noEmit` | Automated CLI | **0 errors** | Clean types across all components |
+| `next build` (Turbopack) | Production Build | **Compiled successfully** in 7.4s | 6 static routes, 1 dynamic route |
+| `git diff --check` | Formatting Check | **0 issues** | Zero trailing whitespace |
+| Laptop Selection $\rightarrow$ Work Panel | CDP Interaction | **PASSED** | Camera glided to screen; Dev Atlas & Nexus GG verified |
+| Wardrobe Selection $\rightarrow$ Experience Panel | CDP Interaction | **PASSED** | Camera glided to cupboards; RamScript & Uxplosion verified |
+| Door Selection $\rightarrow$ Contact Panel | CDP Interaction | **PASSED** | Camera glided to door; email & phone verified |
+| Escape Key Dismissal | CDP Keyboard | **PASSED** | Closes active panel and smoothly returns camera to overview |
+| Return to Room Button | CDP Click | **PASSED** | Dismisses panel and smoothly returns camera |
+| Tablet Overview ($768 \times 1024$) | CDP Capture | **PASSED** | Balanced portrait framing; `0px` overflow |
+| Mobile Interactions ($390 \times 844$) | CDP Touch Emulation | **PASSED** | Touch-friendly drawers; clean return paths; `0px` overflow |
+| Demand Rendering Loop | CDP Runtime | **PASSED** | `invalidate()` active during lerp; 0 FPS when settled |
+| Screenshots Saved | Automated Script | **8 files** | Synced across all 5 destination folders |

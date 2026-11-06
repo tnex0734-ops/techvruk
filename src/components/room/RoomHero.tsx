@@ -3,8 +3,10 @@
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import { motion, useReducedMotion } from "framer-motion";
-import { Compass, Box, Layers, Eye } from "lucide-react";
+import { Compass, Box, Layers, Laptop, Briefcase, Mail, RotateCcw } from "lucide-react";
 import { CameraPreset } from "./RoomCamera";
+import { RoomInteractionTarget, ROOM_HOTSPOTS } from "./roomInteractionTypes";
+import { RoomContextPanel } from "./RoomContextPanel";
 
 // Dynamic client-only loading of the 3D Canvas
 const DynamicRoomCanvas = dynamic(
@@ -19,7 +21,7 @@ function RoomLoadingPlaceholder() {
   return (
     <div className="w-full h-full min-h-[460px] sm:min-h-[560px] lg:min-h-[640px] flex flex-col items-center justify-center bg-[var(--color-bg-subtle)] border border-[var(--color-border)] rounded-2xl animate-pulse text-[var(--color-muted)] font-mono text-xs">
       <Box size={24} className="text-[var(--color-red)] mb-2 animate-bounce" />
-      <span>INITIALIZING ARCHITECTURAL BLOCKOUT...</span>
+      <span>INITIALIZING INTERACTIVE 3D ENVIRONMENT...</span>
     </div>
   );
 }
@@ -83,7 +85,8 @@ function KineticCornerBox({
 
 export function RoomHero() {
   const shouldReduceMotion = useReducedMotion();
-  const [activePreset, setActivePreset] = useState<CameraPreset | undefined>(undefined);
+  const [activeTarget, setActiveTarget] = useState<RoomInteractionTarget>(null);
+  const [hoveredTarget, setHoveredTarget] = useState<RoomInteractionTarget>(null);
 
   const softEase = [0.16, 1, 0.3, 1] as const;
 
@@ -110,7 +113,7 @@ export function RoomHero() {
       <div className="sr-only">
         <h1>Taushik Chandana — Product Designer &amp; Builder</h1>
         <p>
-          Interactive 3D architectural workspace recreation. Room spatial arrangement: Left wall features built-in cupboards and experience archive; corner features the creative workstation desk with laptop, keyboard, mouse, fishbowl, plant, and hanging quotation frames; right wall features the bed, daylight window, and exit door.
+          Interactive 3D architectural workspace recreation. Room spatial arrangement: Left wall features built-in cupboards and experience archive; corner features the creative workstation desk with laptop, keyboard, mouse, fishbowl, plant, and hanging quotation frames; right wall features the bed, daylight window, and exit door. Select the laptop to explore selected work, the wardrobe for professional experience, or the door for contact.
         </p>
       </div>
 
@@ -127,7 +130,7 @@ export function RoomHero() {
             <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-red)] animate-pulse" />
             <span>TAUSHIK CHANDANA</span>
             <span className="text-[var(--color-muted)] font-normal hidden sm:inline">
-              // WORKSPACE ARCHITECTURE
+              // INTERACTIVE WORKSPACE
             </span>
           </div>
 
@@ -137,11 +140,11 @@ export function RoomHero() {
               <span>17.3850° N, 78.4867° E</span>
             </span>
             <span className="text-[var(--color-border-strong)]">|</span>
-            <span className="text-[var(--color-red)] font-bold">INTERACTIVE 3D ENVIRONMENT</span>
+            <span className="text-[var(--color-red)] font-bold">SELECT OBJECT TO EXPLORE</span>
           </div>
         </motion.div>
 
-        {/* ── 2. The 3D Interactive Room Canvas ── */}
+        {/* ── 2. The 3D Interactive Room Canvas & Spatial Hotspot HUD ── */}
         <div className="relative w-full my-3 sm:my-6 h-[440px] xs:h-[480px] sm:h-[540px] lg:h-[620px] xl:h-[680px] rounded-2xl sm:rounded-3xl border border-[var(--color-border)] bg-[var(--color-bg-subtle)] overflow-hidden shadow-xs">
           
           {/* Subtle Top-Left Architectural HUD Label */}
@@ -151,30 +154,105 @@ export function RoomHero() {
               <span>3/4 ARCHITECTURAL CUTAWAY</span>
             </span>
             <span className="text-[10px] font-mono text-[var(--color-muted)] pl-1 hidden sm:inline">
-              LEFT: CUPBOARDS · CORNER: WORKSTATION · RIGHT: BED &amp; WINDOW
+              CLICK OBJECTS OR USE COMPANION SHORTCUTS BELOW
             </span>
           </div>
 
-          {/* Top-Right Spatial Layout Diagram Pill */}
-          <div className="absolute top-4 right-4 z-10 hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-white/85 backdrop-blur-xs border border-[var(--color-border)] text-[10px] font-mono text-[var(--color-muted)] shadow-2xs">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-red)]" />
-            <span>STUDIO CUTAWAY</span>
-          </div>
+          {/* Top-Right Reset Camera Pill (Visible when an object is selected) */}
+          {activeTarget && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="absolute top-4 right-4 z-20"
+            >
+              <button
+                type="button"
+                onClick={() => setActiveTarget(null)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 border border-[var(--color-red)] text-[var(--color-red)] text-[10px] font-mono font-bold tracking-wider uppercase shadow-md hover:bg-[var(--color-red)] hover:text-white transition-all cursor-pointer"
+              >
+                <RotateCcw size={12} />
+                <span>RESET OVERVIEW</span>
+              </button>
+            </motion.div>
+          )}
 
-          {/* The R3F 3D Canvas */}
-          <DynamicRoomCanvas cameraPreset={activePreset} />
+          {/* The R3F 3D Canvas with Interaction Handlers */}
+          <DynamicRoomCanvas
+            activeTarget={activeTarget}
+            hoveredTarget={hoveredTarget}
+            onSelect={(target) => setActiveTarget(target)}
+            onHover={(target) => setHoveredTarget(target)}
+          />
 
-          {/* Bottom-Left Furniture Zone Indicators */}
-          <div className="absolute bottom-4 left-4 z-10 flex flex-wrap gap-1.5 pointer-events-none">
-            <span className="px-2 py-0.5 rounded-sm bg-white/85 border border-[var(--color-border)] text-[9px] font-mono font-bold text-[var(--color-ink-subtle)] uppercase">
-              [L] CUPBOARDS
-            </span>
-            <span className="px-2 py-0.5 rounded-sm bg-white/85 border border-[var(--color-border)] text-[9px] font-mono font-bold text-[var(--color-red)] uppercase">
-              [★] WORKSTATION
-            </span>
-            <span className="px-2 py-0.5 rounded-sm bg-white/85 border border-[var(--color-border)] text-[9px] font-mono font-bold text-[var(--color-ink-subtle)] uppercase">
-              [R] BED / WINDOW / DOOR
-            </span>
+          {/* ── Accessible Companion Navigation Bar (Phase 3C.1) ── */}
+          <div className="absolute bottom-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between gap-2 pointer-events-auto">
+            {/* Interactive Object Selector Buttons */}
+            <div className="flex flex-wrap items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => setActiveTarget(activeTarget === "laptop" ? null : "laptop")}
+                onMouseEnter={() => setHoveredTarget("laptop")}
+                onMouseLeave={() => setHoveredTarget(null)}
+                aria-label="Select Work (Laptop)"
+                aria-pressed={activeTarget === "laptop"}
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border text-[10px] font-mono font-bold tracking-wider uppercase transition-all shadow-2xs cursor-pointer backdrop-blur-md outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-red)] ${
+                  activeTarget === "laptop"
+                    ? "bg-[var(--color-red)] text-white border-[var(--color-red)] shadow-sm scale-105"
+                    : hoveredTarget === "laptop"
+                    ? "bg-white text-[var(--color-red)] border-[var(--color-red)]"
+                    : "bg-white/90 text-[var(--color-ink)] border-[var(--color-border)] hover:border-[var(--color-red)]"
+                }`}
+              >
+                <Laptop size={12} className={activeTarget === "laptop" ? "text-white" : "text-[var(--color-red)]"} />
+                <span>WORK [LAPTOP]</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTarget(activeTarget === "wardrobe" ? null : "wardrobe")}
+                onMouseEnter={() => setHoveredTarget("wardrobe")}
+                onMouseLeave={() => setHoveredTarget(null)}
+                aria-label="Select Experience and Achievements (Wardrobe)"
+                aria-pressed={activeTarget === "wardrobe"}
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border text-[10px] font-mono font-bold tracking-wider uppercase transition-all shadow-2xs cursor-pointer backdrop-blur-md outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-red)] ${
+                  activeTarget === "wardrobe"
+                    ? "bg-[var(--color-red)] text-white border-[var(--color-red)] shadow-sm scale-105"
+                    : hoveredTarget === "wardrobe"
+                    ? "bg-white text-[var(--color-red)] border-[var(--color-red)]"
+                    : "bg-white/90 text-[var(--color-ink)] border-[var(--color-border)] hover:border-[var(--color-red)]"
+                }`}
+              >
+                <Briefcase size={12} className={activeTarget === "wardrobe" ? "text-white" : "text-[var(--color-red)]"} />
+                <span>JOURNEY [CUPBOARDS]</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTarget(activeTarget === "door" ? null : "door")}
+                onMouseEnter={() => setHoveredTarget("door")}
+                onMouseLeave={() => setHoveredTarget(null)}
+                aria-label="Select Contact Information (Door)"
+                aria-pressed={activeTarget === "door"}
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border text-[10px] font-mono font-bold tracking-wider uppercase transition-all shadow-2xs cursor-pointer backdrop-blur-md outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-red)] ${
+                  activeTarget === "door"
+                    ? "bg-[var(--color-red)] text-white border-[var(--color-red)] shadow-sm scale-105"
+                    : hoveredTarget === "door"
+                    ? "bg-white text-[var(--color-red)] border-[var(--color-red)]"
+                    : "bg-white/90 text-[var(--color-ink)] border-[var(--color-border)] hover:border-[var(--color-red)]"
+                }`}
+              >
+                <Mail size={12} className={activeTarget === "door" ? "text-white" : "text-[var(--color-red)]"} />
+                <span>CONTACT [DOOR]</span>
+              </button>
+            </div>
+
+            {/* Quick Status Pill */}
+            <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-white/85 backdrop-blur-xs border border-[var(--color-border)] text-[10px] font-mono text-[var(--color-muted)] shadow-2xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-red)]" />
+              <span>
+                {activeTarget ? `FOCUS: ${activeTarget.toUpperCase()}` : "ROOM READY"}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -185,7 +263,7 @@ export function RoomHero() {
             <span>01 // ABOUT TAUSHIK</span>
           </div>
           <div className="mt-1.5 text-[11px] font-mono text-[var(--color-muted)] flex items-center gap-1.5">
-            <span>Scroll to explore</span>
+            <span>Scroll down or select objects above</span>
             <motion.span
               animate={shouldReduceMotion ? undefined : { y: [0, 3, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}
@@ -196,6 +274,12 @@ export function RoomHero() {
         </div>
 
       </div>
+
+      {/* ── 4. Contextual Content Slide-Over Panel (Phase 3C.1) ── */}
+      <RoomContextPanel
+        activeTarget={activeTarget}
+        onClose={() => setActiveTarget(null)}
+      />
     </section>
   );
 }

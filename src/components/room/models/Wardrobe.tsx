@@ -7,6 +7,10 @@ import { RoomMaterials } from "../RoomMaterials";
 
 interface WardrobeProps {
   materials: RoomMaterials;
+  isHovered?: boolean;
+  isSelected?: boolean;
+  onSelect?: () => void;
+  onHover?: (hovered: boolean) => void;
 }
 
 /**
@@ -18,8 +22,15 @@ interface WardrobeProps {
  * - 3 individual doors with true 24mm thickness, 8mm shadow reveal seams, and bevelled perimeter edges.
  * - Minimalist extruded graphite door handles with mounting standoffs.
  * - Concealed hinge plate proxies on interior side edges.
+ * - Interactive pointer selection and hover feedback for Phase 3C.1.
  */
-export function Wardrobe({ materials }: WardrobeProps) {
+export function Wardrobe({
+  materials,
+  isHovered = false,
+  isSelected = false,
+  onSelect,
+  onHover,
+}: WardrobeProps) {
   const d = ROOM_DIMENSIONS.cupboard;
   const doorWidth = (d.length - 0.08) / 3; // ~1.04m per door
   const doorHeight = d.height - 0.16;     // ~2.29m tall
@@ -28,7 +39,34 @@ export function Wardrobe({ materials }: WardrobeProps) {
   const doorPositions = [-doorWidth - 0.008, 0, doorWidth + 0.008];
 
   return (
-    <group position={d.position} name="wardrobe-module">
+    <group
+      position={d.position}
+      name="wardrobe-module"
+      onClick={(e) => {
+        if (onSelect) {
+          e.stopPropagation();
+          onSelect();
+        }
+      }}
+      onPointerOver={(e) => {
+        if (onHover) {
+          e.stopPropagation();
+          document.body.style.cursor = "pointer";
+          onHover(true);
+        }
+      }}
+      onPointerOut={() => {
+        if (onHover) {
+          document.body.style.cursor = "auto";
+          onHover(false);
+        }
+      }}
+    >
+      {/* Invisible Generous Touch / Click Hitbox */}
+      <mesh position={[0, 0, 0]} visible={false}>
+        <boxGeometry args={[d.width + 0.15, d.height, d.length + 0.10]} />
+        <meshBasicMaterial transparent opacity={0} />
+      </mesh>
       {/* ── 1. Recessed Plinth Kickplate ── */}
       <mesh
         position={[0.03, -d.height / 2 + 0.045, 0]}

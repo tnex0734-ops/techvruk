@@ -7,6 +7,10 @@ import { RoomMaterials } from "../RoomMaterials";
 
 interface DoorProps {
   materials: RoomMaterials;
+  isHovered?: boolean;
+  isSelected?: boolean;
+  onSelect?: () => void;
+  onHover?: (hovered: boolean) => void;
 }
 
 /**
@@ -18,8 +22,15 @@ interface DoorProps {
  * - Swung 18° ajar into the room on interior hinge line for immediate realism.
  * - Mortise butt hinges on jamb.
  * - Matte dark graphite lever handle with rectangular escutcheon backplate.
+ * - Interactive pointer selection and hover feedback for Phase 3C.1.
  */
-export function Door({ materials }: DoorProps) {
+export function Door({
+  materials,
+  isHovered = false,
+  isSelected = false,
+  onSelect,
+  onHover,
+}: DoorProps) {
   const d = ROOM_DIMENSIONS.door;
   const jambWidth = 0.065;
   const jambDepth = 0.16;
@@ -32,7 +43,31 @@ export function Door({ materials }: DoorProps) {
       position={d.position}
       rotation={[0, -Math.PI / 2, 0]}
       name="architectural-door-module"
+      onClick={(e) => {
+        if (onSelect) {
+          e.stopPropagation();
+          onSelect();
+        }
+      }}
+      onPointerOver={(e) => {
+        if (onHover) {
+          e.stopPropagation();
+          document.body.style.cursor = "pointer";
+          onHover(true);
+        }
+      }}
+      onPointerOut={() => {
+        if (onHover) {
+          document.body.style.cursor = "auto";
+          onHover(false);
+        }
+      }}
     >
+      {/* Invisible Generous Touch / Click Hitbox */}
+      <mesh position={[0, 0, 0]} visible={false}>
+        <boxGeometry args={[d.width + 0.15, d.height, jambDepth + 0.35]} />
+        <meshBasicMaterial transparent opacity={0} />
+      </mesh>
       {/* ── 1. Three-Sided Architectural Frame / Architrave ── */}
       {/* Left Jamb (Hinge Side) */}
       <mesh
