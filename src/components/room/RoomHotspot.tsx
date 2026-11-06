@@ -17,9 +17,20 @@ export function RoomHotspot({
   onSelect,
 }: RoomHotspotProps) {
   const [isHovered, setIsHovered] = useState(false);
-  const { invalidate } = useThree();
+  const { size, invalidate } = useThree();
   const isSelected = activeTarget === hotspot.id;
   const isAnotherActive = activeTarget !== null && !isSelected;
+
+  // Responsive hotspot positioning: Doorway anchor aligns directly with entrance door
+  // on desktop/tablet while maintaining safe right-side padding on mobile.
+  const position = React.useMemo((): [number, number, number] => {
+    if (hotspot.id === "door") {
+      if (size.width >= 1024) return [3.28, 2.05, 1.62]; // Direct doorway header on desktop
+      if (size.width >= 768) return [3.05, 1.95, 1.48];  // Doorway opening on tablet
+      return [2.76, 1.84, 1.20];                         // Safe margin on compact mobile
+    }
+    return hotspot.position;
+  }, [hotspot.id, hotspot.position, size.width]);
 
   // If another object is selected, hide this hotspot to maintain focus
   if (isAnotherActive) {
@@ -30,7 +41,7 @@ export function RoomHotspot({
   // (No oversized HTML banners, no text duplication, no clipping against drawer)
   if (isSelected) {
     return (
-      <group position={hotspot.position} name={`hotspot-selected-${hotspot.id}`}>
+      <group position={position} name={`hotspot-selected-${hotspot.id}`}>
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.05, 0]}>
           <ringGeometry args={[0.045, 0.065, 32]} />
           <meshBasicMaterial color="#E52424" transparent opacity={0.85} />
@@ -45,7 +56,7 @@ export function RoomHotspot({
 
   // Overview mode: Clean, prominent interactive pill above target object
   return (
-    <group position={hotspot.position} name={`hotspot-${hotspot.id}`}>
+    <group position={position} name={`hotspot-${hotspot.id}`}>
       {/* ── 1. 3D Anchoring Ring Marker ── */}
       <mesh
         rotation={[-Math.PI / 2, 0, 0]}
