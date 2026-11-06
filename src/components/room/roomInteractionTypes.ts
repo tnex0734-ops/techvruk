@@ -18,7 +18,7 @@ export const ROOM_HOTSPOTS: Record<"laptop" | "wardrobe" | "door", RoomHotspotDa
     title: "Selected Work",
     category: "AI Products & UX/UI",
     badge: "WORK",
-    position: [-2.05, 1.28, -1.85],
+    position: [-2.05, 1.15, -1.88],
     cameraPosition: [-2.05, 1.20, -1.05],
     cameraTarget: [-2.05, 0.98, -1.88],
     cameraFov: 44,

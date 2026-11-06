@@ -18,7 +18,11 @@ const defaultNavItems: NavItem[] = [
   { label: "Resume", href: "/Taushik_ux_resume.pdf", isDownload: true },
 ];
 
-export function FloatingNavbar() {
+interface FloatingNavbarProps {
+  isHidden?: boolean;
+}
+
+export function FloatingNavbar({ isHidden = false }: FloatingNavbarProps = {}) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -110,7 +114,17 @@ export function FloatingNavbar() {
   };
 
   return (
-    <header className="fixed inset-x-0 top-3 sm:top-5 z-50 flex justify-center px-3 sm:px-6 pointer-events-none select-none">
+    <motion.header
+      initial={false}
+      animate={{
+        y: isHidden ? -90 : 0,
+        opacity: isHidden ? 0 : 1,
+      }}
+      transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+      className={`fixed inset-x-0 top-3 sm:top-5 z-40 flex justify-center px-3 sm:px-6 pointer-events-none select-none ${
+        isHidden ? "pointer-events-none" : ""
+      }`}
+    >
       <div
         ref={navContainerRef}
         className="pointer-events-auto flex flex-col items-center w-full max-w-fit mx-auto"
@@ -312,6 +326,6 @@ export function FloatingNavbar() {
         </AnimatePresence>
 
       </div>
-    </header>
+    </motion.header>
   );
 }

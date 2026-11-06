@@ -52,6 +52,7 @@ const fadeIn = {
 };
 
 export default function Home() {
+  const [isRoomPanelOpen, setIsRoomPanelOpen] = useState(false);
   useEffect(() => {
     if (typeof window !== "undefined") {
       if ("scrollRestoration" in window.history) {
@@ -81,10 +82,10 @@ export default function Home() {
       <div className="grain" />
 
       <EditorialPreloader />
-      <FloatingNavbar />
+      <FloatingNavbar isHidden={isRoomPanelOpen} />
 
       <main className="relative z-10 overflow-x-clip">
-        <RoomHero />
+        <RoomHero onPanelToggle={setIsRoomPanelOpen} />
         <AboutRedSection />
         <ToolsSection />
         <AiProductsSection />

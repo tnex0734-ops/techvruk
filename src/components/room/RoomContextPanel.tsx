@@ -34,7 +34,18 @@ export function RoomContextPanel({
   onClose,
 }: RoomContextPanelProps) {
   const [projectCategory, setProjectCategory] = useState<"all" | "ai" | "ux">("all");
+  const [copiedEmail, setCopiedEmail] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
+
+  const handleCopyEmail = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (navigator?.clipboard) {
+      navigator.clipboard.writeText("taushikok@gmail.com");
+      setCopiedEmail(true);
+      setTimeout(() => setCopiedEmail(false), 2000);
+    }
+  };
 
   // Close on Escape key
   useEffect(() => {
@@ -93,30 +104,31 @@ export function RoomContextPanel({
           animate={{ x: "0%", opacity: 1 }}
           exit={{ x: "100%", opacity: 0.8 }}
           transition={{ type: "spring", damping: 28, stiffness: 280 }}
-          className="relative pointer-events-auto w-full sm:w-[480px] md:w-[520px] lg:w-[560px] h-full bg-white shadow-2xl flex flex-col border-l border-[var(--color-border)] overflow-hidden"
+          className="relative pointer-events-auto w-full md:max-w-[620px] lg:max-w-[540px] xl:max-w-[580px] h-full bg-white shadow-2xl flex flex-col border-l border-[var(--color-border)] overflow-hidden ml-auto"
         >
           
-          {/* Top Panel Header Bar */}
-          <div className="p-4 sm:p-6 border-b border-[var(--color-border)] flex items-center justify-between gap-3 bg-[var(--color-bg-subtle)]">
-            <div className="flex items-center gap-2 text-xs font-mono tracking-wider uppercase text-[var(--color-red)] font-bold">
-              <span className="w-2 h-2 rounded-full bg-[var(--color-red)] animate-pulse" />
-              <span>
+          {/* Top Panel Header Bar with Responsive Spacing & Compact Mobile Controls */}
+          <div className="pt-3 sm:pt-4 px-4 sm:px-6 pb-3 sm:pb-4 border-b border-[var(--color-border)] flex items-center justify-between gap-3 bg-[var(--color-bg-subtle)] shrink-0">
+            <div className="flex items-center gap-2 text-xs font-mono tracking-wider uppercase text-[var(--color-red)] font-bold min-w-0">
+              <span className="w-2 h-2 rounded-full bg-[var(--color-red)] animate-pulse shrink-0" />
+              <span className="truncate">
                 {activeTarget === "laptop" && "01 // SELECTED WORK"}
                 {activeTarget === "wardrobe" && "02 // EXPERIENCE & ARCHIVES"}
                 {activeTarget === "door" && "03 // CONTACT & ENTRANCE"}
               </span>
             </div>
 
-            {/* Close Button / Return to 3D Room */}
+            {/* Responsive Close Button / Return to 3D Room */}
             <button
               type="button"
               onClick={onClose}
               aria-label="Close panel and return to room overview"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[var(--color-border)] bg-white text-xs font-mono font-bold text-[var(--color-ink)] hover:text-[var(--color-red)] hover:border-[var(--color-red)] transition-all cursor-pointer shadow-2xs group"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[var(--color-border)] bg-white text-xs font-mono font-bold text-[var(--color-ink)] hover:text-[var(--color-red)] hover:border-[var(--color-red)] transition-all cursor-pointer shadow-2xs group shrink-0 min-h-[36px]"
             >
-              <RotateCcw size={12} className="group-hover:-rotate-45 transition-transform" />
-              <span>RETURN TO ROOM</span>
-              <X size={14} className="ml-1" />
+              <RotateCcw size={12} className="group-hover:-rotate-45 transition-transform shrink-0" />
+              <span className="hidden sm:inline">RETURN TO ROOM</span>
+              <span className="sm:hidden">CLOSE</span>
+              <X size={14} className="ml-0.5 shrink-0" />
             </button>
           </div>
 
@@ -354,11 +366,15 @@ export function RoomContextPanel({
                           <span className="font-bold text-sm text-[var(--color-ink)]">
                             {ach.title}
                           </span>
-                          {ach.award && (
+                          {ach.badge ? (
                             <span className="text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded-full bg-[var(--color-red)]/10 text-[var(--color-red)]">
-                              1ST PRIZE
+                              {ach.badge}
                             </span>
-                          )}
+                          ) : ach.award ? (
+                            <span className="text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded-full bg-[var(--color-red)]/10 text-[var(--color-red)]">
+                              {ach.award}
+                            </span>
+                          ) : null}
                         </div>
                         <p className="text-xs text-[var(--color-muted)] font-mono mt-0.5">
                           Host: {ach.host}
@@ -399,35 +415,45 @@ export function RoomContextPanel({
 
                 {/* Contact Coordinates Cards */}
                 <div className="space-y-2.5">
-                  <a
-                    href="mailto:taushikok@gmail.com"
-                    className="flex items-center gap-3 p-4 rounded-xl border border-[var(--color-border)] bg-white hover:border-[var(--color-red)] hover:bg-[var(--color-red)]/5 transition-all group shadow-2xs"
-                  >
-                    <div className="p-2.5 rounded-lg bg-[var(--color-bg-subtle)] text-[var(--color-red)] group-hover:bg-[var(--color-red)] group-hover:text-white transition-colors">
-                      <Mail size={18} />
-                    </div>
-                    <div>
-                      <span className="text-[10px] font-mono uppercase text-[var(--color-muted)] font-bold">
-                        Email Address
-                      </span>
-                      <p className="text-sm font-bold text-[var(--color-ink)] group-hover:text-[var(--color-red)] transition-colors">
-                        taushikok@gmail.com
-                      </p>
-                    </div>
-                  </a>
+                  <div className="flex items-center justify-between p-4 rounded-xl border border-[var(--color-border)] bg-white hover:border-[var(--color-red)] transition-all group shadow-2xs">
+                    <a
+                      href="mailto:taushikok@gmail.com"
+                      className="flex items-center gap-3 flex-1 min-w-0"
+                    >
+                      <div className="p-2.5 rounded-lg bg-[var(--color-bg-subtle)] text-[var(--color-red)] group-hover:bg-[var(--color-red)] group-hover:text-white transition-colors shrink-0">
+                        <Mail size={18} />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="text-[10px] font-mono uppercase text-[var(--color-muted)] font-bold block">
+                          Email · Click to Mail
+                        </span>
+                        <p className="text-sm font-bold text-[var(--color-ink)] group-hover:text-[var(--color-red)] transition-colors truncate">
+                          taushikok@gmail.com
+                        </p>
+                      </div>
+                    </a>
+                    <button
+                      type="button"
+                      onClick={handleCopyEmail}
+                      aria-label="Copy email address"
+                      className="ml-2 px-2.5 py-1.5 rounded-md border border-[var(--color-border)] hover:border-[var(--color-red)] hover:bg-[var(--color-red)]/10 text-[10px] font-mono font-bold text-[var(--color-ink)] hover:text-[var(--color-red)] transition-all cursor-pointer shrink-0"
+                    >
+                      {copiedEmail ? "COPIED ✓" : "COPY"}
+                    </button>
+                  </div>
 
                   <a
                     href="tel:+918919237170"
                     className="flex items-center gap-3 p-4 rounded-xl border border-[var(--color-border)] bg-white hover:border-[var(--color-red)] hover:bg-[var(--color-red)]/5 transition-all group shadow-2xs"
                   >
-                    <div className="p-2.5 rounded-lg bg-[var(--color-bg-subtle)] text-[var(--color-red)] group-hover:bg-[var(--color-red)] group-hover:text-white transition-colors">
+                    <div className="p-2.5 rounded-lg bg-[var(--color-bg-subtle)] text-[var(--color-red)] group-hover:bg-[var(--color-red)] group-hover:text-white transition-colors shrink-0">
                       <Phone size={18} />
                     </div>
-                    <div>
-                      <span className="text-[10px] font-mono uppercase text-[var(--color-muted)] font-bold">
-                        Phone / WhatsApp
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-mono uppercase text-[var(--color-muted)] font-bold block">
+                        Phone / WhatsApp · Click to Call
                       </span>
-                      <p className="text-sm font-bold text-[var(--color-ink)] group-hover:text-[var(--color-red)] transition-colors">
+                      <p className="text-sm font-bold text-[var(--color-ink)] group-hover:text-[var(--color-red)] transition-colors truncate">
                         +91 8919237170
                       </p>
                     </div>
@@ -439,32 +465,32 @@ export function RoomContextPanel({
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 p-4 rounded-xl border border-[var(--color-border)] bg-white hover:border-[var(--color-red)] hover:bg-[var(--color-red)]/5 transition-all group shadow-2xs"
                   >
-                    <div className="p-2.5 rounded-lg bg-[var(--color-bg-subtle)] text-[var(--color-red)] group-hover:bg-[var(--color-red)] group-hover:text-white transition-colors">
+                    <div className="p-2.5 rounded-lg bg-[var(--color-bg-subtle)] text-[var(--color-red)] group-hover:bg-[var(--color-red)] group-hover:text-white transition-colors shrink-0">
                       <svg className="w-[18px] h-[18px] fill-current" viewBox="0 0 24 24" aria-hidden="true">
                         <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                       </svg>
                     </div>
-                    <div className="flex-1">
-                      <span className="text-[10px] font-mono uppercase text-[var(--color-muted)] font-bold">
-                        LinkedIn Profile
+                    <div className="flex-1 min-w-0">
+                      <span className="text-[10px] font-mono uppercase text-[var(--color-muted)] font-bold block">
+                        LinkedIn Profile · Connect
                       </span>
-                      <p className="text-sm font-bold text-[var(--color-ink)] group-hover:text-[var(--color-red)] transition-colors">
+                      <p className="text-sm font-bold text-[var(--color-ink)] group-hover:text-[var(--color-red)] transition-colors truncate">
                         taushik-chandana
                       </p>
                     </div>
-                    <ExternalLink size={14} className="text-[var(--color-muted)]" />
+                    <ExternalLink size={14} className="text-[var(--color-muted)] shrink-0" />
                   </a>
 
                   <div className="flex items-center gap-3 p-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-subtle)]">
-                    <div className="p-2.5 rounded-lg bg-white text-[var(--color-red)] border border-[var(--color-border)]">
+                    <div className="p-2.5 rounded-lg bg-white text-[var(--color-red)] border border-[var(--color-border)] shrink-0">
                       <MapPin size={18} />
                     </div>
                     <div>
-                      <span className="text-[10px] font-mono uppercase text-[var(--color-muted)] font-bold">
-                        Location Coordinates
+                      <span className="text-[10px] font-mono uppercase text-[var(--color-muted)] font-bold block">
+                        Location
                       </span>
                       <p className="text-sm font-bold text-[var(--color-ink)]">
-                        Hyderabad, India · 17.3850° N, 78.4867° E
+                        Hyderabad, India
                       </p>
                     </div>
                   </div>

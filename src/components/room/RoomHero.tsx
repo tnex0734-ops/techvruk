@@ -83,10 +83,19 @@ function KineticCornerBox({
   );
 }
 
-export function RoomHero() {
+interface RoomHeroProps {
+  onPanelToggle?: (isOpen: boolean) => void;
+}
+
+export function RoomHero({ onPanelToggle }: RoomHeroProps = {}) {
   const shouldReduceMotion = useReducedMotion();
-  const [activeTarget, setActiveTarget] = useState<RoomInteractionTarget>(null);
+  const [activeTarget, setActiveTargetState] = useState<RoomInteractionTarget>(null);
   const [hoveredTarget, setHoveredTarget] = useState<RoomInteractionTarget>(null);
+
+  const setActiveTarget = (target: RoomInteractionTarget) => {
+    setActiveTargetState(target);
+    onPanelToggle?.(target !== null);
+  };
 
   const softEase = [0.16, 1, 0.3, 1] as const;
 
