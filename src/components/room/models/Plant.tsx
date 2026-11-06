@@ -10,49 +10,76 @@ interface PlantProps {
 }
 
 /**
- * Creates naturally curved, double-sided botanical leaf geometry
- * with central vein indentation, graceful arching, and downward droop.
+ * Creates naturally curved, volumetric botanical leaf geometry.
+ * Features:
+ * - 9 cross-sectional vertex points across blade width (eliminating flat/angular V-shape).
+ * - Smooth parabolic blade curvature with distinct central midrib groove.
+ * - Graceful gravity arch, downward cascade, and organic 3D twist along the spine.
+ * - Double-sided smooth normals preventing paper-like thinness.
  */
-function createCurvedLeafGeometry(length: number, maxWidth: number, arch: number, curl: number) {
-  const segments = 10;
+function createOrganicLeafGeometry(
+  length: number,
+  maxWidth: number,
+  arch: number,
+  curl: number,
+  twist: number = 0
+) {
+  const segLength = 16;
+  const segWidth = 8; // 8 quad bands = 9 vertices across width
   const positions: number[] = [];
   const uvs: number[] = [];
   const indices: number[] = [];
 
-  for (let i = 0; i <= segments; i++) {
-    const t = i / segments;
-    // Teardrop profile width
-    const w = maxWidth * Math.sin(t * Math.PI) * (1 - 0.15 * t);
-    // Gravity droop arch: arches up, then cascades gracefully down
-    const y = Math.sin(t * Math.PI * 0.85) * arch - (t * t * 0.035);
-    const z = t * length;
-    // Transverse cup (central midrib is depressed)
-    const veinDrop = w * curl;
+  for (let i = 0; i <= segLength; i++) {
+    const t = i / segLength;
 
-    // Left vertex
-    positions.push(-w, y + veinDrop, z);
-    uvs.push(0, t);
+    // Organic teardrop leaf width profile (narrow base, wide body, tapered tip)
+    const widthFactor = Math.sin(t * Math.PI) * (1 - 0.18 * t);
+    const currentWidth = maxWidth * widthFactor;
 
-    // Center midrib vertex
-    positions.push(0, y, z);
-    uvs.push(0.5, t);
+    // Longitudinal spine trajectory (arches up, then cascades gracefully down)
+    const spineY = Math.sin(t * Math.PI * 0.88) * arch - (t * t * 0.040);
+    const spineZ = t * length;
 
-    // Right vertex
-    positions.push(w, y + veinDrop, z);
-    uvs.push(1, t);
+    // Spine twist angle along leaf length
+    const currentTwist = twist * Math.sin(t * Math.PI);
+    const cosT = Math.cos(currentTwist);
+    const sinT = Math.sin(currentTwist);
+
+    for (let j = 0; j <= segWidth; j++) {
+      // s ranges from -1 (left margin) to 0 (midrib) to +1 (right margin)
+      const s = (j / segWidth) * 2 - 1;
+      const absS = Math.abs(s);
+
+      // Transverse curvature: smooth parabolic cup with central midrib groove
+      // Midrib is slightly sunken; blade curves convexly outward
+      const bladeCup = (1 - Math.cos(absS * Math.PI)) * (currentWidth * curl * 0.5);
+      const midribIndent = Math.exp(-absS * 8.0) * 0.0018;
+
+      let localX = s * currentWidth;
+      let localY = spineY + bladeCup - midribIndent;
+      let localZ = spineZ;
+
+      // Apply spine twist around Z
+      const twistedX = localX * cosT - (localY - spineY) * sinT;
+      const twistedY = spineY + localX * sinT + (localY - spineY) * cosT;
+
+      positions.push(twistedX, twistedY, localZ);
+      uvs.push((s + 1) * 0.5, t);
+    }
   }
 
-  for (let i = 0; i < segments; i++) {
-    const row1 = i * 3;
-    const row2 = (i + 1) * 3;
+  const stride = segWidth + 1;
+  for (let i = 0; i < segLength; i++) {
+    for (let j = 0; j < segWidth; j++) {
+      const a = i * stride + j;
+      const b = (i + 1) * stride + j;
+      const c = (i + 1) * stride + (j + 1);
+      const d = i * stride + (j + 1);
 
-    // Left quad
-    indices.push(row1, row2, row1 + 1);
-    indices.push(row1 + 1, row2, row2 + 1);
-
-    // Right quad
-    indices.push(row1 + 1, row2 + 1, row1 + 2);
-    indices.push(row1 + 2, row2 + 1, row2 + 2);
+      indices.push(a, b, d);
+      indices.push(d, b, c);
+    }
   }
 
   const geom = new THREE.BufferGeometry();
@@ -64,13 +91,7 @@ function createCurvedLeafGeometry(length: number, maxWidth: number, arch: number
 }
 
 /**
- * High-Fidelity Architectural Plants (Desk & Floor)
- * 
- * Features:
- * - Desk Plant: Contemporary matte ceramic pot, drainage saucer, dark organic soil,
- *   slender organic stems, and 9 naturally curved leaves with varied lengths, arches and droops.
- * - Floor Planter: Architectural fluted vessel with tall broad-leaf botanical structure.
- * - Natural botanical textures with central midrib and lateral veins.
+ * High-Fidelity Architectural Plants (Desk & Floor) — Phase 3B.2.1 Refined
  */
 export function Plant({ materials }: PlantProps) {
   const deskX = ROOM_DIMENSIONS.desk.position[0];
@@ -85,41 +106,42 @@ export function Plant({ materials }: PlantProps) {
     deskZ - 0.16,
   ];
 
-  // Geometries for varied leaf sizes (Desk Plant)
-  const largeLeafGeom = useMemo(() => createCurvedLeafGeometry(0.135, 0.052, 0.038, 0.22), []);
-  const mediumLeafGeom = useMemo(() => createCurvedLeafGeometry(0.115, 0.046, 0.032, 0.20), []);
-  const smallLeafGeom = useMemo(() => createCurvedLeafGeometry(0.090, 0.036, 0.024, 0.18), []);
+  // Varied organic leaf geometries with individual curvature and twist
+  const largeLeafGeom = useMemo(() => createOrganicLeafGeometry(0.140, 0.054, 0.040, 0.24, -0.12), []);
+  const mediumLeafGeom = useMemo(() => createOrganicLeafGeometry(0.120, 0.048, 0.034, 0.22, 0.10), []);
+  const slenderLeafGeom = useMemo(() => createOrganicLeafGeometry(0.105, 0.038, 0.028, 0.20, -0.08), []);
+  const youngLeafGeom = useMemo(() => createOrganicLeafGeometry(0.088, 0.032, 0.022, 0.16, 0.05), []);
 
-  // Floor Plant large paddle leaf geometry
-  const floorLeafGeom = useMemo(() => createCurvedLeafGeometry(0.38, 0.14, 0.11, 0.24), []);
-  const floorMediumLeafGeom = useMemo(() => createCurvedLeafGeometry(0.32, 0.12, 0.09, 0.22), []);
+  // Floor plant large paddle leaf geometries
+  const floorLeafGeom = useMemo(() => createOrganicLeafGeometry(0.40, 0.15, 0.12, 0.26, -0.14), []);
+  const floorMediumLeafGeom = useMemo(() => createOrganicLeafGeometry(0.34, 0.13, 0.10, 0.24, 0.12), []);
 
-  // Natural phyllotaxis distribution of desk leaves
+  // Natural phyllotaxis distribution of desk leaves with color variation
   const deskLeaves = useMemo(() => [
-    // 3 Mature Lower Cascading Leaves
-    { geom: largeLeafGeom, yaw: 0.2, pitch: 0.42, roll: -0.15, stemLen: 0.075, stemAngle: 0.35, yOff: 0.02 },
-    { geom: largeLeafGeom, yaw: 2.1, pitch: 0.45, roll: 0.20, stemLen: 0.080, stemAngle: 0.38, yOff: 0.02 },
-    { geom: largeLeafGeom, yaw: 4.3, pitch: 0.40, roll: -0.10, stemLen: 0.078, stemAngle: 0.36, yOff: 0.02 },
-    // 3 Mid-Height Spreading Leaves
-    { geom: mediumLeafGeom, yaw: 1.1, pitch: 0.28, roll: 0.12, stemLen: 0.095, stemAngle: 0.22, yOff: 0.04 },
-    { geom: mediumLeafGeom, yaw: 3.2, pitch: 0.30, roll: -0.14, stemLen: 0.092, stemAngle: 0.24, yOff: 0.04 },
-    { geom: mediumLeafGeom, yaw: 5.4, pitch: 0.26, roll: 0.10, stemLen: 0.098, stemAngle: 0.20, yOff: 0.04 },
-    // 3 Young Upright Center Leaves
-    { geom: smallLeafGeom, yaw: 0.7, pitch: 0.12, roll: 0.05, stemLen: 0.110, stemAngle: 0.08, yOff: 0.06 },
-    { geom: smallLeafGeom, yaw: 2.8, pitch: 0.14, roll: -0.06, stemLen: 0.115, stemAngle: 0.10, yOff: 0.06 },
-    { geom: smallLeafGeom, yaw: 4.9, pitch: 0.10, roll: 0.04, stemLen: 0.108, stemAngle: 0.07, yOff: 0.06 },
-  ], [largeLeafGeom, mediumLeafGeom, smallLeafGeom]);
+    // 3 Mature Lower Cascading Leaves (Lush Mature Green)
+    { geom: largeLeafGeom, mat: materials.plantLeafMature, yaw: 0.25, pitch: 0.44, roll: -0.18, stemLen: 0.076, stemAngle: 0.36, yOff: 0.020 },
+    { geom: largeLeafGeom, mat: materials.plantLeafMature, yaw: 2.15, pitch: 0.46, roll: 0.22, stemLen: 0.082, stemAngle: 0.40, yOff: 0.020 },
+    { geom: largeLeafGeom, mat: materials.plantLeafMature, yaw: 4.35, pitch: 0.42, roll: -0.12, stemLen: 0.080, stemAngle: 0.38, yOff: 0.020 },
+    // 3 Mid-Height Spreading Leaves (Vibrant Botanical Green)
+    { geom: mediumLeafGeom, mat: materials.plantLeafMedium, yaw: 1.15, pitch: 0.30, roll: 0.14, stemLen: 0.096, stemAngle: 0.24, yOff: 0.042 },
+    { geom: slenderLeafGeom, mat: materials.plantLeafMedium, yaw: 3.25, pitch: 0.32, roll: -0.16, stemLen: 0.094, stemAngle: 0.26, yOff: 0.042 },
+    { geom: mediumLeafGeom, mat: materials.plantLeafMedium, yaw: 5.45, pitch: 0.28, roll: 0.12, stemLen: 0.100, stemAngle: 0.22, yOff: 0.042 },
+    // 3 Young Center Leaves (Fresh Lime Olive Green)
+    { geom: youngLeafGeom, mat: materials.plantLeafYoung, yaw: 0.75, pitch: 0.14, roll: 0.06, stemLen: 0.112, stemAngle: 0.10, yOff: 0.064 },
+    { geom: youngLeafGeom, mat: materials.plantLeafYoung, yaw: 2.85, pitch: 0.16, roll: -0.08, stemLen: 0.118, stemAngle: 0.12, yOff: 0.064 },
+    { geom: youngLeafGeom, mat: materials.plantLeafYoung, yaw: 4.95, pitch: 0.12, roll: 0.05, stemLen: 0.110, stemAngle: 0.08, yOff: 0.064 },
+  ], [largeLeafGeom, mediumLeafGeom, slenderLeafGeom, youngLeafGeom, materials]);
 
   // Floor plant leaf arrangement
   const floorLeaves = useMemo(() => [
-    { geom: floorLeafGeom, yaw: 0.3, pitch: 0.38, roll: -0.12, stemLen: 0.42, stemAngle: 0.32, yOff: 0.12 },
-    { geom: floorLeafGeom, yaw: 1.8, pitch: 0.42, roll: 0.15, stemLen: 0.46, stemAngle: 0.35, yOff: 0.14 },
-    { geom: floorLeafGeom, yaw: 3.4, pitch: 0.36, roll: -0.10, stemLen: 0.44, stemAngle: 0.30, yOff: 0.13 },
-    { geom: floorLeafGeom, yaw: 5.1, pitch: 0.40, roll: 0.14, stemLen: 0.48, stemAngle: 0.34, yOff: 0.15 },
-    { geom: floorMediumLeafGeom, yaw: 1.1, pitch: 0.22, roll: 0.08, stemLen: 0.52, stemAngle: 0.16, yOff: 0.18 },
-    { geom: floorMediumLeafGeom, yaw: 2.9, pitch: 0.24, roll: -0.09, stemLen: 0.54, stemAngle: 0.18, yOff: 0.19 },
-    { geom: floorMediumLeafGeom, yaw: 4.4, pitch: 0.18, roll: 0.06, stemLen: 0.56, stemAngle: 0.14, yOff: 0.20 },
-  ], [floorLeafGeom, floorMediumLeafGeom]);
+    { geom: floorLeafGeom, mat: materials.plantLeafMature, yaw: 0.3, pitch: 0.38, roll: -0.12, stemLen: 0.42, stemAngle: 0.32, yOff: 0.12 },
+    { geom: floorLeafGeom, mat: materials.plantLeafMature, yaw: 1.8, pitch: 0.42, roll: 0.15, stemLen: 0.46, stemAngle: 0.35, yOff: 0.14 },
+    { geom: floorLeafGeom, mat: materials.plantLeafMedium, yaw: 3.4, pitch: 0.36, roll: -0.10, stemLen: 0.44, stemAngle: 0.30, yOff: 0.13 },
+    { geom: floorLeafGeom, mat: materials.plantLeafMature, yaw: 5.1, pitch: 0.40, roll: 0.14, stemLen: 0.48, stemAngle: 0.34, yOff: 0.15 },
+    { geom: floorMediumLeafGeom, mat: materials.plantLeafMedium, yaw: 1.1, pitch: 0.22, roll: 0.08, stemLen: 0.52, stemAngle: 0.16, yOff: 0.18 },
+    { geom: floorMediumLeafGeom, mat: materials.plantLeafYoung, yaw: 2.9, pitch: 0.24, roll: -0.09, stemLen: 0.54, stemAngle: 0.18, yOff: 0.19 },
+    { geom: floorMediumLeafGeom, mat: materials.plantLeafMedium, yaw: 4.4, pitch: 0.18, roll: 0.06, stemLen: 0.56, stemAngle: 0.14, yOff: 0.20 },
+  ], [floorLeafGeom, floorMediumLeafGeom, materials]);
 
   return (
     <group name="botanical-plants">
@@ -130,110 +152,126 @@ export function Plant({ materials }: PlantProps) {
       <group position={deskPlantPos} name="desk-plant">
         
         {/* Ceramic Drainage Saucer */}
-        <mesh position={[0, 0.007, 0]} material={materials.plantPot}>
+        <mesh position={[0, 0.007, 0]} material={materials.plantPot} receiveShadow>
           <cylinderGeometry args={[0.082, 0.074, 0.014, 28]} />
         </mesh>
 
         {/* Tapered Modern Ceramic Planter (Hollow body) */}
-        <mesh position={[0, 0.075, 0]} material={materials.plantPot}>
+        <mesh position={[0, 0.075, 0]} material={materials.plantPot} castShadow receiveShadow>
           <cylinderGeometry args={[0.076, 0.062, 0.136, 28, 1, true]} />
         </mesh>
 
-        {/* Pot Rim Lip */}
-        <mesh position={[0, 0.141, 0]} material={materials.plantPot}>
-          <cylinderGeometry args={[0.078, 0.076, 0.012, 28, 1, true]} />
+        {/* Planter Bottom Base Cap */}
+        <mesh position={[0, 0.012, 0]} material={materials.plantPot}>
+          <cylinderGeometry args={[0.063, 0.063, 0.008, 28]} />
         </mesh>
 
-        {/* Rich Organic Potting Soil Bed (Visible dark soil mix) */}
-        <mesh position={[0, 0.132, 0]} rotation={[-Math.PI / 2, 0, 0]} material={materials.soil}>
-          <circleGeometry args={[0.074, 28]} />
+        {/* Dark Rich Potting Soil Bed */}
+        <mesh position={[0, 0.132, 0]} material={materials.soil} receiveShadow>
+          <cylinderGeometry args={[0.072, 0.070, 0.016, 28]} />
         </mesh>
 
-        {/* Organic Foliage Canopy */}
-        <group position={[0, 0.136, 0]} name="foliage-canopy">
-          {deskLeaves.map((leaf, idx) => (
-            <group
-              key={`desk-leaf-${idx}`}
-              rotation={[0, leaf.yaw, 0]}
-              position={[0, leaf.yOff, 0]}
-            >
-              {/* Slender Organic Stem (Petiole) */}
-              <group rotation={[leaf.stemAngle, 0, 0]}>
-                <mesh position={[0, leaf.stemLen / 2, 0]} material={materials.plantStem}>
-                  <cylinderGeometry args={[0.0020, 0.0028, leaf.stemLen, 8]} />
-                </mesh>
-                
-                {/* Curved Leaf Blade at Stem Terminal */}
+        {/* Organic Central Foliage Cluster (9 Naturally Curved Leaves & Stems) */}
+        <group position={[0, 0.138, 0]} name="desk-foliage">
+          {deskLeaves.map((leaf, idx) => {
+            // Calculate stem end point to position the leaf blade naturally
+            const stemRad = leaf.stemAngle;
+            const endX = Math.sin(leaf.yaw) * Math.sin(stemRad) * leaf.stemLen;
+            const endZ = Math.cos(leaf.yaw) * Math.sin(stemRad) * leaf.stemLen;
+            const endY = leaf.yOff + Math.cos(stemRad) * leaf.stemLen;
+
+            return (
+              <group key={`desk-leaf-node-${idx}`}>
+                {/* Organic Curved Petiole (Stem) */}
+                <group position={[0, leaf.yOff, 0]} rotation={[0, leaf.yaw, 0]}>
+                  <mesh
+                    position={[0, (Math.cos(stemRad) * leaf.stemLen) / 2, (Math.sin(stemRad) * leaf.stemLen) / 2]}
+                    rotation={[stemRad, 0, 0]}
+                    material={materials.plantStem}
+                    castShadow
+                  >
+                    <cylinderGeometry args={[0.0016, 0.0024, leaf.stemLen, 8]} />
+                  </mesh>
+                </group>
+
+                {/* Volumetric Double-Curved Leaf Blade with Varied Shading */}
                 <group
-                  position={[0, leaf.stemLen, 0]}
-                  rotation={[leaf.pitch, 0, leaf.roll]}
+                  position={[endX, endY, endZ]}
+                  rotation={[leaf.pitch, leaf.yaw, leaf.roll]}
                 >
                   <mesh
                     geometry={leaf.geom}
-                    material={materials.plantLeaf}
+                    material={leaf.mat}
                     castShadow
+                    receiveShadow
                   />
                 </group>
               </group>
-            </group>
-          ))}
+            );
+          })}
         </group>
+
       </group>
 
       {/* ══════════════════════════════════════════════════════════════ */}
-      {/*  2. LARGE ARCHITECTURAL FLOOR PLANTER (Left Corner)            */}
+      {/*  2. ARCHITECTURAL FLOOR PLANTER (Far Corner Placement)         */}
       {/* ══════════════════════════════════════════════════════════════ */}
       <group position={floorPlantPos} name="floor-planter">
         
-        {/* Floor Saucer */}
-        <mesh position={[0, 0.012, 0]} material={materials.plantPot}>
-          <cylinderGeometry args={[0.19, 0.17, 0.024, 28]} />
+        {/* Large Architectural Ceramic Floor Vessel */}
+        <mesh position={[0, 0.28, 0]} material={materials.plantPot} castShadow receiveShadow>
+          <cylinderGeometry args={[0.22, 0.17, 0.56, 32]} />
         </mesh>
 
-        {/* Tall Ceramic Planter Vessel */}
-        <mesh position={[0, 0.24, 0]} material={materials.plantPot}>
-          <cylinderGeometry args={[0.18, 0.13, 0.46, 28]} />
-        </mesh>
-
-        {/* Planter Rim */}
-        <mesh position={[0, 0.47, 0]} material={materials.plantPot}>
-          <cylinderGeometry args={[0.185, 0.18, 0.020, 28]} />
+        {/* Vessel Neck Ring */}
+        <mesh position={[0, 0.565, 0]} material={materials.plantPot}>
+          <cylinderGeometry args={[0.225, 0.225, 0.03, 32]} />
         </mesh>
 
         {/* Potting Soil Bed */}
-        <mesh position={[0, 0.455, 0]} material={materials.soil}>
-          <cylinderGeometry args={[0.175, 0.165, 0.020, 24]} />
+        <mesh position={[0, 0.55, 0]} material={materials.soil} receiveShadow>
+          <cylinderGeometry args={[0.21, 0.20, 0.02, 32]} />
         </mesh>
 
-        {/* Tall Architectural Broadleaf Stems & Blades */}
-        <group position={[0, 0.46, 0]} name="floor-foliage">
-          {floorLeaves.map((leaf, idx) => (
-            <group
-              key={`floor-leaf-${idx}`}
-              rotation={[0, leaf.yaw, 0]}
-              position={[0, leaf.yOff, 0]}
-            >
-              {/* Woody/Stout Stem */}
-              <group rotation={[leaf.stemAngle, 0, 0]}>
-                <mesh position={[0, leaf.stemLen / 2, 0]} material={materials.plantStem}>
-                  <cylinderGeometry args={[0.005, 0.009, leaf.stemLen, 8]} />
-                </mesh>
+        {/* Broadleaf Tropical Foliage */}
+        <group position={[0, 0.56, 0]} name="floor-foliage">
+          {floorLeaves.map((leaf, idx) => {
+            const stemRad = leaf.stemAngle;
+            const endX = Math.sin(leaf.yaw) * Math.sin(stemRad) * leaf.stemLen;
+            const endZ = Math.cos(leaf.yaw) * Math.sin(stemRad) * leaf.stemLen;
+            const endY = leaf.yOff + Math.cos(stemRad) * leaf.stemLen;
 
-                {/* Broad Architectural Blade */}
+            return (
+              <group key={`floor-leaf-node-${idx}`}>
+                {/* Thick Botanical Petiole */}
+                <group position={[0, leaf.yOff, 0]} rotation={[0, leaf.yaw, 0]}>
+                  <mesh
+                    position={[0, (Math.cos(stemRad) * leaf.stemLen) / 2, (Math.sin(stemRad) * leaf.stemLen) / 2]}
+                    rotation={[stemRad, 0, 0]}
+                    material={materials.plantStem}
+                    castShadow
+                  >
+                    <cylinderGeometry args={[0.004, 0.007, leaf.stemLen, 10]} />
+                  </mesh>
+                </group>
+
+                {/* Broad Arching Tropical Leaf Blade */}
                 <group
-                  position={[0, leaf.stemLen, 0]}
-                  rotation={[leaf.pitch, 0, leaf.roll]}
+                  position={[endX, endY, endZ]}
+                  rotation={[leaf.pitch, leaf.yaw, leaf.roll]}
                 >
                   <mesh
                     geometry={leaf.geom}
-                    material={materials.plantLeaf}
+                    material={leaf.mat}
                     castShadow
+                    receiveShadow
                   />
                 </group>
               </group>
-            </group>
-          ))}
+            );
+          })}
         </group>
+
       </group>
 
     </group>

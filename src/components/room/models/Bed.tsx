@@ -16,15 +16,15 @@ interface BedProps {
  * soft rolling folds, micro-creases, and smooth gravitational side drapes.
  */
 function createDrapedDuvetGeometry(width: number, length: number) {
-  const segX = 40;
-  const segZ = 40;
+  const segX = 42;
+  const segZ = 42;
   const positions: number[] = [];
   const uvs: number[] = [];
   const indices: number[] = [];
 
   const halfW = width / 2;
-  const drapeDepth = 0.22; // depth of side overhang
-  const crestW = halfW - 0.08; // where the mattress edge starts
+  const drapeDepth = 0.23; // depth of side overhang
+  const crestW = halfW - 0.085; // where the mattress edge starts
 
   for (let j = 0; j <= segZ; j++) {
     const v = j / segZ;
@@ -37,16 +37,16 @@ function createDrapedDuvetGeometry(width: number, length: number) {
       const x = -halfW + u * width;
 
       // 1. Base height profile
-      let y = 0.045; // base loft above mattress
+      let y = 0.046; // base loft above mattress
 
       // 2. Center volumetric down puffiness
-      const centerFactor = Math.sin(u * Math.PI) * Math.sin(v * Math.PI * 0.95);
-      y += centerFactor * 0.024;
+      const centerFactor = Math.sin(u * Math.PI) * Math.sin(v * Math.PI * 0.94);
+      y += centerFactor * 0.026;
 
       // 3. Subtle natural bedding folds & undulations
-      const fold1 = Math.sin(x * 9.5 + z * 5.2) * 0.007;
-      const fold2 = Math.cos(z * 11.0 - x * 4.8) * 0.005;
-      const fold3 = Math.sin((x + z) * 16.0) * 0.003;
+      const fold1 = Math.sin(x * 9.2 + z * 5.0) * 0.0075;
+      const fold2 = Math.cos(z * 10.8 - x * 4.6) * 0.0055;
+      const fold3 = Math.sin((x + z) * 15.5) * 0.0035;
       y += (fold1 + fold2 + fold3) * centerFactor;
 
       // 4. Side drapes (left and right edges curving down)
@@ -54,16 +54,17 @@ function createDrapedDuvetGeometry(width: number, length: number) {
       let drop = 0;
       if (absX > crestW) {
         const dropRatio = Math.min(1, (absX - crestW) / (halfW - crestW));
-        drop = Math.pow(dropRatio, 1.6) * drapeDepth;
-        drop -= Math.sin(v * 18.0) * 0.003 * dropRatio;
+        // Soft continuous cubic ease-in
+        drop = Math.pow(dropRatio, 1.55) * drapeDepth;
+        drop -= Math.sin(v * 16.0) * 0.0035 * dropRatio;
       }
 
       // 5. Foot drape (front edge curving down)
       if (v > 0.88) {
         const footDropRatio = (v - 0.88) / 0.12;
-        const footDrop = Math.pow(footDropRatio, 1.8) * 0.13;
+        const footDrop = Math.pow(footDropRatio, 1.75) * 0.14;
         // Smoothly blend side drape and foot drape to avoid corner spike
-        drop = Math.max(drop, footDrop) + Math.min(drop, footDrop) * 0.25;
+        drop = Math.max(drop, footDrop) + Math.min(drop, footDrop) * 0.22;
       }
 
       // Clamp max drop so it never extends past platform
@@ -96,44 +97,63 @@ function createDrapedDuvetGeometry(width: number, length: number) {
 }
 
 /**
- * Procedural Cushioned Oxford Pillow Geometry Generator
- * Generates an organic lofted pillow with natural sleep depression,
- * rounded plump crown, and pinched perimeter seam flange.
+ * Procedural Draped Throw Blanket Geometry Generator
+ * Replaces rigid geometric boxes with a natural, flowing textile drape.
+ * Conforms smoothly across the foot of the bed with soft gravitational overhangs.
  */
-function createCushionedPillowGeometry(width: number, length: number, height: number) {
-  const segX = 26;
-  const segY = 26;
+function createDrapedThrowGeometry(width: number, length: number) {
+  const segX = 36;
+  const segZ = 28;
   const positions: number[] = [];
   const uvs: number[] = [];
   const indices: number[] = [];
 
-  // Top surface with center depression
-  for (let j = 0; j <= segY; j++) {
-    const v = (j / segY) * 2 - 1; // -1 to 1
-    const z = (v * length) / 2;
+  const halfW = width / 2;
+  const drapeDepth = 0.22;
+  const crestW = halfW - 0.08;
+
+  for (let j = 0; j <= segZ; j++) {
+    const v = j / segZ;
+    // Z spans across the throw blanket length
+    const z = -length / 2 + v * length;
 
     for (let i = 0; i <= segX; i++) {
-      const u = (i / segX) * 2 - 1; // -1 to 1
-      const x = (u * width) / 2;
+      const u = i / segX;
+      const x = -halfW + u * width;
 
-      // Pillow crown loft
-      const crown = Math.cos((u * Math.PI) / 2) * Math.cos((v * Math.PI) / 2);
-      let y = Math.pow(Math.max(0, crown), 0.7) * height;
+      // Base loft matching duvet crown below
+      let y = 0.016;
 
-      // Organic center depression where head rests
-      const centerDistSq = u * u * 3.5 + v * v * 4.5;
-      const sleepIndent = Math.exp(-centerDistSq) * 0.35;
-      y *= (1 - sleepIndent);
+      // Heavy wool rolling cross-folds
+      const foldZ = Math.sin(v * Math.PI * 4.2) * 0.007;
+      const foldX = Math.cos(u * Math.PI * 3.0) * 0.004;
+      y += foldZ + foldX;
 
-      // Subtle organic creasing
-      y += Math.sin(u * 12 + v * 8) * 0.0025 * crown;
+      // Side drapes
+      const absX = Math.abs(x);
+      let drop = 0;
+      if (absX > crestW) {
+        const dropRatio = Math.min(1, (absX - crestW) / (halfW - crestW));
+        drop = Math.pow(dropRatio, 1.6) * drapeDepth;
+        drop -= Math.sin(v * 12.0) * 0.003 * dropRatio;
+      }
+
+      // Foot drape (front overhang)
+      if (v > 0.85) {
+        const footDropRatio = (v - 0.85) / 0.15;
+        const footDrop = Math.pow(footDropRatio, 1.7) * 0.16;
+        drop = Math.max(drop, footDrop) + Math.min(drop, footDrop) * 0.25;
+      }
+
+      drop = Math.min(drop, drapeDepth);
+      y -= drop;
 
       positions.push(x, y, z);
-      uvs.push((u + 1) / 2, (v + 1) / 2);
+      uvs.push(u * 2.5, v * 2.0);
     }
   }
 
-  for (let j = 0; j < segY; j++) {
+  for (let j = 0; j < segZ; j++) {
     for (let i = 0; i < segX; i++) {
       const a = j * (segX + 1) + i;
       const b = (j + 1) * (segX + 1) + i;
@@ -154,23 +174,77 @@ function createCushionedPillowGeometry(width: number, length: number, height: nu
 }
 
 /**
- * High-Fidelity Contemporary Platform Bed with Soft Textiles
- * 
- * Features:
- * - Low-profile Scandinavian solid wood platform frame with floating recessed base.
- * - Architectural headboard with wood surround and upholstered padded fabric inset.
- * - Deep mattress with piped perimeter seams.
- * - Draped volumetric linen duvet with natural down loft, soft rolling folds,
- *   edge drape, and organic rolled collar.
- * - Cushioned Oxford sleeping pillows with sleep depression and gentle backward lean.
- * - Layered heavy wool throw blanket with realistic textile drape.
+ * Procedural Organic Plump Pillow Geometry
+ * Models an authentic down-filled sleeping pillow:
+ * convex parabolic loft, soft center sleep depression, and pinched perimeter seam flange.
+ */
+function createOrganicPillowGeometry(width: number, length: number, thickness: number) {
+  const segX = 28;
+  const segZ = 24;
+  const positions: number[] = [];
+  const uvs: number[] = [];
+  const indices: number[] = [];
+
+  const halfW = width / 2;
+  const halfL = length / 2;
+
+  // Generate upper shell of pillow
+  for (let j = 0; j <= segZ; j++) {
+    const v = (j / segZ) * 2 - 1; // -1 to 1
+    const z = v * halfL;
+
+    for (let i = 0; i <= segX; i++) {
+      const u = (i / segX) * 2 - 1; // -1 to 1
+      const x = u * halfW;
+
+      // Elliptical crown profile (pinched at margins, thick at center)
+      const rSq = u * u + v * v;
+      const falloff = Math.max(0, 1 - rSq * 0.88);
+      let y = Math.pow(falloff, 0.65) * thickness;
+
+      // Organic sleep depression where the head rests
+      const indentDistSq = u * u * 4.2 + (v + 0.1) * (v + 0.1) * 5.0;
+      const sleepIndent = Math.exp(-indentDistSq) * 0.32;
+      y *= (1 - sleepIndent);
+
+      // Subtle organic creasing
+      y += Math.sin(u * 9.5 + v * 6.5) * 0.0022 * falloff;
+
+      positions.push(x, y, z);
+      uvs.push((u + 1) / 2, (v + 1) / 2);
+    }
+  }
+
+  for (let j = 0; j < segZ; j++) {
+    for (let i = 0; i < segX; i++) {
+      const a = j * (segX + 1) + i;
+      const b = (j + 1) * (segX + 1) + i;
+      const c = (j + 1) * (segX + 1) + (i + 1);
+      const d = j * (segX + 1) + (i + 1);
+
+      indices.push(a, b, d);
+      indices.push(d, b, c);
+    }
+  }
+
+  const geom = new THREE.BufferGeometry();
+  geom.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geom.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
+  geom.setIndex(indices);
+  geom.computeVertexNormals();
+  return geom;
+}
+
+/**
+ * High-Fidelity Contemporary Platform Bed with Soft Textiles (Phase 3B.2.1 Refined)
  */
 export function Bed({ materials }: BedProps) {
   const d = ROOM_DIMENSIONS.bed;
 
   // Procedural soft textile geometries
   const duvetGeom = useMemo(() => createDrapedDuvetGeometry(d.width + 0.06, d.length * 0.68), [d.width, d.length]);
-  const pillowGeom = useMemo(() => createCushionedPillowGeometry(0.58, 0.40, 0.125), []);
+  const throwGeom = useMemo(() => createDrapedThrowGeometry(d.width + 0.07, 0.58), [d.width]);
+  const pillowTopGeom = useMemo(() => createOrganicPillowGeometry(0.62, 0.42, 0.13), []);
 
   return (
     <group position={d.position} name="platform-bed-module">
@@ -235,30 +309,32 @@ export function Bed({ materials }: BedProps) {
         </mesh>
       </group>
 
-      {/* ── 5. Cushioned Lofted Sleeping Pillows (Organic Surface & Sleep Dent) ── */}
+      {/* ── 5. Cushioned Lofted Sleeping Pillows (Organic Surface & Flanged Seam) ── */}
       {[-0.42, 0.42].map((xOffset, idx) => (
         <group
           key={`pillow-${idx}`}
-          position={[xOffset, 0.55, -d.length / 2 + 0.38]}
-          rotation={[-0.30, idx === 0 ? 0.05 : -0.05, 0]}
+          position={[xOffset, 0.525, -d.length / 2 + 0.38]}
+          rotation={[-0.24, idx === 0 ? 0.04 : -0.04, 0]}
           name={`pillow-${idx + 1}`}
         >
-          {/* Main Volumetric Cushioned Pillow */}
-          <RoundedBox
-            args={[0.60, 0.15, 0.40]}
-            radius={0.060}
-            smoothness={5}
+          {/* Main Organic Volumetric Pillow Body */}
+          <mesh
+            geometry={pillowTopGeom}
             material={materials.fabricPillow}
             castShadow
             receiveShadow
           />
-          {/* Oxford Flanged Perimeter Border */}
-          <mesh position={[0, -0.004, 0]} material={materials.fabricWhite}>
-            <boxGeometry args={[0.64, 0.008, 0.44]} />
-          </mesh>
-          {/* Subtle Sleep Dent Indentation */}
-          <mesh position={[0, 0.076, 0]} rotation={[-Math.PI / 2, 0, 0]} material={materials.fabricDuvet}>
-            <circleGeometry args={[0.075, 16]} />
+          {/* Pillow Lower Loft (Slightly mirrored for plump volume) */}
+          <mesh
+            geometry={pillowTopGeom}
+            material={materials.fabricWhite}
+            rotation={[Math.PI, 0, 0]}
+            position={[0, 0.015, 0]}
+            receiveShadow
+          />
+          {/* Oxford Flanged Perimeter Border Edge */}
+          <mesh position={[0, 0.008, 0]} material={materials.fabricPillow}>
+            <boxGeometry args={[0.65, 0.006, 0.45]} />
           </mesh>
         </group>
       ))}
@@ -274,19 +350,19 @@ export function Bed({ materials }: BedProps) {
         />
 
         {/* Realistic Rolled Duvet Collar (Folded back over mattress) */}
-        <group position={[0, 0.052, -0.37]} rotation={[0.18, 0, 0]}>
+        <group position={[0, 0.050, -0.37]} rotation={[0.16, 0, 0]}>
           {/* Rounded rolled duvet collar */}
           <RoundedBox
-            args={[d.width - 0.04, 0.045, 0.18]}
-            radius={0.020}
+            args={[d.width - 0.04, 0.048, 0.19]}
+            radius={0.022}
             smoothness={4}
             material={materials.fabricDuvet}
             castShadow
           />
           {/* Crisp Under-Sheet Fold */}
           <RoundedBox
-            args={[d.width - 0.06, 0.024, 0.14]}
-            radius={0.010}
+            args={[d.width - 0.06, 0.025, 0.15]}
+            radius={0.012}
             smoothness={3}
             material={materials.fabricWhite}
             position={[0, 0.012, -0.06]}
@@ -294,24 +370,22 @@ export function Bed({ materials }: BedProps) {
         </group>
       </group>
 
-      {/* ── 7. Folded Wool Throw Blanket (Foot of Bed) ── */}
-      <group position={[0, 0.558, d.length / 2 - 0.38]} name="wool-throw">
-        {/* Lower draped blanket tier */}
-        <RoundedBox
-          args={[d.width + 0.02, 0.040, 0.62]}
-          radius={0.018}
-          smoothness={4}
+      {/* ── 7. Soft Draped Wool Throw Blanket (Foot of Bed) ── */}
+      <group position={[0, 0.548, d.length / 2 - 0.34]} name="wool-throw">
+        {/* Draped flowing blanket mesh cascading down the sides and foot */}
+        <mesh
+          geometry={throwGeom}
           material={materials.fabricThrow}
           castShadow
           receiveShadow
         />
-        {/* Upper folded blanket roll */}
+        {/* Soft Folded Blanket Top Hem Roll */}
         <RoundedBox
-          args={[d.width - 0.02, 0.034, 0.30]}
-          radius={0.015}
+          args={[d.width - 0.04, 0.030, 0.18]}
+          radius={0.014}
           smoothness={3}
           material={materials.fabricThrow}
-          position={[0, 0.030, -0.08]}
+          position={[0, 0.026, -0.14]}
           castShadow
         />
       </group>

@@ -11,17 +11,16 @@ interface FishbowlProps {
 }
 
 /**
- * High-Fidelity Glass Fishbowl with Detailed Swimmer
+ * High-Fidelity Glass Fishbowl with Detailed Goldfish (Phase 3B.2.1 Refined)
  * 
  * Features:
- * - Authentic hollow curved glass bowl with open rolled rim generated via LatheGeometry.
- * - Precision-fitted physical water volume with reflective surface meniscus.
- * - Turned Scandinavian birch base ring with bevelled rim.
- * - Smooth river pebbles and delicate aquatic plant sprig at the bowl bottom.
- * - Detailed small goldfish: streamlined body, pearlescent belly, dual-lobe tail fin,
- *   dorsal and pectoral fins, glossy eyes with orbital rings.
- * - Gentle swimming animation with tail flutter, pausing automatically when document is hidden
- *   or prefers-reduced-motion is active, strictly respecting demand rendering.
+ * - Crystal clear blown glass bowl with open rolled rim generated via LatheGeometry.
+ * - Deep refractive water volume with physical IOR (1.333) and organic liquid meniscus.
+ * - Realistic anatomical goldfish: sculpted dorsal ridge, pearlescent belly, contoured head,
+ *   bifurcated double-lobe fan tail fin, delicate fins, and glossy eyes with golden iris rings.
+ * - Delicate curled aquatic flora rooted among smooth river pebbles.
+ * - Gentle circular swimming trajectory with tangent heading, banking, and caudal tail flutter.
+ * - Throttles automatically when offscreen, hidden, or on prefers-reduced-motion.
  */
 export function Fishbowl({ materials }: FishbowlProps) {
   const deskX = ROOM_DIMENSIONS.desk.position[0];
@@ -55,15 +54,12 @@ export function Fishbowl({ materials }: FishbowlProps) {
   // 1. Procedural Glass Bowl Profile (LatheGeometry)
   const bowlGeometry = useMemo(() => {
     const pts: THREE.Vector2[] = [];
-    // Flat bottom base
     pts.push(new THREE.Vector2(0.001, 0.002));
     pts.push(new THREE.Vector2(0.065, 0.002));
-    // Curving upward and bowing outward
     pts.push(new THREE.Vector2(0.095, 0.018));
     pts.push(new THREE.Vector2(0.124, 0.052));
     pts.push(new THREE.Vector2(0.138, 0.096));
     pts.push(new THREE.Vector2(0.136, 0.138));
-    // Inward neck
     pts.push(new THREE.Vector2(0.112, 0.174));
     // Rolled opening rim
     pts.push(new THREE.Vector2(0.114, 0.188));
@@ -73,7 +69,7 @@ export function Fishbowl({ materials }: FishbowlProps) {
     return new THREE.LatheGeometry(pts, 36);
   }, []);
 
-  // 2. Procedural Water Volume Profile (LatheGeometry)
+  // 2. Procedural Water Volume with Curved Liquid Meniscus Profile
   const waterGeometry = useMemo(() => {
     const pts: THREE.Vector2[] = [];
     pts.push(new THREE.Vector2(0.001, 0.005));
@@ -82,12 +78,15 @@ export function Fishbowl({ materials }: FishbowlProps) {
     pts.push(new THREE.Vector2(0.119, 0.052));
     pts.push(new THREE.Vector2(0.132, 0.096));
     pts.push(new THREE.Vector2(0.128, 0.136));
-    pts.push(new THREE.Vector2(0.115, 0.155));
-    pts.push(new THREE.Vector2(0.001, 0.155)); // Flat top meniscus
+    // Water line contact with glass (curves slightly upward for meniscus tension)
+    pts.push(new THREE.Vector2(0.116, 0.154));
+    pts.push(new THREE.Vector2(0.114, 0.155));
+    pts.push(new THREE.Vector2(0.108, 0.1542));
+    pts.push(new THREE.Vector2(0.001, 0.1538)); // Subtle center dip
     return new THREE.LatheGeometry(pts, 32);
   }, []);
 
-  // 3. Natural River Pebbles
+  // 3. Natural Tumbled River Pebbles
   const pebbles = useMemo(() => [
     { pos: [0.015, 0.010, 0.012] as [number, number, number], scale: [0.022, 0.012, 0.018] as [number, number, number], rot: 0.4 },
     { pos: [-0.025, 0.009, 0.018] as [number, number, number], scale: [0.019, 0.010, 0.015] as [number, number, number], rot: -0.8 },
@@ -96,7 +95,7 @@ export function Fishbowl({ materials }: FishbowlProps) {
     { pos: [0.002, 0.011, -0.004] as [number, number, number], scale: [0.020, 0.012, 0.017] as [number, number, number], rot: 2.1 },
   ], []);
 
-  // 4. Lightweight Swimming Animation Loop
+  // 4. Lightweight Swimming Animation Loop (Throttled & Demand-Safe)
   useFrame((state) => {
     if (prefersReducedMotionRef.current) return;
     if (typeof document !== "undefined" && document.hidden) return;
@@ -105,14 +104,14 @@ export function Fishbowl({ materials }: FishbowlProps) {
 
     if (fishGroupRef.current) {
       // Gentle circular orbit inside water volume (radius = 0.046m, water radius is 0.12m)
-      const orbitSpeed = 0.75;
+      const orbitSpeed = 0.72;
       const angle = t * orbitSpeed;
       const radiusX = 0.046;
       const radiusZ = 0.040;
 
       const posX = Math.cos(angle) * radiusX;
       const posZ = Math.sin(angle) * radiusZ;
-      const posY = 0.088 + Math.sin(t * 1.5) * 0.014;
+      const posY = 0.088 + Math.sin(t * 1.5) * 0.012;
 
       fishGroupRef.current.position.set(posX, posY, posZ);
 
@@ -120,16 +119,16 @@ export function Fishbowl({ materials }: FishbowlProps) {
       const heading = Math.atan2(-Math.sin(angle) * radiusZ, -Math.cos(angle) * radiusX);
       fishGroupRef.current.rotation.y = heading - Math.PI / 2;
 
-      // Subtle roll bank on turns
-      fishGroupRef.current.rotation.z = Math.sin(t * 1.5) * 0.08;
-      fishGroupRef.current.rotation.x = Math.cos(t * 1.5) * 0.05;
+      // Subtle body banking into turns
+      fishGroupRef.current.rotation.z = Math.sin(t * 1.5) * 0.07;
+      fishGroupRef.current.rotation.x = Math.cos(t * 1.5) * 0.04;
 
-      // Realistic tail fin propulsion flutter
+      // Rhythmic caudal tail fin flutter
       if (tailRef.current) {
-        tailRef.current.rotation.y = Math.sin(t * 7.5) * 0.35;
+        tailRef.current.rotation.y = Math.sin(t * 7.2) * 0.32;
       }
 
-      // Request next frame under demand rendering
+      // Invalidate demand render loop
       invalidate();
     }
   });
@@ -139,7 +138,7 @@ export function Fishbowl({ materials }: FishbowlProps) {
       
       {/* ── 1. Turned Scandinavian Birch Base Ring ── */}
       <group position={[0, 0.009, 0]} name="wooden-stand">
-        <mesh material={materials.woodLight}>
+        <mesh material={materials.woodLight} castShadow receiveShadow>
           <cylinderGeometry args={[0.076, 0.088, 0.018, 32]} />
         </mesh>
         {/* Recessed Lip Channel */}
@@ -148,7 +147,7 @@ export function Fishbowl({ materials }: FishbowlProps) {
         </mesh>
       </group>
 
-      {/* ── 2. Natural River Pebbles Cluster (Bottom of Bowl) ── */}
+      {/* ── 2. Natural River Pebbles Cluster & Delicate Aquatic Flora ── */}
       <group position={[0, 0.008, 0]} name="river-pebbles">
         {pebbles.map((p, idx) => (
           <mesh
@@ -162,38 +161,53 @@ export function Fishbowl({ materials }: FishbowlProps) {
           </mesh>
         ))}
 
-        {/* Delicate Aquatic Plant Stem */}
-        <group position={[-0.01, 0.01, 0.01]}>
-          <mesh position={[0, 0.024, 0]} material={materials.plantStem}>
-            <cylinderGeometry args={[0.0015, 0.002, 0.048, 8]} />
+        {/* Delicate Submerged Aquatic Flora Cluster */}
+        <group position={[-0.012, 0.010, 0.012]}>
+          {/* Main Aquatic Stems */}
+          <mesh position={[0, 0.026, 0]} material={materials.plantStem}>
+            <cylinderGeometry args={[0.0012, 0.0018, 0.052, 8]} />
           </mesh>
-          {/* Miniature aquatic leaves */}
-          {[0.018, 0.034, 0.046].map((leafY, i) => (
+          <mesh position={[0.006, 0.020, -0.004]} rotation={[0.1, 0, 0.2]} material={materials.plantStem}>
+            <cylinderGeometry args={[0.0010, 0.0015, 0.040, 8]} />
+          </mesh>
+
+          {/* Delicate Curled Aquatic Leaflets */}
+          {[
+            { y: 0.018, rotZ: -0.45, w: 0.014, l: 0.007 },
+            { y: 0.030, rotZ: 0.40, w: 0.015, l: 0.008 },
+            { y: 0.042, rotZ: -0.35, w: 0.013, l: 0.007 },
+            { y: 0.050, rotZ: 0.25, w: 0.010, l: 0.006 },
+          ].map((leaf, i) => (
             <mesh
               key={`aquatic-leaf-${i}`}
-              position={[i % 2 === 0 ? 0.006 : -0.006, leafY, 0]}
-              rotation={[0, 0, i % 2 === 0 ? -0.4 : 0.4]}
-              material={materials.plantLeaf}
+              position={[i % 2 === 0 ? 0.006 : -0.006, leaf.y, 0]}
+              rotation={[0.15, 0, leaf.rotZ]}
+              material={materials.plantLeafMedium}
             >
-              <planeGeometry args={[0.012, 0.006]} />
+              <planeGeometry args={[leaf.w, leaf.l]} />
             </mesh>
           ))}
         </group>
       </group>
 
-      {/* ── 3. High-Fidelity Swimmer (Small Goldfish) ── */}
+      {/* ── 3. High-Fidelity Goldfish Model ── */}
       <group
         ref={fishGroupRef}
         position={[0.042, 0.088, 0]}
         name="goldfish"
       >
-        {/* Streamlined Main Fish Body (Torpedo form) */}
-        <mesh scale={[0.010, 0.013, 0.024]} material={materials.fishBody}>
+        {/* Main Contoured Goldfish Body (Streamlined Torpedo Form) */}
+        <mesh scale={[0.010, 0.013, 0.025]} material={materials.fishBody}>
           <sphereGeometry args={[1, 16, 14]} />
         </mesh>
 
+        {/* Elevated Dorsal Ridge (Deep Warm Orange) */}
+        <mesh position={[0, 0.004, -0.002]} scale={[0.008, 0.009, 0.020]} material={materials.fishDorsal}>
+          <sphereGeometry args={[1, 14, 12]} />
+        </mesh>
+
         {/* Soft Pearlescent Underbelly */}
-        <mesh position={[0, -0.003, 0.001]} scale={[0.009, 0.009, 0.022]} material={materials.fishBelly}>
+        <mesh position={[0, -0.0035, 0.001]} scale={[0.009, 0.0085, 0.022]} material={materials.fishBelly}>
           <sphereGeometry args={[1, 14, 12]} />
         </mesh>
 
@@ -202,7 +216,7 @@ export function Fishbowl({ materials }: FishbowlProps) {
           <mesh material={materials.fishEye}>
             <sphereGeometry args={[0.0024, 10, 10]} />
           </mesh>
-          {/* Delicate orbital ring */}
+          {/* Reflective Golden Iris Ring */}
           <mesh material={materials.fishBelly}>
             <ringGeometry args={[0.0023, 0.0029, 12]} />
           </mesh>
@@ -218,13 +232,13 @@ export function Fishbowl({ materials }: FishbowlProps) {
           </mesh>
         </group>
 
-        {/* Dorsal Fin (Top) */}
+        {/* Contoured Dorsal Fin (Top Spine) */}
         <mesh
-          position={[0, 0.013, -0.003]}
-          rotation={[0.35, 0, 0]}
+          position={[0, 0.014, -0.004]}
+          rotation={[0.32, 0, 0]}
           material={materials.fishFin}
         >
-          <planeGeometry args={[0.002, 0.010]} />
+          <planeGeometry args={[0.002, 0.011]} />
         </mesh>
 
         {/* Left Pectoral Fin */}
@@ -233,7 +247,7 @@ export function Fishbowl({ materials }: FishbowlProps) {
           rotation={[0.2, 0.45, -0.4]}
           material={materials.fishFin}
         >
-          <planeGeometry args={[0.007, 0.009]} />
+          <planeGeometry args={[0.008, 0.010]} />
         </mesh>
 
         {/* Right Pectoral Fin */}
@@ -242,43 +256,52 @@ export function Fishbowl({ materials }: FishbowlProps) {
           rotation={[0.2, -0.45, 0.4]}
           material={materials.fishFin}
         >
-          <planeGeometry args={[0.007, 0.009]} />
+          <planeGeometry args={[0.008, 0.010]} />
         </mesh>
 
-        {/* Articulated Tail Assembly */}
-        <group ref={tailRef} position={[0, 0, -0.020]}>
+        {/* Ventral Pelvic Fins */}
+        <mesh position={[-0.004, -0.010, -0.002]} rotation={[-0.3, 0.2, -0.2]} material={materials.fishFin}>
+          <planeGeometry args={[0.004, 0.007]} />
+        </mesh>
+        <mesh position={[0.004, -0.010, -0.002]} rotation={[-0.3, -0.2, 0.2]} material={materials.fishFin}>
+          <planeGeometry args={[0.004, 0.007]} />
+        </mesh>
+
+        {/* Articulated Caudal Tail Assembly */}
+        <group ref={tailRef} position={[0, 0, -0.021]}>
           {/* Tapered Caudal Peduncle */}
-          <mesh position={[0, 0, -0.004]} scale={[0.004, 0.006, 0.008]} material={materials.fishBody}>
+          <mesh position={[0, 0, -0.004]} scale={[0.004, 0.006, 0.009]} material={materials.fishBody}>
             <sphereGeometry args={[1, 10, 8]} />
           </mesh>
-          {/* Dual-Lobe Fan Tail Fin */}
-          <mesh position={[0, 0.003, -0.014]} rotation={[0.1, 0, 0]} material={materials.fishFin}>
-            <planeGeometry args={[0.002, 0.018]} />
+          {/* Flowing Upper Fan Caudal Lobe */}
+          <mesh position={[0, 0.004, -0.015]} rotation={[0.12, 0, 0]} material={materials.fishFin}>
+            <planeGeometry args={[0.002, 0.019]} />
           </mesh>
-          <mesh position={[0, -0.003, -0.014]} rotation={[-0.1, 0, 0]} material={materials.fishFin}>
-            <planeGeometry args={[0.002, 0.016]} />
+          {/* Flowing Lower Fan Caudal Lobe */}
+          <mesh position={[0, -0.004, -0.015]} rotation={[-0.12, 0, 0]} material={materials.fishFin}>
+            <planeGeometry args={[0.002, 0.017]} />
           </mesh>
         </group>
       </group>
 
-      {/* ── 4. Physical Water Volume (Rendered behind glass) ── */}
+      {/* ── 4. Deep Refractive Water Volume (RenderOrder 1) ── */}
       <mesh
         geometry={waterGeometry}
         material={materials.water}
         renderOrder={1}
       />
 
-      {/* Water Surface Meniscus Disc */}
+      {/* Curved Water Meniscus Ring Highlight (RenderOrder 2) */}
       <mesh
-        position={[0, 0.155, 0]}
+        position={[0, 0.154, 0]}
         rotation={[-Math.PI / 2, 0, 0]}
         material={materials.waterSurface}
         renderOrder={2}
       >
-        <circleGeometry args={[0.115, 32]} />
+        <ringGeometry args={[0.106, 0.116, 32]} />
       </mesh>
 
-      {/* ── 5. Curved Physical Glass Fishbowl (Rendered with depthWrite: false) ── */}
+      {/* ── 5. Crystal Physical Glass Bowl (RenderOrder 3) ── */}
       <mesh
         geometry={bowlGeometry}
         material={materials.fishbowlGlass}
