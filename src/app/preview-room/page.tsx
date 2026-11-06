@@ -2,8 +2,9 @@
 
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
+import { notFound } from "next/navigation";
 import { CameraPreset, CAMERA_CONFIGS } from "@/components/room/RoomCamera";
-import { Compass, Eye, RotateCcw, Move, Box } from "lucide-react";
+import { Move, Box, ShieldAlert } from "lucide-react";
 
 const DynamicRoomCanvas = dynamic(
   () => import("@/components/room/RoomCanvas").then((mod) => mod.RoomCanvas),
@@ -18,6 +19,15 @@ const DynamicRoomCanvas = dynamic(
 );
 
 export default function PreviewRoomPage() {
+  // Production security gate: Prevent inadvertent public exposure in production
+  // Can be enabled in staging/preview environments by setting NEXT_PUBLIC_ENABLE_DEV_PREVIEW="true"
+  if (
+    process.env.NODE_ENV === "production" &&
+    process.env.NEXT_PUBLIC_ENABLE_DEV_PREVIEW !== "true"
+  ) {
+    notFound();
+  }
+
   const [selectedPreset, setSelectedPreset] = useState<CameraPreset>("desktop");
   const [enableOrbit, setEnableOrbit] = useState(false);
 
