@@ -52,7 +52,7 @@ export const ROOM_DIMENSIONS = {
     mousePos: [-1.68, 0.746, -1.62] as [number, number, number],
     fishbowlPos: [-1.42, 0.74, -1.98] as [number, number, number],
     plantPos: [-2.95, 0, -2.25] as [number, number, number],
-    hangingQuotesPos: [-2.05, 1.75, -2.68] as [number, number, number],
+    hangingQuotesPos: [-2.05, 1.50, -2.68] as [number, number, number],
   },
 
   // Right Side (Bed, Window, Door)

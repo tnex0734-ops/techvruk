@@ -37,7 +37,18 @@ export default function PreviewRoomClient() {
           <span className="text-[10px] font-mono font-bold text-neutral-400 mr-1">
             CAMERA PRESET:
           </span>
-          {(["desktop", "laptop", "tablet", "mobile", "workstation"] as CameraPreset[]).map((preset) => (
+          {(
+            [
+              "desktop",
+              "laptop",
+              "tablet",
+              "mobile",
+              "workstation",
+              "wardrobe",
+              "bed",
+              "doorWindow",
+            ] as CameraPreset[]
+          ).map((preset) => (
             <button
               key={preset}
               onClick={() => {

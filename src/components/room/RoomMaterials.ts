@@ -1,12 +1,20 @@
 import * as THREE from "three";
+import {
+  getLaptopScreenTexture,
+  getQuotePrintTexture1,
+  getQuotePrintTexture2,
+  getWoodGrainTexture,
+  getFabricTexture,
+} from "./RoomTextures";
 
 /**
- * Architectural Materials & Color Palette
+ * Architectural PBR Materials & Custom Finishes
  * 
- * Strict Aesthetic Guidelines:
- * - Neutral, realistic architectural finishes (plaster, light oak, concrete, linen).
- * - Restrained portfolio red accent (#C91F2B) used on selective details only.
- * - Soft diffuse lighting response; avoids harsh specular glare.
+ * Strict Quality Guidelines:
+ * - Natural, realistic architectural materials (Scandinavian birch, linen, anodized aluminum, matte steel).
+ * - Procedural textures: Retina IDE laptop screen, archival quote prints, organic wood grain.
+ * - Selective signature red accent (#C91F2B) on chair upholstery and subtle graphic elements.
+ * - Fully disposed / memoized per scene instance.
  */
 
 export const ROOM_PALETTE = {
@@ -15,94 +23,166 @@ export const ROOM_PALETTE = {
   floor: "#E8E2D9",         // Light matte concrete / bleached oak floor
   woodLight: "#D5C5B1",     // Light Scandinavian birch/oak (cabinetry & desk)
   woodTrim: "#BAA791",      // Cabinet seams & wood trim details
-  metalDark: "#222226",     // Dark graphite / anodized aluminum (desk frame, laptop, window trim)
+  woodDark: "#948270",      // Plinth kickplate and shadow accents
+  metalDark: "#222226",     // Dark graphite / anodized aluminum (desk frame, window trim)
   metalSilver: "#C5C7CC",   // Laptop hinge & stand highlights
   metalAluminum: "#D8DADE", // Apple-style matte anodized aluminum for laptop body
   fabricWhite: "#F8F8F9",   // Crisp cotton bed linen
-  fabricPillow: "#ECEAE8",  // Soft linen pillows
-  fabricThrow: "#D6CEBF",   // Neutral wool throw blanket
+  fabricDuvet: "#EDE8E1",   // Warm natural duvet fabric
+  fabricPillow: "#FAF8F5",  // Soft lofted linen pillows
+  fabricThrow: "#D4CBC0",   // Neutral wool throw blanket
   glass: "#DCEEF7",         // Architectural window & fishbowl glass with sky tint
-  daylightBackdrop: "#F0F6FA", // Soft daylight plane outside window
+  daylightBackdrop: "#F2F7FA", // Soft daylight plane outside window
   water: "#D5ECF2",         // Water proxy inside bowl
   fishAccent: "#E06A3B",    // Subtle warm orange-gold swimmer proxy inside bowl
   plantLeaf: "#2D5A3A",     // Lush architectural olive-forest green
   plantPot: "#E2DCD3",      // Matte ceramic pot
   accentRed: "#C91F2B",     // Portfolio signature red accent (chair cushion / frame border)
-  screenGlow: "#FFFFFF",    // Laptop screen emissive display
-  deskMat: "#2B2B30",       // Charcoal desk pad for high-contrast accessory framing
+  deskMat: "#26262B",       // Charcoal desk pad for high-contrast accessory framing
   doorFrame: "#DDD6CB",     // Clean architectural door architrave
   doorPanel: "#E6DFD3",     // Warm Scandinavian oak door leaf
   windowFrame: "#E5E0D8",   // Architectural window casing
+  keycap: "#202024",        // Low-profile keyboard keycaps
 } as const;
 
 export function createRoomMaterials() {
+  const woodTexture = getWoodGrainTexture();
+  const fabricTexture = getFabricTexture();
+  const screenTexture = getLaptopScreenTexture();
+  const quote1Texture = getQuotePrintTexture1();
+  const quote2Texture = getQuotePrintTexture2();
+
   return {
     wall: new THREE.MeshStandardMaterial({
       color: ROOM_PALETTE.wall,
-      roughness: 0.88,
+      roughness: 0.90,
       metalness: 0.02,
     }),
     wallRight: new THREE.MeshStandardMaterial({
       color: ROOM_PALETTE.wallAccent,
-      roughness: 0.85,
+      roughness: 0.88,
       metalness: 0.02,
     }),
     floor: new THREE.MeshStandardMaterial({
       color: ROOM_PALETTE.floor,
-      roughness: 0.70,
-      metalness: 0.05,
+      roughness: 0.72,
+      metalness: 0.04,
     }),
     woodLight: new THREE.MeshStandardMaterial({
       color: ROOM_PALETTE.woodLight,
-      roughness: 0.60,
-      metalness: 0.04,
+      map: woodTexture,
+      roughness: 0.55,
+      metalness: 0.03,
     }),
     woodTrim: new THREE.MeshStandardMaterial({
       color: ROOM_PALETTE.woodTrim,
-      roughness: 0.65,
+      roughness: 0.62,
+      metalness: 0.04,
+    }),
+    woodDark: new THREE.MeshStandardMaterial({
+      color: ROOM_PALETTE.woodDark,
+      roughness: 0.68,
       metalness: 0.04,
     }),
     metalDark: new THREE.MeshStandardMaterial({
       color: ROOM_PALETTE.metalDark,
       roughness: 0.35,
-      metalness: 0.75,
+      metalness: 0.80,
     }),
     metalSilver: new THREE.MeshStandardMaterial({
       color: ROOM_PALETTE.metalSilver,
-      roughness: 0.25,
-      metalness: 0.85,
+      roughness: 0.20,
+      metalness: 0.88,
     }),
     metalAluminum: new THREE.MeshStandardMaterial({
       color: ROOM_PALETTE.metalAluminum,
       roughness: 0.28,
-      metalness: 0.70,
+      metalness: 0.75,
     }),
     fabricWhite: new THREE.MeshStandardMaterial({
       color: ROOM_PALETTE.fabricWhite,
+      map: fabricTexture,
       roughness: 0.92,
+      metalness: 0.0,
+    }),
+    fabricDuvet: new THREE.MeshStandardMaterial({
+      color: ROOM_PALETTE.fabricDuvet,
+      map: fabricTexture,
+      roughness: 0.88,
       metalness: 0.0,
     }),
     fabricPillow: new THREE.MeshStandardMaterial({
       color: ROOM_PALETTE.fabricPillow,
-      roughness: 0.90,
+      map: fabricTexture,
+      roughness: 0.85,
       metalness: 0.0,
     }),
     fabricThrow: new THREE.MeshStandardMaterial({
       color: ROOM_PALETTE.fabricThrow,
+      map: fabricTexture,
       roughness: 0.94,
       metalness: 0.0,
     }),
     glass: new THREE.MeshPhysicalMaterial({
       color: ROOM_PALETTE.glass,
-      roughness: 0.08,
-      transmission: 0.88,
+      roughness: 0.06,
+      transmission: 0.90,
       thickness: 0.25,
       transparent: true,
-      opacity: 0.6,
+      opacity: 0.55,
       ior: 1.52,
     }),
     daylightBackdrop: new THREE.MeshBasicMaterial({
       color: ROOM_PALETTE.daylightBackdrop,
+    }),
+    screenDisplay: new THREE.MeshBasicMaterial({
+      map: screenTexture,
+      toneMapped: false,
+    }),
+    quotePrint1: new THREE.MeshBasicMaterial({
+      map: quote1Texture,
+      toneMapped: false,
+    }),
+    quotePrint2: new THREE.MeshBasicMaterial({
+      map: quote2Texture,
+      toneMapped: false,
+    }),
+    deskMat: new THREE.MeshStandardMaterial({
+      color: ROOM_PALETTE.deskMat,
+      roughness: 0.78,
+      metalness: 0.05,
+    }),
+    chairFabric: new THREE.MeshStandardMaterial({
+      color: ROOM_PALETTE.accentRed,
+      map: fabricTexture,
+      roughness: 0.65,
+      metalness: 0.06,
+    }),
+    chairMesh: new THREE.MeshStandardMaterial({
+      color: "#1E1E22",
+      roughness: 0.85,
+      metalness: 0.15,
+    }),
+    doorFrame: new THREE.MeshStandardMaterial({
+      color: ROOM_PALETTE.doorFrame,
+      roughness: 0.65,
+      metalness: 0.05,
+    }),
+    doorPanel: new THREE.MeshStandardMaterial({
+      color: ROOM_PALETTE.doorPanel,
+      map: woodTexture,
+      roughness: 0.55,
+      metalness: 0.04,
+    }),
+    windowFrame: new THREE.MeshStandardMaterial({
+      color: ROOM_PALETTE.windowFrame,
+      roughness: 0.50,
+      metalness: 0.15,
+    }),
+    keycap: new THREE.MeshStandardMaterial({
+      color: ROOM_PALETTE.keycap,
+      roughness: 0.40,
+      metalness: 0.20,
     }),
     water: new THREE.MeshStandardMaterial({
       color: ROOM_PALETTE.water,
@@ -129,28 +209,7 @@ export function createRoomMaterials() {
       roughness: 0.55,
       metalness: 0.08,
     }),
-    screenGlow: new THREE.MeshBasicMaterial({
-      color: ROOM_PALETTE.screenGlow,
-    }),
-    deskMat: new THREE.MeshStandardMaterial({
-      color: ROOM_PALETTE.deskMat,
-      roughness: 0.80,
-      metalness: 0.05,
-    }),
-    doorFrame: new THREE.MeshStandardMaterial({
-      color: ROOM_PALETTE.doorFrame,
-      roughness: 0.65,
-      metalness: 0.05,
-    }),
-    doorPanel: new THREE.MeshStandardMaterial({
-      color: ROOM_PALETTE.doorPanel,
-      roughness: 0.60,
-      metalness: 0.04,
-    }),
-    windowFrame: new THREE.MeshStandardMaterial({
-      color: ROOM_PALETTE.windowFrame,
-      roughness: 0.55,
-      metalness: 0.10,
-    }),
   };
 }
+
+export type RoomMaterials = ReturnType<typeof createRoomMaterials>;

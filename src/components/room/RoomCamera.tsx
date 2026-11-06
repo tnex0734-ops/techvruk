@@ -4,7 +4,15 @@ import { useEffect, useRef } from "react";
 import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
-export type CameraPreset = "desktop" | "laptop" | "tablet" | "mobile" | "workstation";
+export type CameraPreset =
+  | "desktop"
+  | "laptop"
+  | "tablet"
+  | "mobile"
+  | "workstation"
+  | "wardrobe"
+  | "bed"
+  | "doorWindow";
 
 export interface CameraConfig {
   position: [number, number, number];
@@ -38,11 +46,29 @@ export const CAMERA_CONFIGS: Record<CameraPreset, CameraConfig> = {
     target: [0.0, 1.05, -0.35],
     fov: 56,
   },
-  // Workstation Close-Up: Intimate focal view of the creative desk, laptop on stand, peripherals, fishbowl and art
+  // Workstation Close-Up: Frontal perspective directly facing the laptop screen, keyboard, peripherals and wall art
   workstation: {
-    position: [-0.65, 1.35, -0.65],
-    target: [-1.65, 0.95, -1.85],
-    fov: 40,
+    position: [-1.95, 1.22, -1.05],
+    target: [-2.05, 0.98, -1.88],
+    fov: 46,
+  },
+  // Wardrobe Close-Up: 3-door wardrobe with handles, reveals and plinth
+  wardrobe: {
+    position: [-1.15, 1.45, 1.85],
+    target: [-3.05, 1.25, 0.70],
+    fov: 42,
+  },
+  // Bed Close-Up: Platform bed, upholstered headboard, draped duvet, pillows and throw
+  bed: {
+    position: [0.25, 1.45, 0.45],
+    target: [1.85, 0.65, -1.45],
+    fov: 42,
+  },
+  // Door & Window Close-Up: Architectural window casing, cross mullions, daylight plane and ajar door
+  doorWindow: {
+    position: [1.35, 1.65, 0.75],
+    target: [3.60, 1.45, 0.55],
+    fov: 46,
   },
 };
 
