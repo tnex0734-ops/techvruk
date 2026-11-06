@@ -15,33 +15,33 @@ export function RoomLighting() {
     <group name="room-lighting">
       {/* ── 1. Soft Ambient Hemispheric Fill (Sky/Ground) ── */}
       <hemisphereLight
-        color="#F4F6F9"
-        groundColor="#E5DFD7"
-        intensity={0.95}
+        color="#F8FAFC"
+        groundColor="#EAE5DE"
+        intensity={1.05}
       />
 
       {/* ── 2. Primary Natural Daylight (Entering through the Right Window) ── */}
       <directionalLight
-        position={[6.5, 4.2, -0.65]}
-        intensity={2.1}
-        color="#FFF6ED"
+        position={[6.0, 4.2, -0.65]}
+        intensity={2.2}
+        color="#FFF7EE"
         castShadow={false}
       />
 
-      {/* ── 3. Gentle Secondary Fill (Interior Soft Bounce) ── */}
+      {/* ── 3. Front Fill (Illuminates Open Front Cutaway & Architectural Details) ── */}
       <directionalLight
-        position={[-3.0, 3.5, 4.0]}
-        intensity={0.45}
-        color="#EAEFF5"
+        position={[2.0, 4.5, 6.0]}
+        intensity={0.65}
+        color="#F2F5FA"
         castShadow={false}
       />
 
-      {/* ── 4. Subtle Workstation Accent (Draws Eye to Laptop & Craft Zone) ── */}
+      {/* ── 4. Workstation Spotlight (Accents Laptop Screen, Accessories & Quotes) ── */}
       <pointLight
-        position={[-2.05, 1.45, -1.80]}
-        intensity={0.55}
-        color="#FFEAD9"
-        distance={3.2}
+        position={[-2.05, 1.55, -1.75]}
+        intensity={0.75}
+        color="#FFF3E6"
+        distance={3.5}
         decay={2}
       />
     </group>

@@ -137,7 +137,7 @@ export function RoomHero() {
               <span>17.3850° N, 78.4867° E</span>
             </span>
             <span className="text-[var(--color-border-strong)]">|</span>
-            <span className="text-[var(--color-red)] font-black">PHASE 3A BLOCKOUT</span>
+            <span className="text-[var(--color-red)] font-bold">INTERACTIVE 3D ENVIRONMENT</span>
           </div>
         </motion.div>
 
@@ -157,8 +157,8 @@ export function RoomHero() {
 
           {/* Top-Right Spatial Layout Diagram Pill */}
           <div className="absolute top-4 right-4 z-10 hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-white/85 backdrop-blur-xs border border-[var(--color-border)] text-[10px] font-mono text-[var(--color-muted)] shadow-2xs">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-            <span>DEMAND-RENDER ACTIVE</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-red)]" />
+            <span>STUDIO CUTAWAY</span>
           </div>
 
           {/* The R3F 3D Canvas */}

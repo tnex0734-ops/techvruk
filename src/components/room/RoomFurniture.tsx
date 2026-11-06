@@ -101,59 +101,100 @@ export function RoomFurniture() {
           </mesh>
         </group>
 
-        {/* ── Laptop on Stand (Focal Hero Asset) ── */}
+        {/* ── High-Contrast Charcoal Desk Pad ── */}
+        <mesh position={[0, d.desk.topThickness / 2 + 0.001, 0.04]} material={materials.deskMat}>
+          <boxGeometry args={[0.92, 0.003, 0.48]} />
+        </mesh>
+
+        {/* ── Laptop on Stand (Identifiable Modern Silhouette) ── */}
         <group position={[0, d.desk.topThickness / 2, 0]} name="laptop-setup">
-          {/* Aluminum Stand Base & Riser */}
-          <mesh position={[0, 0.045, -0.06]} material={materials.metalSilver}>
-            <boxGeometry args={[0.22, 0.09, 0.18]} />
+          {/* Aluminum Stand Base & Upright Arms */}
+          <mesh position={[0, 0.004, -0.07]} material={materials.metalSilver}>
+            <boxGeometry args={[0.22, 0.008, 0.20]} />
           </mesh>
-          {/* Angled Laptop Cradle */}
-          <group position={[0, 0.09, -0.04]} rotation={[-0.22, 0, 0]}>
-            {/* Laptop Base Chassis */}
-            <mesh position={[0, 0, 0]} material={materials.metalDark}>
+          {/* Dual Stand Risers */}
+          <mesh position={[-0.08, 0.06, -0.08]} material={materials.metalSilver}>
+            <boxGeometry args={[0.02, 0.11, 0.02]} />
+          </mesh>
+          <mesh position={[0.08, 0.06, -0.08]} material={materials.metalSilver}>
+            <boxGeometry args={[0.02, 0.11, 0.02]} />
+          </mesh>
+
+          {/* Angled Laptop Chassis in Aluminum */}
+          <group position={[0, 0.11, -0.06]} rotation={[-0.24, 0, 0]}>
+            {/* Laptop Base Body (Silver Anodized Aluminum) */}
+            <mesh position={[0, 0, 0]} material={materials.metalAluminum}>
               <boxGeometry args={[d.laptop.baseWidth, d.laptop.baseHeight, d.laptop.baseDepth]} />
             </mesh>
-            {/* Keyboard Well Relief */}
-            <mesh position={[0, 0.007, 0.01]} material={materials.woodTrim}>
-              <boxGeometry args={[0.28, 0.002, 0.11]} />
+            {/* Recessed Keyboard Well (Dark Graphite) */}
+            <mesh position={[0, 0.006, -0.01]} material={materials.metalDark}>
+              <boxGeometry args={[0.27, 0.002, 0.12]} />
             </mesh>
-            {/* Trackpad Proxy */}
-            <mesh position={[0, 0.007, 0.08]} material={materials.metalSilver}>
+            {/* Keyrow proxy slats for tactile silhouette */}
+            {[-0.045, -0.02, 0.005, 0.03].map((zRow, idx) => (
+              <mesh key={`keyrow-${idx}`} position={[0, 0.0075, zRow]} material={materials.metalSilver}>
+                <boxGeometry args={[0.26, 0.0015, 0.016]} />
+              </mesh>
+            ))}
+            {/* Precision Trackpad Plate */}
+            <mesh position={[0, 0.006, 0.075]} material={materials.metalSilver}>
               <boxGeometry args={[0.11, 0.002, 0.06]} />
             </mesh>
 
-            {/* Laptop Display Lid (Open at 115° relative to base) */}
-            <group position={[0, 0.006, -d.laptop.baseDepth / 2]} rotation={[1.95, 0, 0]}>
-              {/* Outer Display Shell */}
-              <mesh position={[0, d.laptop.screenHeight / 2, -0.004]} material={materials.metalDark}>
+            {/* Laptop Display Lid (Open at 110° relative to base) */}
+            <group position={[0, 0.006, -d.laptop.baseDepth / 2]} rotation={[1.92, 0, 0]}>
+              {/* Outer Lid Shell (Silver Anodized Aluminum) */}
+              <mesh position={[0, d.laptop.screenHeight / 2, -0.004]} material={materials.metalAluminum}>
                 <boxGeometry args={[d.laptop.baseWidth, d.laptop.screenHeight, 0.008]} />
               </mesh>
-              {/* Active Screen Display (Soft Warm Emissive Glow) */}
-              <mesh position={[0, d.laptop.screenHeight / 2, 0.001]} material={materials.screenGlow}>
-                <boxGeometry args={[d.laptop.baseWidth - 0.02, d.laptop.screenHeight - 0.02, 0.002]} />
+              {/* Thin Dark Display Bezel */}
+              <mesh position={[0, d.laptop.screenHeight / 2, 0.0005]} material={materials.metalDark}>
+                <boxGeometry args={[d.laptop.baseWidth, d.laptop.screenHeight, 0.001]} />
+              </mesh>
+              {/* Active Screen Display (Crisp Illuminated Glow) */}
+              <mesh position={[0, d.laptop.screenHeight / 2, 0.0015]} material={materials.screenGlow}>
+                <boxGeometry args={[d.laptop.baseWidth - 0.022, d.laptop.screenHeight - 0.022, 0.001]} />
+              </mesh>
+              {/* Minimalist UI Layout Wireframe on Display */}
+              <mesh position={[0, d.laptop.screenHeight - 0.025, 0.0025]} material={materials.metalDark}>
+                <boxGeometry args={[d.laptop.baseWidth - 0.04, 0.012, 0.0005]} />
+              </mesh>
+              <mesh position={[-0.08, d.laptop.screenHeight / 2 - 0.01, 0.0025]} material={materials.accentRed}>
+                <boxGeometry args={[0.06, d.laptop.screenHeight - 0.07, 0.0005]} />
+              </mesh>
+              <mesh position={[0.04, d.laptop.screenHeight / 2 - 0.01, 0.0025]} material={materials.woodTrim}>
+                <boxGeometry args={[0.14, d.laptop.screenHeight - 0.07, 0.0005]} />
               </mesh>
             </group>
           </group>
 
-          {/* ── External Keyboard & Mouse Proxies ── */}
-          <group position={[0, 0.008, 0.22]}>
-            {/* Keyboard */}
-            <mesh position={[-0.04, 0.006, 0]} material={materials.metalDark}>
-              <boxGeometry args={[0.30, 0.012, 0.12]} />
+          {/* ── External Keyboard & Mouse on Desk Pad ── */}
+          <group position={[0, 0.004, 0.20]}>
+            {/* Keyboard Body in Silver Aluminum */}
+            <mesh position={[-0.04, 0.004, 0]} material={materials.metalAluminum}>
+              <boxGeometry args={[0.31, 0.009, 0.12]} />
             </mesh>
-            {/* Mouse */}
-            <mesh position={[0.24, 0.014, 0]} material={materials.metalDark}>
-              <boxGeometry args={[0.07, 0.024, 0.11]} />
+            {/* Keyboard Keys in Graphite */}
+            <mesh position={[-0.04, 0.009, 0]} material={materials.metalDark}>
+              <boxGeometry args={[0.29, 0.004, 0.10]} />
+            </mesh>
+            {/* Ergonomic Wireless Mouse */}
+            <mesh position={[0.25, 0.012, 0]} material={materials.metalDark}>
+              <boxGeometry args={[0.065, 0.022, 0.11]} />
+            </mesh>
+            {/* Mouse Scroll Wheel Accent */}
+            <mesh position={[0.25, 0.024, -0.02]} material={materials.metalSilver}>
+              <boxGeometry args={[0.008, 0.004, 0.02]} />
             </mesh>
           </group>
 
-          {/* ── Glass Fishbowl Proxy ── */}
-          <group position={[0.55, 0, -0.16]} name="fishbowl">
-            {/* Flat Base Stand */}
+          {/* ── Glass Fishbowl Proxy with Water & Swimmer Accent ── */}
+          <group position={[0.56, 0, -0.16]} name="fishbowl">
+            {/* Turned Wood Base Stand */}
             <mesh position={[0, 0.01, 0]} material={materials.woodTrim}>
               <cylinderGeometry args={[0.08, 0.09, 0.02, 16]} />
             </mesh>
-            {/* Glass Sphere Bowl */}
+            {/* Translucent Glass Sphere Bowl */}
             <mesh position={[0, 0.13, 0]} material={materials.glass}>
               <sphereGeometry args={[0.13, 24, 24]} />
             </mesh>
@@ -161,17 +202,27 @@ export function RoomFurniture() {
             <mesh position={[0, 0.10, 0]} material={materials.water}>
               <sphereGeometry args={[0.11, 16, 16]} />
             </mesh>
+            {/* Tiny Swimmer Proxy Accent */}
+            <mesh position={[0.03, 0.10, 0.02]} rotation={[0, 0.6, 0]} material={materials.fishAccent}>
+              <boxGeometry args={[0.032, 0.014, 0.008]} />
+            </mesh>
           </group>
 
-          {/* ── Desk Plant Pot Proxy ── */}
-          <group position={[-0.62, 0, -0.18]} name="desk-plant">
-            {/* Ceramic Pot */}
+          {/* ── Desk Plant Pot with Layered Architectural Leaves ── */}
+          <group position={[-0.60, 0, -0.16]} name="desk-plant">
+            {/* Matte Ceramic Pot */}
             <mesh position={[0, 0.07, 0]} material={materials.plantPot}>
               <cylinderGeometry args={[0.08, 0.06, 0.14, 16]} />
             </mesh>
-            {/* Architectural Foliage Blockout */}
-            <mesh position={[0, 0.18, 0]} material={materials.plantLeaf}>
+            {/* Layered Architectural Foliage */}
+            <mesh position={[0, 0.17, 0]} material={materials.plantLeaf}>
               <sphereGeometry args={[0.10, 12, 12]} />
+            </mesh>
+            <mesh position={[-0.04, 0.22, 0.02]} rotation={[0.3, 0.4, -0.2]} material={materials.plantLeaf}>
+              <boxGeometry args={[0.09, 0.005, 0.07]} />
+            </mesh>
+            <mesh position={[0.04, 0.23, -0.02]} rotation={[-0.2, -0.5, 0.3]} material={materials.plantLeaf}>
+              <boxGeometry args={[0.08, 0.005, 0.08]} />
             </mesh>
           </group>
         </group>
@@ -183,15 +234,18 @@ export function RoomFurniture() {
         <mesh position={[0, 0.22, 0]} material={materials.plantPot}>
           <cylinderGeometry args={[0.18, 0.14, 0.44, 16]} />
         </mesh>
-        {/* Architectural Foliage Canopy */}
-        <mesh position={[0, 0.58, 0]} material={materials.plantLeaf}>
-          <cylinderGeometry args={[0.28, 0.05, 0.48, 8]} />
+        {/* Tiered Architectural Foliage Canopy */}
+        <mesh position={[0, 0.52, 0]} material={materials.plantLeaf}>
+          <cylinderGeometry args={[0.28, 0.08, 0.36, 12]} />
+        </mesh>
+        <mesh position={[0, 0.74, 0]} material={materials.plantLeaf}>
+          <cylinderGeometry args={[0.20, 0.04, 0.28, 10]} />
         </mesh>
       </group>
 
       {/* ── Hanging Quotation Frames (Above Desk on Back Wall) ── */}
       <group position={d.accessories.hangingQuotesPos} name="hanging-quotes">
-        {/* Quote Frame 1 (Left) */}
+        {/* Quote Frame 1 (Left: Editorial Graphic Quote) */}
         <group position={[-0.32, 0, 0]}>
           <mesh material={materials.metalDark}>
             <boxGeometry args={[0.42, 0.54, 0.02]} />
@@ -199,19 +253,31 @@ export function RoomFurniture() {
           <mesh position={[0, 0, 0.012]} material={materials.fabricWhite}>
             <boxGeometry args={[0.36, 0.48, 0.002]} />
           </mesh>
-          {/* Subtle Red Mat Line */}
-          <mesh position={[0, 0, 0.014]} material={materials.accentRed}>
-            <boxGeometry args={[0.28, 0.004, 0.001]} />
+          {/* Signature Red Typography Line Accent */}
+          <mesh position={[0, 0.06, 0.014]} material={materials.accentRed}>
+            <boxGeometry args={[0.26, 0.006, 0.001]} />
+          </mesh>
+          <mesh position={[0, 0.02, 0.014]} material={materials.metalDark}>
+            <boxGeometry args={[0.24, 0.004, 0.001]} />
+          </mesh>
+          <mesh position={[-0.04, -0.02, 0.014]} material={materials.woodTrim}>
+            <boxGeometry args={[0.16, 0.004, 0.001]} />
           </mesh>
         </group>
 
-        {/* Quote Frame 2 (Right) */}
+        {/* Quote Frame 2 (Right: Minimalist Typography Print) */}
         <group position={[0.32, 0.08, 0]}>
           <mesh material={materials.metalDark}>
             <boxGeometry args={[0.36, 0.46, 0.02]} />
           </mesh>
           <mesh position={[0, 0, 0.012]} material={materials.fabricWhite}>
             <boxGeometry args={[0.30, 0.40, 0.002]} />
+          </mesh>
+          <mesh position={[0, 0.04, 0.014]} material={materials.metalDark}>
+            <boxGeometry args={[0.20, 0.004, 0.001]} />
+          </mesh>
+          <mesh position={[0, -0.01, 0.014]} material={materials.accentRed}>
+            <boxGeometry args={[0.18, 0.004, 0.001]} />
           </mesh>
         </group>
       </group>
@@ -251,44 +317,85 @@ export function RoomFurniture() {
         </mesh>
       </group>
 
-      {/* ── 3B. Window (Right Wall Architectural Opening) ── */}
+      {/* ── 3B. Window (Right Wall Architectural Opening with Natural Daylight) ── */}
       <group position={d.window.position} rotation={[0, -Math.PI / 2, 0]} name="window">
-        {/* Window Outer Frame */}
-        <mesh material={materials.metalDark}>
-          <boxGeometry args={[d.window.width, d.window.height, 0.12]} />
+        {/* Exterior Daylight Backdrop: Illuminates the window aperture with soft warm daylight */}
+        <mesh position={[0, 0, -0.06]} material={materials.daylightBackdrop}>
+          <planeGeometry args={[d.window.width + 0.20, d.window.height + 0.20]} />
         </mesh>
-        {/* Glass Pane */}
+
+        {/* Window Architectural Outer Frame / Casing */}
+        <mesh material={materials.windowFrame}>
+          <boxGeometry args={[d.window.width, d.window.height, 0.14]} />
+        </mesh>
+
+        {/* Semi-Translucent Window Glass with Sky Tint */}
         <mesh position={[0, 0, 0]} material={materials.glass}>
-          <boxGeometry args={[d.window.width - 0.10, d.window.height - 0.10, 0.01]} />
+          <boxGeometry args={[d.window.width - 0.08, d.window.height - 0.08, 0.015]} />
         </mesh>
-        {/* Horizontal Mullion Divider */}
-        <mesh position={[0, 0.15, 0.01]} material={materials.metalDark}>
-          <boxGeometry args={[d.window.width - 0.10, 0.03, 0.04]} />
+
+        {/* Architectural Window Mullions (4-Pane Pattern) */}
+        {/* Horizontal Mullion */}
+        <mesh position={[0, 0.12, 0.01]} material={materials.windowFrame}>
+          <boxGeometry args={[d.window.width - 0.08, 0.04, 0.05]} />
         </mesh>
-        {/* Vertical Mullion Divider */}
-        <mesh position={[0, 0, 0.01]} material={materials.metalDark}>
-          <boxGeometry args={[0.03, d.window.height - 0.10, 0.04]} />
+        {/* Vertical Mullion */}
+        <mesh position={[0, 0, 0.01]} material={materials.windowFrame}>
+          <boxGeometry args={[0.04, d.window.height - 0.08, 0.05]} />
         </mesh>
-        {/* Interior Wooden Window Sill */}
-        <mesh position={[0, -d.window.height / 2 - 0.02, 0.08]} material={materials.woodTrim}>
-          <boxGeometry args={[d.window.width + 0.12, 0.04, 0.22]} />
+
+        {/* Interior Wooden Window Sill Shelf */}
+        <mesh position={[0, -d.window.height / 2 - 0.02, 0.10]} material={materials.woodLight}>
+          <boxGeometry args={[d.window.width + 0.14, 0.04, 0.22]} />
         </mesh>
       </group>
 
-      {/* ── 3C. Door (Right Wall Flush Interior Door) ── */}
+      {/* ── 3C. Door (Right Wall Architectural Entrance with Ajar Leaf) ── */}
       <group position={d.door.position} rotation={[0, -Math.PI / 2, 0]} name="door">
-        {/* Door Frame Trim */}
-        <mesh material={materials.woodTrim}>
-          <boxGeometry args={[d.door.width, d.door.height, 0.12]} />
+        {/* Architectural 3-Sided Door Casing / Architrave Frame */}
+        {/* Left Jamb */}
+        <mesh position={[-d.door.width / 2 + 0.03, 0, 0]} material={materials.doorFrame}>
+          <boxGeometry args={[0.06, d.door.height, 0.16]} />
         </mesh>
-        {/* Flush Door Panel */}
-        <mesh position={[0, 0, 0]} material={materials.doorPanel}>
-          <boxGeometry args={[d.door.width - 0.06, d.door.height - 0.06, 0.04]} />
+        {/* Right Jamb */}
+        <mesh position={[d.door.width / 2 - 0.03, 0, 0]} material={materials.doorFrame}>
+          <boxGeometry args={[0.06, d.door.height, 0.16]} />
         </mesh>
-        {/* Door Handle Lever */}
-        <mesh position={[d.door.width / 2 - 0.12, 0, 0.045]} material={materials.metalDark}>
-          <boxGeometry args={[0.12, 0.025, 0.04]} />
+        {/* Top Header */}
+        <mesh position={[0, d.door.height / 2 - 0.03, 0]} material={materials.doorFrame}>
+          <boxGeometry args={[d.door.width, 0.06, 0.16]} />
         </mesh>
+        {/* Floor Threshold Strip */}
+        <mesh position={[0, -d.door.height / 2 + 0.01, 0]} material={materials.woodTrim}>
+          <boxGeometry args={[d.door.width, 0.02, 0.18]} />
+        </mesh>
+
+        {/* Distinct Door Leaf Panel — Swung Inward Ajar by 18° for immediate architectural realism */}
+        <group position={[-d.door.width / 2 + 0.06, 0, 0]} rotation={[0, 0.31, 0]}>
+          {/* Main Door Leaf Slab */}
+          <mesh position={[(d.door.width - 0.10) / 2, 0, 0]} material={materials.doorPanel}>
+            <boxGeometry args={[d.door.width - 0.10, d.door.height - 0.07, 0.045]} />
+          </mesh>
+          {/* Subtle Inset Door Molding Lines */}
+          <mesh position={[(d.door.width - 0.10) / 2, 0.35, 0.024]} material={materials.woodTrim}>
+            <boxGeometry args={[d.door.width - 0.22, 0.85, 0.003]} />
+          </mesh>
+          <mesh position={[(d.door.width - 0.10) / 2, -0.45, 0.024]} material={materials.woodTrim}>
+            <boxGeometry args={[d.door.width - 0.22, 0.65, 0.003]} />
+          </mesh>
+
+          {/* Architectural Lever Handle & Escutcheon Plate */}
+          <group position={[d.door.width - 0.18, 0, 0.026]}>
+            {/* Escutcheon Backplate */}
+            <mesh material={materials.metalDark}>
+              <boxGeometry args={[0.035, 0.16, 0.006]} />
+            </mesh>
+            {/* Horizontal Lever Handle */}
+            <mesh position={[0.04, 0.02, 0.03]} material={materials.metalDark}>
+              <boxGeometry args={[0.11, 0.02, 0.02]} />
+            </mesh>
+          </group>
+        </group>
       </group>
 
     </group>

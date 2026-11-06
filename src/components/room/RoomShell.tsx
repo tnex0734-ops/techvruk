@@ -52,8 +52,8 @@ export function RoomShell() {
         <boxGeometry args={[wt, h, d.depth + wt]} />
       </mesh>
 
-      {/* ── 4. Right Wall with Window & Door Cutouts ── */}
-      {/* 4A. Right Wall - Rear Section (Behind Window) */}
+      {/* ── 4. Right Wall with Stepped Architectural Cutaway ── */}
+      {/* 4A. Right Wall - Rear Section (Behind Window, grounds rear right corner) */}
       <mesh
         position={[halfW + wt / 2, h / 2, -2.15]}
         material={materials.wallRight}
@@ -69,7 +69,7 @@ export function RoomShell() {
         <boxGeometry args={[wt, d.window.sillHeight, d.window.width]} />
       </mesh>
 
-      {/* 4C. Right Wall - Above Window (Lintel) */}
+      {/* 4C. Right Wall - Above Window (Lintel framing top of window) */}
       <mesh
         position={[halfW + wt / 2, (d.window.sillHeight + d.window.height + h) / 2, d.window.position[2]]}
         material={materials.wallRight}
@@ -77,28 +77,29 @@ export function RoomShell() {
         <boxGeometry args={[wt, h - (d.window.sillHeight + d.window.height), d.window.width]} />
       </mesh>
 
-      {/* 4D. Right Wall - Middle Pier (Between Window and Door) */}
+      {/* 4D. Right Wall - Stepped Cutaway Pier (Between Window and Door)
+          Cut down to 1.15m waist-height to reveal bed, interior floor and workstation unobstructed */}
       <mesh
-        position={[halfW + wt / 2, h / 2, 0.85]}
+        position={[halfW + wt / 2, 1.15 / 2, 0.85]}
         material={materials.wallRight}
       >
-        <boxGeometry args={[wt, h, 1.10]} />
+        <boxGeometry args={[wt, 1.15, 1.10]} />
+      </mesh>
+      {/* Architectural wood cap on the stepped cutaway pier */}
+      <mesh
+        position={[halfW + wt / 2, 1.15 + 0.01, 0.85]}
+        material={materials.woodTrim}
+      >
+        <boxGeometry args={[wt + 0.02, 0.02, 1.12]} />
       </mesh>
 
-      {/* 4E. Right Wall - Above Door (Door Lintel) */}
+      {/* 4E. Right Wall - Front Architectural Threshold Curb (Z: 2.25 to 2.70)
+          Low 0.12m curb replaces the former 2.8m towering corner post, completely opening foreground sightlines */}
       <mesh
-        position={[halfW + wt / 2, (d.door.height + h) / 2, d.door.position[2]]}
+        position={[halfW + wt / 2, 0.06, 2.475]}
         material={materials.wallRight}
       >
-        <boxGeometry args={[wt, h - d.door.height, d.door.width]} />
-      </mesh>
-
-      {/* 4F. Right Wall - Front Corner Post */}
-      <mesh
-        position={[halfW + wt / 2, h / 2, 2.50]}
-        material={materials.wallRight}
-      >
-        <boxGeometry args={[wt, h, 0.50]} />
+        <boxGeometry args={[wt, 0.12, 0.45]} />
       </mesh>
 
       {/* ── 5. Architectural Skirting / Baseboard Trim ── */}

@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
-export type CameraPreset = "desktop" | "laptop" | "tablet" | "mobile";
+export type CameraPreset = "desktop" | "laptop" | "tablet" | "mobile" | "workstation";
 
 export interface CameraConfig {
   position: [number, number, number];
@@ -13,29 +13,36 @@ export interface CameraConfig {
 }
 
 export const CAMERA_CONFIGS: Record<CameraPreset, CameraConfig> = {
-  // Desktop (1440px+): Balanced 3/4 architectural framing filling ~75% of view
+  // Desktop (1440px+): Balanced 3/4 architectural framing filling ~75% of view with stepped cutaway sightlines
   desktop: {
-    position: [4.2, 3.6, 5.4],
-    target: [-0.35, 1.05, -0.2],
+    position: [3.4, 3.8, 5.8],
+    target: [-0.2, 1.0, -0.3],
     fov: 44,
   },
   // Laptop (1024px - 1439px): Crisp proportioned overview
   laptop: {
-    position: [4.4, 3.8, 5.7],
-    target: [-0.35, 1.05, -0.2],
-    fov: 46,
+    position: [3.5, 3.9, 6.0],
+    target: [-0.2, 1.0, -0.3],
+    fov: 45,
   },
   // Tablet (768px - 1023px): Slightly steeper elevation for 3:4 portrait aspect
   tablet: {
-    position: [4.2, 4.2, 5.8],
-    target: [-0.25, 0.95, -0.15],
-    fov: 50,
+    position: [2.8, 4.4, 6.8],
+    target: [-0.15, 1.0, -0.3],
+    fov: 48,
   },
-  // Mobile (< 768px): Intimate architectural view framed for vertical mobile screens
+  // Mobile (< 768px): Calibrated wide-angle architectural composition
+  // Entire room (Left cupboards, center workstation, right bed, window, door) 100% visible without cropping
   mobile: {
-    position: [3.9, 4.3, 5.8],
-    target: [-0.2, 0.9, -0.1],
-    fov: 54,
+    position: [2.1, 5.0, 8.4],
+    target: [0.0, 1.05, -0.35],
+    fov: 56,
+  },
+  // Workstation Close-Up: Intimate focal view of the creative desk, laptop on stand, peripherals, fishbowl and art
+  workstation: {
+    position: [-0.65, 1.35, -0.65],
+    target: [-1.65, 0.95, -1.85],
+    fov: 40,
   },
 };
 
