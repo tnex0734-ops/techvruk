@@ -13,6 +13,7 @@ import { Door } from "./models/Door";
 import { HangingQuotes } from "./models/HangingQuotes";
 import { Fishbowl } from "./models/Fishbowl";
 import { Plant } from "./models/Plant";
+import { Html } from "@react-three/drei";
 import { RoomHotspot } from "./RoomHotspot";
 import { RoomInteractionTarget, ROOM_HOTSPOTS } from "./roomInteractionTypes";
 
@@ -76,17 +77,25 @@ export function RoomFurniture({
       {/* ── 5. 3D Navigation Hotspots (Phase 3C.1) ── */}
       {onSelect && (
         <group name="room-interactive-hotspots">
+          {/* Sacrificial Drei HTML anchor to absorb R3F portal initialization in React 19 */}
+          <Html style={{ display: "none" }}>
+            <span aria-hidden="true" />
+          </Html>
+
           <RoomHotspot
+            key="laptop"
             hotspot={ROOM_HOTSPOTS.laptop}
             activeTarget={activeTarget}
             onSelect={onSelect}
           />
           <RoomHotspot
+            key="wardrobe"
             hotspot={ROOM_HOTSPOTS.wardrobe}
             activeTarget={activeTarget}
             onSelect={onSelect}
           />
           <RoomHotspot
+            key="door"
             hotspot={ROOM_HOTSPOTS.door}
             activeTarget={activeTarget}
             onSelect={onSelect}

@@ -40,7 +40,7 @@ export const ROOM_HOTSPOTS: Record<"laptop" | "wardrobe" | "door", RoomHotspotDa
     title: "Contact & Connect",
     category: "Inquiries & Socials",
     badge: "CONTACT",
-    position: [3.45, 2.08, 0.55],
+    position: [2.75, 1.80, 1.15],
     cameraPosition: [1.35, 1.60, 0.85],
     cameraTarget: [3.50, 1.25, 0.55],
     cameraFov: 46,

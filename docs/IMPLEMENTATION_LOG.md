@@ -93,3 +93,38 @@ Address user feedback on Phase 3C.1:
 - `git diff --check`: 0 issues.
 - All 12 screenshots captured via CDP automated script with 0px horizontal overflow.
 - Demand rendering preserved; zero continuous render loop.
+
+---
+
+## [Phase 3C.1.2] Hotspot Visibility & Mobile Clipping Resolution — 2026-11-06
+
+### Intent & Scope
+Resolve the two specific visual review findings from Phase 3C.1.1:
+1. **Mobile CONTACT Hotspot Clipping:** The floating CONTACT badge was cut off at the right edge on 390px viewports because the original door 3D coordinate (`X = 3.45`) projected too close to the right screen boundary (screen $X = 360\text{px}$, clipping by ~10px).
+2. **WORK Hotspot Visibility Confirmation:** In overview captures, the WORK label was missing from the 3D room above the laptop due to React 19 async portal hydration with `@react-three/drei` `<Html>`.
+
+### Root Cause Analysis & Engineering Solutions
+1. **Door Hotspot Repositioning (`roomInteractionTypes.ts`):**
+   - Shifted `ROOM_HOTSPOTS.door.position` from `[3.45, 2.08, 0.55]` to `[2.75, 1.80, 1.15]`.
+   - On 390px mobile, center anchor projects to screen $X = 321\text{px}$ (right edge $X = 364\text{px}$), leaving a healthy 26px padding inside the cutaway card.
+   - On 1440px desktop, center anchor projects to $X = 1038\text{px}$, naturally framing the entrance threshold without obscuring the bed or window.
+
+2. **Drei HTML Hydration & Portal Anchor (`RoomFurniture.tsx`):**
+   - In React 19, R3F's initial event container reconnection triggered an unmount/remount on the first Drei `<Html>` element in the scene graph, causing its root container to become unmounted with empty innerHTML.
+   - Added a lightweight sacrificial Drei `<Html style={{ display: "none" }}>` anchor at the start of the hotspot group to absorb the initial portal connection lifecycle.
+   - Added explicit, stable keys (`key="laptop"`, `key="wardrobe"`, `key="door"`) to ensure permanent DOM attachment for all 3 interactive markers.
+
+### Verification & Metrics
+- `tsc --noEmit`: 0 errors.
+- `next build`: Production build passes in 3.0s.
+- `DOM Inspection`: All three buttons (`WORK`, `JOURNEY`, `CONTACT`) verified simultaneously in the DOM with active bounding boxes:
+  - Mobile (390x844): WORK `[left: 113, right: 160]`, JOURNEY `[left: 29, right: 99]`, CONTACT `[left: 278, right: 364]`. `clippedRight: false` for all. Horizontal overflow: 0px.
+  - Desktop (1440x900): WORK `[left: 612, top: 398]`, JOURNEY `[left: 395, top: 335]`, CONTACT `[left: 926, top: 511]`. All visible.
+  - Tablet (768x1024): All three hotspots visible with > 180px safe margins.
+- `Interaction Testing`: Click on 3D WORK button opens Selected Work drawer with full project portfolio (Dev Atlas, Abtalks, Creonix, PrepBlitz, Nexus GG, Palmist.io, Equifiz).
+- All 12 screenshots re-captured and synchronized across all 5 destinations:
+  - `C:\Users\TNEX\OneDrive\Desktop\Phase3C1_1_Screenshots\`
+  - `C:\Users\TNEX\Desktop\Phase3C1_1_Screenshots\`
+  - `C:\Users\TNEX\OneDrive\Desktop\techvruk\Phase3C1_1_Screenshots\`
+  - `C:\Users\TNEX\OneDrive\Desktop\portcomp\PORTFOLIO\screenshots\phase-3c-1-1\`
+  - `C:\Users\TNEX\.gemini\antigravity\brain\a525ee37-e34c-4994-9a91-364c9e0f7797\`
