@@ -29,16 +29,16 @@ export function RoomLighting() {
         intensity={1.90}
         color="#FFFBF5"
         castShadow
-        shadow-mapSize-width={2048}
-        shadow-mapSize-height={2048}
+        shadow-mapSize-width={1024}
+        shadow-mapSize-height={1024}
         shadow-camera-near={0.5}
         shadow-camera-far={14}
         shadow-camera-left={-4.5}
         shadow-camera-right={4.5}
         shadow-camera-top={3.8}
         shadow-camera-bottom={-2.2}
-        shadow-bias={-0.00018}
-        shadow-radius={2.8}
+        shadow-bias={-0.0002}
+        shadow-radius={2.5}
       />
 
       {/* ── 3. Soft Window Aperture Rim Bounce ── */}

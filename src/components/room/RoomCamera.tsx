@@ -38,48 +38,48 @@ export const CAMERA_CONFIGS: Record<CameraPreset, CameraConfig> = {
   },
   // Tablet (768px - 1023px): Slightly steeper elevation for 3:4 portrait aspect
   tablet: {
-    position: [2.8, 4.4, 6.8],
+    position: [3.1, 4.4, 6.8],
     target: [-0.15, 1.0, -0.3],
     fov: 48,
   },
   // Mobile (< 768px): Calibrated wide-angle architectural composition
   // Entire room (Left cupboards, center workstation, right bed, window, door) 100% visible without cropping
   mobile: {
-    position: [2.1, 5.0, 8.4],
-    target: [0.0, 1.05, -0.35],
-    fov: 56,
+    position: [3.05, 5.95, 15.64],
+    target: [0.0, 1.20, -0.3],
+    fov: 54,
   },
-  // Workstation Close-Up: Frontal perspective centering the open laptop screen, flanked by plant & fishbowl
+  // Workstation Close-Up
   workstation: {
-    position: [-2.05, 1.20, -1.05],
+    position: [-2.05, 1.35, -0.95],
     target: [-2.05, 0.98, -1.88],
     fov: 44,
   },
-  // Wardrobe Close-Up: Recalibrated wider framing to show the entire 3-door wardrobe, reveals, plinth and handles
+  // Wardrobe Close-Up
   wardrobe: {
-    position: [0.10, 1.45, 2.75],
-    target: [-2.95, 1.10, 0.40],
-    fov: 46,
+    position: [-1.15, 1.40, 0.50],
+    target: [-2.86, 1.40, 0.50],
+    fov: 42,
   },
-  // Bed Close-Up: Recalibrated framing showcasing the platform frame, tufted headboard, soft pillows & draped duvet
+  // Bed Close-Up
   bed: {
     position: [-0.20, 1.45, 0.95],
     target: [1.90, 0.48, -1.35],
     fov: 46,
   },
-  // Fishbowl Close-Up: Focused inspection of curved glass bowl, water volume, swimming goldfish and pebbles
+  // Fishbowl Close-Up
   fishbowl: {
     position: [-1.47, 0.98, -1.60],
     target: [-1.47, 0.86, -2.01],
     fov: 34,
   },
-  // Plant Close-Up: Focused inspection of ceramic pot, drainage saucer, soil and curved botanical leaves
+  // Plant Close-Up
   plant: {
     position: [-2.20, 1.05, -1.35],
     target: [-2.60, 0.88, -1.95],
     fov: 32,
   },
-  // Door & Window Close-Up: Architectural window casing, cross mullions, daylight plane and ajar door
+  // Door & Window Close-Up
   doorWindow: {
     position: [1.35, 1.60, 0.85],
     target: [3.50, 1.25, 0.55],
@@ -131,23 +131,74 @@ export function RoomCamera({
   useEffect(() => {
     if (enableOrbit) return;
 
-    let config: CameraConfig;
+    let pos: [number, number, number];
+    let tgt: [number, number, number];
+    let fov: number;
+
+    const aspect = size.width / Math.max(size.height, 1);
+    const isPortrait = aspect < 1.0 || size.width < 768;
 
     if (activeTarget && ROOM_HOTSPOTS[activeTarget]) {
       const hotspot = ROOM_HOTSPOTS[activeTarget];
-      config = {
-        position: hotspot.cameraPosition,
-        target: hotspot.cameraTarget,
-        fov: hotspot.cameraFov,
-      };
+      tgt = [...hotspot.cameraTarget];
+      fov = hotspot.cameraFov;
+
+      if (isPortrait) {
+        // Dynamically pull camera back along vector from target to camera position
+        // to maintain complete horizontal framing in portrait mode without clipping
+        const dx = hotspot.cameraPosition[0] - hotspot.cameraTarget[0];
+        const dy = hotspot.cameraPosition[1] - hotspot.cameraTarget[1];
+        const dz = hotspot.cameraPosition[2] - hotspot.cameraTarget[2];
+        
+        // Scale factor inversely proportional to aspect ratio, smoothly bounded
+        const aspectScale = Math.max(1.0, 1.35 / Math.max(aspect, 0.38));
+        const mult = (hotspot.mobileDistanceMultiplier || 1.25) * (aspectScale * 0.85);
+
+        pos = [
+          hotspot.cameraTarget[0] + dx * mult,
+          hotspot.cameraTarget[1] + dy * mult,
+          hotspot.cameraTarget[2] + dz * mult,
+        ];
+        // Mild FOV boost for portrait immersion
+        fov = hotspot.cameraFov + Math.min(6, Math.max(2, (1.0 - aspect) * 8));
+      } else {
+        pos = [...hotspot.cameraPosition];
+      }
     } else {
-      const preset = forcedPreset || getPresetForWidth(size.width);
-      config = CAMERA_CONFIGS[preset];
+      if (isPortrait) {
+        // Dynamic portrait room overview framing:
+        // Guarantees the entire 7.2m room width (wardrobe on left, bed and door on right)
+        // is 100% visible with comfortable breathing room on all screen sizes.
+        const targetVisibleWidth = 9.2; // meters (7.2m room + 1m margins)
+        const baseFov = 54;
+        const tanHalfVFov = Math.tan((baseFov * Math.PI) / 360);
+        const tanHalfHFov = tanHalfVFov * aspect;
+        const requiredDistance = (targetVisibleWidth / 2) / Math.max(tanHalfHFov, 0.15);
+
+        // Center target at eye level inside the room
+        tgt = [0.0, 1.20, -0.3];
+
+        // Normalized 3/4 isometric viewpoint direction
+        const dir = new THREE.Vector3(0.18, 0.28, 0.94).normalize();
+
+        pos = [
+          tgt[0] + dir.x * requiredDistance,
+          tgt[1] + dir.y * requiredDistance,
+          tgt[2] + dir.z * requiredDistance,
+        ];
+        fov = baseFov;
+      } else {
+        const preset = forcedPreset || getPresetForWidth(size.width);
+        const config = CAMERA_CONFIGS[preset];
+        pos = [...config.position];
+        tgt = [...config.target];
+        fov = config.fov;
+      }
     }
 
-    targetPosRef.current.set(...config.position);
-    targetLookAtRef.current.set(...config.target);
-    targetFovRef.current = config.fov;
+    targetPosRef.current.set(...pos);
+    targetLookAtRef.current.set(...tgt);
+    targetFovRef.current = fov;
 
     const perspCam = camera as THREE.PerspectiveCamera;
 
@@ -164,14 +215,15 @@ export function RoomCamera({
     }
 
     invalidate();
-  }, [camera, size.width, forcedPreset, activeTarget, enableOrbit, invalidate]);
+  }, [camera, size.width, size.height, forcedPreset, activeTarget, enableOrbit, invalidate]);
 
   // Smooth lerp animation loop strictly integrated with demand rendering
   useFrame((_, delta) => {
     if (enableOrbit || !isTransitioningRef.current) return;
 
     const perspCam = camera as THREE.PerspectiveCamera;
-    const t = Math.min(1, delta * 4.2);
+    // Controlled exponential easing (tau ~ 0.2s, smooth ~450ms settle)
+    const t = Math.min(1, delta * 4.6);
 
     perspCam.position.lerp(targetPosRef.current, t);
     currentLookAtRef.current.lerp(targetLookAtRef.current, t);
@@ -184,8 +236,8 @@ export function RoomCamera({
     const distLook = currentLookAtRef.current.distanceTo(targetLookAtRef.current);
     const diffFov = Math.abs(perspCam.fov - targetFovRef.current);
 
-    // Stop transitioning when within threshold
-    if (distPos < 0.005 && distLook < 0.005 && diffFov < 0.05) {
+    // Stop transitioning when within threshold to preserve 0% idle CPU
+    if (distPos < 0.004 && distLook < 0.004 && diffFov < 0.04) {
       perspCam.position.copy(targetPosRef.current);
       currentLookAtRef.current.copy(targetLookAtRef.current);
       perspCam.lookAt(currentLookAtRef.current);

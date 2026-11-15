@@ -259,7 +259,7 @@ export function Bed({ materials }: BedProps) {
         args={[d.width, 0.18, d.length]}
         radius={0.012}
         smoothness={4}
-        material={materials.woodLight}
+        material={materials.woodOak || materials.woodLight}
         position={[0, 0.19, 0]}
         castShadow
         receiveShadow
@@ -272,7 +272,7 @@ export function Bed({ materials }: BedProps) {
           args={[d.width, d.headboardHeight, 0.08]}
           radius={0.010}
           smoothness={3}
-          material={materials.woodLight}
+          material={materials.woodOak || materials.woodLight}
           castShadow
           receiveShadow
         />

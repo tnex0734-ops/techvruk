@@ -12,8 +12,8 @@ interface NavItem {
 }
 
 const defaultNavItems: NavItem[] = [
-  { label: "Work", href: "#products" },
-  { label: "Playground", href: "#tools" },
+  { label: "Work", href: "#work" },
+  { label: "Journey", href: "#journey" },
   { label: "About", href: "#about" },
   { label: "Resume", href: "/Taushik_ux_resume.pdf", isDownload: true },
 ];

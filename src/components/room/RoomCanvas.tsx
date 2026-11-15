@@ -39,6 +39,7 @@ class CanvasErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySta
 export interface RoomCanvasProps extends RoomSceneProps {
   className?: string;
   fallback?: ReactNode;
+  isHeroCovering?: boolean;
 }
 
 export function RoomCanvas({
@@ -50,13 +51,26 @@ export function RoomCanvas({
   enableOrbit = false,
   className = "w-full h-full",
   fallback = null,
+  bookPageIndex = 0,
+  isBookDossierEmerging = false,
+  onBookPageChange,
+  onBookSelectProject,
+  onCloseCurrentTarget,
+  selectedCardIndex = 0,
+  onCardChange,
+  selectedAchievementIndex = 0,
+  onAchievementChange,
+  isPlayingAudio = false,
+  onToggleAudio,
+  isHeroCovering = false,
 }: RoomCanvasProps) {
   return (
     <CanvasErrorBoundary fallback={fallback}>
       <Canvas
         className={className}
-        frameloop="demand" // On-demand rendering: static scene renders only on resize or state change
-        dpr={[1, 1.75]}   // Capped device pixel ratio for performance
+        onPointerMissed={() => onCloseCurrentTarget?.()}
+        frameloop={isHeroCovering ? "demand" : "always"}
+        dpr={[1, 1.5]}    // Capped device pixel ratio (1.5 max) for high fill-rate performance
         shadows={{ type: THREE.PCFSoftShadowMap }}
         gl={{
           antialias: true,
@@ -72,6 +86,17 @@ export function RoomCanvas({
             onSelect={onSelect}
             onHover={onHover}
             enableOrbit={enableOrbit}
+            bookPageIndex={bookPageIndex}
+            isBookDossierEmerging={isBookDossierEmerging}
+            onBookPageChange={onBookPageChange}
+            onBookSelectProject={onBookSelectProject}
+            onCloseCurrentTarget={onCloseCurrentTarget}
+            selectedCardIndex={selectedCardIndex}
+            onCardChange={onCardChange}
+            selectedAchievementIndex={selectedAchievementIndex}
+            onAchievementChange={onAchievementChange}
+            isPlayingAudio={isPlayingAudio}
+            onToggleAudio={onToggleAudio}
           />
         </Suspense>
       </Canvas>

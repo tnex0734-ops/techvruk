@@ -1,12 +1,25 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { motion, useReducedMotion } from "framer-motion";
-import { Compass, Box, Layers, Laptop, Briefcase, Mail, RotateCcw } from "lucide-react";
-import { CameraPreset } from "./RoomCamera";
+import {
+  RotateCcw,
+  BookOpen,
+  Briefcase,
+  Award,
+  Phone,
+  FileEdit,
+  Menu,
+  X,
+  Compass,
+  Music,
+} from "lucide-react";
 import { RoomInteractionTarget, ROOM_HOTSPOTS } from "./roomInteractionTypes";
-import { RoomContextPanel } from "./RoomContextPanel";
+import { Version1Navbar } from "../Version1Navbar";
+import { BookOverlayControls } from "./objects/BookOverlayControls";
+import { Dock } from "../ui/Dock";
+import { MusicSpotlightOverlay } from "./objects/MusicSpotlightOverlay";
 
 // Dynamic client-only loading of the 3D Canvas
 const DynamicRoomCanvas = dynamic(
@@ -19,275 +32,323 @@ const DynamicRoomCanvas = dynamic(
 
 function RoomLoadingPlaceholder() {
   return (
-    <div className="w-full h-full min-h-[460px] sm:min-h-[560px] lg:min-h-[640px] flex flex-col items-center justify-center bg-[var(--color-bg-subtle)] border border-[var(--color-border)] rounded-2xl animate-pulse text-[var(--color-muted)] font-mono text-xs">
-      <Box size={24} className="text-[var(--color-red)] mb-2 animate-bounce" />
-      <span>INITIALIZING INTERACTIVE 3D ENVIRONMENT...</span>
+    <div className="w-full h-full min-h-[500px] flex flex-col items-center justify-center bg-[var(--color-bg-subtle)] border border-[var(--color-border)] rounded-2xl animate-pulse text-[var(--color-muted)] font-mono text-xs">
+      <span className="text-[var(--color-ink)] font-bold mb-1">TAUSHIK CHANDANA</span>
+      <span>INITIALIZING 3D BEDROOM ARCHITECTURE...</span>
     </div>
   );
 }
 
-/* ── 4 Corners Kinetic Border Box: Restrained architectural registration mark ── */
-function KineticCornerBox({
-  className = "",
-  initialCorner = "top-left",
-}: {
-  className?: string;
-  initialCorner?: "top-left" | "top-right" | "bottom-right" | "bottom-left";
-}) {
-  const getCoordinates = () => {
-    switch (initialCorner) {
-      case "top-right":
-        return {
-          x: ["100%", "100%", "0%", "0%", "100%"],
-          y: ["0%", "100%", "100%", "0%", "0%"],
-        };
-      case "bottom-right":
-        return {
-          x: ["100%", "0%", "0%", "100%", "100%"],
-          y: ["100%", "100%", "0%", "0%", "100%"],
-        };
-      case "bottom-left":
-        return {
-          x: ["0%", "0%", "100%", "100%", "0%"],
-          y: ["100%", "0%", "0%", "100%", "100%"],
-        };
-      case "top-left":
-      default:
-        return {
-          x: ["0%", "100%", "100%", "0%", "0%"],
-          y: ["0%", "0%", "100%", "100%", "0%"],
-        };
+function RoomFallbackBlueprint({ onSelect }: { onSelect: (target: RoomInteractionTarget) => void }) {
+  return (
+    <div className="w-full h-full min-h-[500px] flex flex-col items-center justify-center p-6 bg-[var(--color-bg-subtle)] text-center font-mono">
+      <span className="font-bold text-xs uppercase tracking-wider text-[var(--color-ink)] mb-2">
+        Architectural Room Portfolio Blueprint
+      </span>
+      <p className="text-xs text-[var(--color-muted)] max-w-md mb-6">
+        WebGL acceleration operating in accessible blueprint mode. Select an in-room destination below:
+      </p>
+      <div className="flex flex-wrap items-center justify-center gap-3">
+        <button
+          type="button"
+          onClick={() => onSelect("book")}
+          className="px-4 py-2.5 min-h-[44px] min-w-[44px] rounded-xl bg-white border border-[var(--color-border)] hover:border-[var(--color-red)] text-xs font-bold text-[var(--color-ink)] shadow-2xs hover:shadow-xs transition-all flex items-center gap-2 cursor-pointer"
+        >
+          <BookOpen size={14} className="text-[var(--color-red)]" />
+          <span>Projects Book</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => onSelect("about")}
+          className="px-4 py-2.5 min-h-[44px] min-w-[44px] rounded-xl bg-white border border-[var(--color-border)] hover:border-[var(--color-red)] text-xs font-bold text-[var(--color-ink)] shadow-2xs hover:shadow-xs transition-all flex items-center gap-2 cursor-pointer"
+        >
+          <FileEdit size={14} className="text-[var(--color-red)]" />
+          <span>About Sketchbook</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => onSelect("wall")}
+          className="px-4 py-2.5 min-h-[44px] min-w-[44px] rounded-xl bg-white border border-[var(--color-border)] hover:border-[var(--color-red)] text-xs font-bold text-[var(--color-ink)] shadow-2xs hover:shadow-xs transition-all flex items-center gap-2 cursor-pointer"
+        >
+          <Briefcase size={14} className="text-[var(--color-red)]" />
+          <span>Experience Wall</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => onSelect("wardrobe")}
+          className="px-4 py-2.5 min-h-[44px] min-w-[44px] rounded-xl bg-white border border-[var(--color-border)] hover:border-[var(--color-red)] text-xs font-bold text-[var(--color-ink)] shadow-2xs hover:shadow-xs transition-all flex items-center gap-2 cursor-pointer"
+        >
+          <Award size={14} className="text-[var(--color-red)]" />
+          <span>Achievement Cupboard</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => onSelect("phone")}
+          className="px-4 py-2.5 min-h-[44px] min-w-[44px] rounded-xl bg-white border border-[var(--color-border)] hover:border-[var(--color-red)] text-xs font-bold text-[var(--color-ink)] shadow-2xs hover:shadow-xs transition-all flex items-center gap-2 cursor-pointer"
+        >
+          <Phone size={14} className="text-[var(--color-red)]" />
+          <span>Desk Phone</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => onSelect("music")}
+          className="px-4 py-2.5 min-h-[44px] min-w-[44px] rounded-xl bg-white border border-[var(--color-border)] hover:border-[var(--color-red)] text-xs font-bold text-[var(--color-ink)] shadow-2xs hover:shadow-xs transition-all flex items-center gap-2 cursor-pointer"
+        >
+          <Music size={14} className="text-[var(--color-red)]" />
+          <span>Listen to a song</span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export interface RoomHeroProps {
+  externalTarget?: RoomInteractionTarget;
+  isHeroCovering?: boolean;
+}
+
+export function RoomHero({ externalTarget, isHeroCovering = false }: RoomHeroProps = {}) {
+  const shouldReduceMotion = useReducedMotion();
+  const [activeTarget, setActiveTarget] = useState<RoomInteractionTarget>(externalTarget ?? null);
+
+  useEffect(() => {
+    if (externalTarget !== undefined) {
+      setActiveTarget(externalTarget);
+    }
+  }, [externalTarget]);
+  const [hoveredTarget, setHoveredTarget] = useState<RoomInteractionTarget>(null);
+  const [bookPageIndex, setBookPageIndex] = useState<number>(0);
+  const [isBookDossierOpen, setIsBookDossierOpen] = useState<boolean>(false);
+  const [selectedCardIndex, setSelectedCardIndex] = useState<number>(0);
+  const [selectedAchievementIndex, setSelectedAchievementIndex] = useState<number>(0);
+  const [isPlayingAudio, setIsPlayingAudio] = useState<boolean>(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Unified audio element synchronized across Navbar and in-room 3D Cassette Deck
+  useEffect(() => {
+    const audio = new Audio("/audio/fitoor.mp3");
+    audio.preload = "none";
+    audio.loop = true;
+
+    const handlePlay = () => setIsPlayingAudio(true);
+    const handlePause = () => setIsPlayingAudio(false);
+    const handleEnded = () => setIsPlayingAudio(false);
+    const handleError = (e: Event) => {
+      console.warn("Audio load error:", e);
+      setIsPlayingAudio(false);
+    };
+
+    audio.addEventListener("play", handlePlay);
+    audio.addEventListener("pause", handlePause);
+    audio.addEventListener("ended", handleEnded);
+    audio.addEventListener("error", handleError);
+
+    audioRef.current = audio;
+
+    return () => {
+      audio.removeEventListener("play", handlePlay);
+      audio.removeEventListener("pause", handlePause);
+      audio.removeEventListener("ended", handleEnded);
+      audio.removeEventListener("error", handleError);
+      audio.pause();
+      audio.src = "";
+    };
+  }, []);
+
+  const handleToggleAudio = () => {
+    if (!audioRef.current) return;
+    if (isPlayingAudio) {
+      audioRef.current.pause();
+      setIsPlayingAudio(false);
+    } else {
+      audioRef.current
+        .play()
+        .then(() => setIsPlayingAudio(true))
+        .catch((err) => {
+          console.warn("Audio autoplay blocked by browser policy:", err);
+          setIsPlayingAudio(false);
+        });
     }
   };
 
-  const coords = getCoordinates();
+  // Automatically reset book dossier state when switching focus away from book
+  useEffect(() => {
+    if (activeTarget !== "book") {
+      setIsBookDossierOpen(false);
+    }
+  }, [activeTarget]);
 
-  return (
-    <div
-      className={`relative w-5 h-5 sm:w-7 sm:h-7 md:w-8 md:h-8 border border-[var(--color-red)]/50 bg-white/40 overflow-hidden shadow-2xs ${className}`}
-    >
-      <motion.div
-        animate={{
-          x: coords.x,
-          y: coords.y,
-        }}
-        transition={{
-          duration: 4.8,
-          repeat: Infinity,
-          ease: "easeInOut",
-          times: [0, 0.25, 0.5, 0.75, 1],
-        }}
-        className="absolute top-0.5 left-0.5 w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-2.5 md:h-2.5 bg-[var(--color-red)] flex items-center justify-center shadow-xs"
-      />
-    </div>
-  );
-}
-
-interface RoomHeroProps {
-  onPanelToggle?: (isOpen: boolean) => void;
-}
-
-export function RoomHero({ onPanelToggle }: RoomHeroProps = {}) {
-  const shouldReduceMotion = useReducedMotion();
-  const [activeTarget, setActiveTargetState] = useState<RoomInteractionTarget>(null);
-  const [hoveredTarget, setHoveredTarget] = useState<RoomInteractionTarget>(null);
-
-  const setActiveTarget = (target: RoomInteractionTarget) => {
-    setActiveTargetState(target);
-    onPanelToggle?.(target !== null);
+  // Close handler for whatever object is currently active - ALWAYS returns to entire room overview
+  const handleCloseCurrentTarget = () => {
+    setIsBookDossierOpen(false);
+    setActiveTarget(null);
   };
 
-  const softEase = [0.16, 1, 0.3, 1] as const;
+  // Keyboard shortcut listener: 1-5 to navigate, Escape to close
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+      if (e.key === "Escape") {
+        e.preventDefault();
+        handleCloseCurrentTarget();
+      } else if (e.key === "1") {
+        setActiveTarget("book");
+        setIsBookDossierOpen(false);
+      } else if (e.key === "2") {
+        setActiveTarget("about");
+      } else if (e.key === "3") {
+        setActiveTarget("wall");
+      } else if (e.key === "4") {
+        setActiveTarget("wardrobe");
+      } else if (e.key === "5") {
+        setActiveTarget("phone");
+      } else if (e.key === "6" || e.key.toLowerCase() === "m") {
+        setActiveTarget("music");
+        if (!isPlayingAudio) {
+          handleToggleAudio();
+        }
+      } else if (e.key === "0") {
+        setActiveTarget(null);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isBookDossierOpen, activeTarget, isPlayingAudio]);
+
+  const getTargetTitle = () => {
+    switch (activeTarget) {
+      case "book":
+        return "Selected Projects Book";
+      case "about":
+        return "Personal Sketchbook // About & Toolkit";
+      case "wall":
+        return "Experience Pinboard // Timeline";
+      case "wardrobe":
+        return "Cupboard Stickers // Hackathon Honors";
+      case "phone":
+        return "Desk Phone // Contact Hologram";
+      case "music":
+        return "Analog Cassette Deck // Audio Experience";
+      default:
+        return "";
+    }
+  };
 
   return (
     <section
-      id="hero"
-      className="relative w-full min-h-[90vh] lg:min-h-[95vh] pt-20 sm:pt-24 pb-8 sm:pb-12 flex flex-col justify-between bg-[var(--color-bg)] select-none overflow-x-clip"
+      id="room"
+      aria-label="Interactive 3D bedroom workspace"
+      className="relative w-full h-screen min-h-[600px] flex flex-col justify-between bg-[var(--color-bg)] select-none overflow-hidden"
     >
-      {/* ── 4 Corner Kinetic Architectural Registration Marks ── */}
-      <div className="absolute top-3 left-3 sm:top-6 sm:left-6 z-20 pointer-events-none">
-        <KineticCornerBox initialCorner="top-left" />
-      </div>
-      <div className="absolute top-3 right-3 sm:top-6 sm:right-6 z-20 pointer-events-none">
-        <KineticCornerBox initialCorner="top-right" />
-      </div>
-      <div className="absolute bottom-6 left-6 sm:bottom-8 sm:left-8 z-20 pointer-events-none hidden md:block">
-        <KineticCornerBox initialCorner="bottom-left" />
-      </div>
-      <div className="absolute bottom-6 right-6 sm:bottom-8 sm:right-8 z-20 pointer-events-none hidden md:block">
-        <KineticCornerBox initialCorner="bottom-right" />
-      </div>
-
       {/* ── Accessible Semantic Text Layer for Screen Readers & SEO ── */}
       <div className="sr-only">
-        <h1>Taushik Chandana — Product Designer &amp; Builder</h1>
+        <h1>Taushik Chandana — Product Designer &amp; Creative Developer Portfolio</h1>
         <p>
-          Interactive 3D architectural workspace recreation. Room spatial arrangement: Left wall features built-in cupboards and experience archive; corner features the creative workstation desk with laptop, keyboard, mouse, fishbowl, plant, and hanging quotation frames; right wall features the bed, daylight window, and exit door. Select the laptop to explore selected work, the wardrobe for professional experience, or the door for contact.
+          Immersive 3D bedroom portfolio. All portfolio content is explored through physical interactive objects:
+          1. Selected Projects in the Hardcover Book on the desk.
+          2. About, Philosophy and Toolkit in the Sketchbook on the desk.
+          3. Professional Experience on the Wall Hanging Pinboard.
+          4. Hackathon Honors and Awards as stickers on the wardrobe cupboard.
+          5. Contact Information and Hologram via the physical desk phone.
         </p>
       </div>
 
-      <div className="section-shell relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex-1 flex flex-col justify-between">
+      {/* ── 1. Authentic Version 1 Top Navigation Bar (Edge-to-Edge) ── */}
+      <Version1Navbar
+        activeTarget={activeTarget}
+        isPlaying={isPlayingAudio}
+        onToggleAudio={handleToggleAudio}
+        onSelectTarget={(target) => {
+          if (target === "book") {
+            setActiveTarget("book");
+            setIsBookDossierOpen(false);
+          } else {
+            setActiveTarget(target);
+          }
+        }}
+        onCloseTarget={handleCloseCurrentTarget}
+        targetTitle={getTargetTitle()}
+      />
+
+      {/* ── Main Single-Room Layout Container ── */}
+      <div className="relative z-10 w-full flex-1 flex flex-col justify-between p-2 sm:p-4 min-h-0">
         
-        {/* ── 1. Top Architectural Poster Header Bar ── */}
-        <motion.div
-          initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: softEase }}
-          className="relative w-full flex flex-wrap items-center justify-between gap-3 text-[var(--color-red)] font-mono text-[9px] xs:text-[10px] sm:text-xs md:text-sm tracking-wider uppercase pb-3 border-b border-[var(--color-border)]"
-        >
-          <div className="flex items-center gap-2 font-bold">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-red)] animate-pulse" />
-            <span>TAUSHIK CHANDANA</span>
-            <span className="text-[var(--color-muted)] font-normal hidden sm:inline">
-              // INTERACTIVE WORKSPACE
-            </span>
-          </div>
-
-          <div className="flex items-center gap-3 text-[var(--color-muted)] text-[10px] sm:text-xs font-bold">
-            <span className="flex items-center gap-1.5">
-              <Compass size={12} className="text-[var(--color-red)]" />
-              <span>17.3850° N, 78.4867° E</span>
-            </span>
-            <span className="text-[var(--color-border-strong)]">|</span>
-            <span className="text-[var(--color-red)] font-bold">SELECT OBJECT TO EXPLORE</span>
-          </div>
-        </motion.div>
-
-        {/* ── 2. The 3D Interactive Room Canvas & Spatial Hotspot HUD ── */}
-        <div className="relative w-full my-3 sm:my-6 h-[440px] xs:h-[480px] sm:h-[540px] lg:h-[620px] xl:h-[680px] rounded-2xl sm:rounded-3xl border border-[var(--color-border)] bg-[var(--color-bg-subtle)] overflow-hidden shadow-xs">
+        {/* ── 2. The 3D Interactive Room Canvas ── */}
+        <div className="relative w-full flex-1 rounded-2xl sm:rounded-3xl border border-[var(--color-border)] bg-[var(--color-bg-subtle)] overflow-hidden shadow-xs">
           
-          {/* Subtle Top-Left Architectural HUD Label */}
-          <div className="absolute top-4 left-4 z-10 pointer-events-none flex flex-col gap-1">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-xs border border-[var(--color-border)] text-[var(--color-ink)] font-mono text-[9px] sm:text-[10px] font-bold tracking-wider uppercase shadow-2xs">
-              <Layers size={11} className="text-[var(--color-red)]" />
-              <span>3/4 ARCHITECTURAL CUTAWAY</span>
-            </span>
-            <span className="text-[10px] font-mono text-[var(--color-muted)] pl-1 hidden sm:inline">
-              CLICK OBJECTS OR USE COMPANION SHORTCUTS BELOW
-            </span>
-          </div>
-
-          {/* Top-Right Reset Camera Pill (Visible when an object is selected) */}
-          {activeTarget && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="absolute top-4 right-4 z-20"
-            >
-              <button
-                type="button"
-                onClick={() => setActiveTarget(null)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/95 border border-[var(--color-red)] text-[var(--color-red)] text-[10px] font-mono font-bold tracking-wider uppercase shadow-md hover:bg-[var(--color-red)] hover:text-white transition-all cursor-pointer"
-              >
-                <RotateCcw size={12} />
-                <span>RESET OVERVIEW</span>
-              </button>
-            </motion.div>
-          )}
-
-          {/* The R3F 3D Canvas with Interaction Handlers */}
+          {/* The R3F 3D Canvas */}
           <DynamicRoomCanvas
             activeTarget={activeTarget}
             hoveredTarget={hoveredTarget}
-            onSelect={(target) => setActiveTarget(target)}
+            bookPageIndex={bookPageIndex}
+            isBookDossierEmerging={isBookDossierOpen}
+            selectedCardIndex={selectedCardIndex}
+            selectedAchievementIndex={selectedAchievementIndex}
+            isPlayingAudio={isPlayingAudio}
+            onToggleAudio={handleToggleAudio}
+            onBookPageChange={(idx) => setBookPageIndex(idx)}
+            onBookSelectProject={() => setIsBookDossierOpen(true)}
+            onCloseCurrentTarget={handleCloseCurrentTarget}
+            onCardChange={(idx) => setSelectedCardIndex(idx)}
+            onAchievementChange={(idx) => setSelectedAchievementIndex(idx)}
+            isHeroCovering={isHeroCovering && !activeTarget}
+            onSelect={(target) => {
+              if (target === "laptop") {
+                setActiveTarget("book");
+                setIsBookDossierOpen(false);
+              } else if (target === "door") {
+                setActiveTarget("phone");
+              } else if (target === "book") {
+                setActiveTarget("book");
+                setIsBookDossierOpen(false);
+              } else if (target === "music") {
+                setActiveTarget("music");
+                if (!isPlayingAudio) {
+                  handleToggleAudio();
+                }
+              } else {
+                setActiveTarget(target);
+              }
+            }}
             onHover={(target) => setHoveredTarget(target)}
+            fallback={<RoomFallbackBlueprint onSelect={(target) => setActiveTarget(target)} />}
           />
 
-          {/* ── Accessible Companion Navigation Bar (Phase 3C.1) ── */}
-          <div className="absolute bottom-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between gap-2 pointer-events-auto">
-            {/* Interactive Object Selector Buttons */}
-            <div className="flex flex-wrap items-center gap-1.5">
-              <button
-                type="button"
-                onClick={() => setActiveTarget(activeTarget === "laptop" ? null : "laptop")}
-                onMouseEnter={() => setHoveredTarget("laptop")}
-                onMouseLeave={() => setHoveredTarget(null)}
-                aria-label="Select Work (Laptop)"
-                aria-pressed={activeTarget === "laptop"}
-                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border text-[10px] font-mono font-bold tracking-wider uppercase transition-all shadow-2xs cursor-pointer backdrop-blur-md outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-red)] ${
-                  activeTarget === "laptop"
-                    ? "bg-[var(--color-red)] text-white border-[var(--color-red)] shadow-sm scale-105"
-                    : hoveredTarget === "laptop"
-                    ? "bg-white text-[var(--color-red)] border-[var(--color-red)]"
-                    : "bg-white/90 text-[var(--color-ink)] border-[var(--color-border)] hover:border-[var(--color-red)]"
-                }`}
-              >
-                <Laptop size={12} className={activeTarget === "laptop" ? "text-white" : "text-[var(--color-red)]"} />
-                <span>WORK [LAPTOP]</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTarget(activeTarget === "wardrobe" ? null : "wardrobe")}
-                onMouseEnter={() => setHoveredTarget("wardrobe")}
-                onMouseLeave={() => setHoveredTarget(null)}
-                aria-label="Select Experience and Achievements (Wardrobe)"
-                aria-pressed={activeTarget === "wardrobe"}
-                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border text-[10px] font-mono font-bold tracking-wider uppercase transition-all shadow-2xs cursor-pointer backdrop-blur-md outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-red)] ${
-                  activeTarget === "wardrobe"
-                    ? "bg-[var(--color-red)] text-white border-[var(--color-red)] shadow-sm scale-105"
-                    : hoveredTarget === "wardrobe"
-                    ? "bg-white text-[var(--color-red)] border-[var(--color-red)]"
-                    : "bg-white/90 text-[var(--color-ink)] border-[var(--color-border)] hover:border-[var(--color-red)]"
-                }`}
-              >
-                <Briefcase size={12} className={activeTarget === "wardrobe" ? "text-white" : "text-[var(--color-red)]"} />
-                <span>JOURNEY [CUPBOARDS]</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTarget(activeTarget === "door" ? null : "door")}
-                onMouseEnter={() => setHoveredTarget("door")}
-                onMouseLeave={() => setHoveredTarget(null)}
-                aria-label="Select Contact Information (Door)"
-                aria-pressed={activeTarget === "door"}
-                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border text-[10px] font-mono font-bold tracking-wider uppercase transition-all shadow-2xs cursor-pointer backdrop-blur-md outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-red)] ${
-                  activeTarget === "door"
-                    ? "bg-[var(--color-red)] text-white border-[var(--color-red)] shadow-sm scale-105"
-                    : hoveredTarget === "door"
-                    ? "bg-white text-[var(--color-red)] border-[var(--color-red)]"
-                    : "bg-white/90 text-[var(--color-ink)] border-[var(--color-border)] hover:border-[var(--color-red)]"
-                }`}
-              >
-                <Mail size={12} className={activeTarget === "door" ? "text-white" : "text-[var(--color-red)]"} />
-                <span>CONTACT [DOOR]</span>
-              </button>
-            </div>
-
-            {/* Quick Status Pill */}
-            <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-white/85 backdrop-blur-xs border border-[var(--color-border)] text-[10px] font-mono text-[var(--color-muted)] shadow-2xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-red)]" />
-              <span>
-                {activeTarget ? `FOCUS: ${activeTarget.toUpperCase()}` : "ROOM READY"}
-              </span>
-            </div>
-          </div>
+          {/* ── 3. Projects Book Controls (Mounted ONLY when book is active) ── */}
+          <BookOverlayControls
+            isOpen={activeTarget === "book"}
+            pageIndex={bookPageIndex}
+            isDossierOpen={isBookDossierOpen}
+            onPageChange={(idx) => setBookPageIndex(idx)}
+            onOpenDossier={() => setIsBookDossierOpen(true)}
+            onCloseBook={handleCloseCurrentTarget}
+          />
         </div>
 
-        {/* ── 3. Bottom Chapter Bridge into Following About Section ── */}
-        <div className="pt-2 sm:pt-4 flex flex-col items-center justify-center text-center select-none">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[var(--color-border)] bg-[var(--color-bg-subtle)] text-[10px] sm:text-xs font-mono font-bold tracking-widest uppercase text-[var(--color-muted)] shadow-2xs">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-red)] animate-pulse" />
-            <span>01 // ABOUT TAUSHIK</span>
-          </div>
-          <div className="mt-1.5 text-[11px] font-mono text-[var(--color-muted)] flex items-center gap-1.5">
-            <span>Scroll down or select objects above</span>
-            <motion.span
-              animate={shouldReduceMotion ? undefined : { y: [0, 3, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            >
-              ↓
-            </motion.span>
-          </div>
-        </div>
-
+        {/* ── 4. React Bits In-Room Navigation Dock ── */}
+        <Dock
+          activeTarget={activeTarget}
+          onSelect={(target) => {
+            if (activeTarget === target && (target !== "book" || isBookDossierOpen)) {
+              handleCloseCurrentTarget();
+            } else {
+              setActiveTarget(target);
+              if (target === "book") {
+                setIsBookDossierOpen(false);
+              }
+            }
+          }}
+        />
       </div>
 
-      {/* ── 4. Contextual Content Slide-Over Panel (Phase 3C.1) ── */}
-      <RoomContextPanel
-        activeTarget={activeTarget}
-        onClose={() => setActiveTarget(null)}
+      {/* ── 5. In-Room Interactive Experiences ── */}
+      {/* Interactive Music Cassette Deck Spotlight Overlay */}
+      <MusicSpotlightOverlay
+        isOpen={activeTarget === "music"}
+        isPlaying={isPlayingAudio}
+        onTogglePlay={handleToggleAudio}
+        onClose={handleCloseCurrentTarget}
       />
     </section>
   );

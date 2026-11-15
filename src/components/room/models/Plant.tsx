@@ -188,7 +188,6 @@ export function Plant({ materials }: PlantProps) {
                     position={[0, (Math.cos(stemRad) * leaf.stemLen) / 2, (Math.sin(stemRad) * leaf.stemLen) / 2]}
                     rotation={[stemRad, 0, 0]}
                     material={materials.plantStem}
-                    castShadow
                   >
                     <cylinderGeometry args={[0.0016, 0.0024, leaf.stemLen, 8]} />
                   </mesh>
@@ -202,7 +201,6 @@ export function Plant({ materials }: PlantProps) {
                   <mesh
                     geometry={leaf.geom}
                     material={leaf.mat}
-                    castShadow
                     receiveShadow
                   />
                 </group>
@@ -249,7 +247,6 @@ export function Plant({ materials }: PlantProps) {
                     position={[0, (Math.cos(stemRad) * leaf.stemLen) / 2, (Math.sin(stemRad) * leaf.stemLen) / 2]}
                     rotation={[stemRad, 0, 0]}
                     material={materials.plantStem}
-                    castShadow
                   >
                     <cylinderGeometry args={[0.004, 0.007, leaf.stemLen, 10]} />
                   </mesh>
@@ -263,7 +260,6 @@ export function Plant({ materials }: PlantProps) {
                   <mesh
                     geometry={leaf.geom}
                     material={leaf.mat}
-                    castShadow
                     receiveShadow
                   />
                 </group>

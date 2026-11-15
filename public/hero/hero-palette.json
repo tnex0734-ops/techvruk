@@ -1,0 +1,13 @@
+{
+  "background": "#FFFEFE",
+  "backgroundWarm": "#FFFAF9",
+  "primary": "#C91F2B",
+  "deepRed": "#971724",
+  "softRed": "#FCEBED",
+  "softBlush": "#FFF3F2",
+  "ink": "#171515",
+  "muted": "#706B6B",
+  "line": "#E9E2E3",
+  "accentPaper": "#F7E9DE",
+  "notes": "Use white and the existing red identity. Do not introduce lime/green, cyan, purple or black vignette treatments."
+}

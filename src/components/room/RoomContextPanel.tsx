@@ -94,9 +94,9 @@ export function RoomContextPanel({
           role="dialog"
           aria-modal="true"
           aria-label={
-            activeTarget === "laptop"
+            activeTarget === "book" || activeTarget === "laptop"
               ? "Selected Work Panel"
-              : activeTarget === "wardrobe"
+              : activeTarget === "wall" || activeTarget === "wardrobe"
               ? "Experience and Achievements Panel"
               : "Contact and Collaboration Panel"
           }
@@ -112,9 +112,10 @@ export function RoomContextPanel({
             <div className="flex items-center gap-2 text-xs font-mono tracking-wider uppercase text-[var(--color-red)] font-bold min-w-0">
               <span className="w-2 h-2 rounded-full bg-[var(--color-red)] animate-pulse shrink-0" />
               <span className="truncate">
-                {activeTarget === "laptop" && "01 // SELECTED WORK"}
-                {activeTarget === "wardrobe" && "02 // EXPERIENCE & ARCHIVES"}
-                {activeTarget === "door" && "03 // CONTACT & ENTRANCE"}
+                {(activeTarget === "book" || activeTarget === "laptop") && "01 // SELECTED WORK [PROJECTS BOOK]"}
+                {activeTarget === "wall" && "02 // EXPERIENCE [WALL PINBOARD]"}
+                {activeTarget === "wardrobe" && "03 // HONORS & AWARDS [WARDROBE STICKERS]"}
+                {(activeTarget === "phone" || activeTarget === "door") && "04 // CONTACT & CONNECT [DESK PHONE]"}
               </span>
             </div>
 
@@ -136,9 +137,9 @@ export function RoomContextPanel({
           <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 text-[var(--color-ink)] select-text">
             
             {/* ══════════════════════════════════════════════════════════════ */}
-            {/*  PANEL 1: LAPTOP — SELECTED WORK                               */}
+            {/*  PANEL 1: PROJECTS BOOK — SELECTED WORK                        */}
             {/* ══════════════════════════════════════════════════════════════ */}
-            {activeTarget === "laptop" && (
+            {(activeTarget === "book" || activeTarget === "laptop") && (
               <div className="space-y-6">
                 <div>
                   <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[var(--color-ink)]">
@@ -302,9 +303,9 @@ export function RoomContextPanel({
             )}
 
             {/* ══════════════════════════════════════════════════════════════ */}
-            {/*  PANEL 2: WARDROBE — EXPERIENCE & ACHIEVEMENTS                */}
+            {/*  PANEL 2: EXPERIENCE & ACHIEVEMENTS                           */}
             {/* ══════════════════════════════════════════════════════════════ */}
-            {activeTarget === "wardrobe" && (
+            {(activeTarget === "wardrobe" || activeTarget === "wall") && (
               <div className="space-y-6">
                 <div>
                   <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[var(--color-ink)]">
@@ -390,19 +391,20 @@ export function RoomContextPanel({
                 {/* Section Bridge Link */}
                 <button
                   type="button"
-                  onClick={() => scrollToSection("achievements")}
+                  data-journey-bridge="true"
+                  onClick={() => scrollToSection("journey")}
                   className="w-full py-3 rounded-xl border border-dashed border-[var(--color-border)] text-xs font-mono font-bold uppercase text-[var(--color-muted)] hover:text-[var(--color-red)] hover:border-[var(--color-red)] hover:bg-[var(--color-red)]/5 transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  <span>View Complete Achievements Gallery</span>
+                  <span>Explore Full Archive &amp; Journey</span>
                   <ArrowRight size={14} />
                 </button>
               </div>
             )}
 
             {/* ══════════════════════════════════════════════════════════════ */}
-            {/*  PANEL 3: DOOR — CONTACT & COLLABORATION                      */}
+            {/*  PANEL 3: CONTACT & COLLABORATION                             */}
             {/* ══════════════════════════════════════════════════════════════ */}
-            {activeTarget === "door" && (
+            {(activeTarget === "phone" || activeTarget === "door") && (
               <div className="space-y-6">
                 <div>
                   <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[var(--color-ink)]">
@@ -499,10 +501,11 @@ export function RoomContextPanel({
                 {/* Section Bridge Link */}
                 <button
                   type="button"
+                  data-contact-bridge="true"
                   onClick={() => scrollToSection("contact")}
-                  className="w-full py-3.5 rounded-xl bg-[var(--color-red)] text-white font-mono text-xs font-bold tracking-wider uppercase hover:bg-[var(--color-red-dark)] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                  className="w-full py-3.5 rounded-xl bg-[var(--color-red)] text-white font-mono text-xs font-bold tracking-wider uppercase hover:bg-[var(--color-red-deep)] transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
                 >
-                  <span>Open Interactive Contact Letter</span>
+                  <span>Step Through to Contact &amp; Collaboration</span>
                   <ArrowRight size={14} />
                 </button>
               </div>

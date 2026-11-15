@@ -22,7 +22,7 @@ export function EditorialPreloader({ onComplete }: { onComplete?: () => void }) 
     }
 
     const startTime = performance.now();
-    const duration = 1800; // 1.8s smooth loading
+    const duration = 220; // Fast non-blocking readiness transition
 
     const updateLoader = (now: number) => {
       const elapsed = now - startTime;
@@ -38,7 +38,7 @@ export function EditorialPreloader({ onComplete }: { onComplete?: () => void }) 
         setTimeout(() => {
           setIsFinished(true);
           onComplete?.();
-        }, 250);
+        }, 80);
       }
     };
 
@@ -60,7 +60,7 @@ export function EditorialPreloader({ onComplete }: { onComplete?: () => void }) 
           initial={{ y: 0 }}
           exit={{
             y: "-100%",
-            transition: { duration: 0.85, ease: [0.77, 0, 0.175, 1] },
+            transition: { duration: 0.35, ease: "easeOut" },
           }}
           className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-[#fcfcfc] text-[#141416] select-none overflow-hidden"
         >

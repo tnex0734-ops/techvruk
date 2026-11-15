@@ -44,3 +44,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local kits & screenshots
+/PORTFOLIO_ROOM_REDIRECTION_KIT/
+/screenshots/
+/.agents/
+/references/
+/docs/performance/
+skills-lock.json

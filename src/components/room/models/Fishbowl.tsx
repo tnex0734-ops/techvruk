@@ -98,23 +98,33 @@ export function Fishbowl({ materials }: FishbowlProps) {
     { pos: [0.002, 0.011, -0.004] as [number, number, number], scale: [0.020, 0.012, 0.017] as [number, number, number], rot: 2.1 },
   ], []);
 
-  // 4. Lightweight Swimming Animation Loop (Throttled & Demand-Safe)
+  // 4. Lightweight Swimming Animation Loop (Demand-Safe, Runs Only When Excited)
   useFrame((state, delta) => {
     if (prefersReducedMotionRef.current) return;
     if (typeof document !== "undefined" && document.hidden) return;
 
+    // Preserve true 0% idle GPU: only animate when interacted with (hover/tap)
+    if (!isExcited && speedFactorRef.current <= 0.02) {
+      return;
+    }
+
     const t = state.clock.getElapsedTime();
 
-    // Lerp speed factor on hover/interaction
-    const targetFactor = isExcited ? 2.4 : 1.0;
+    // Smoothly spin up on interaction (2.2) and decay to rest (0) when idle
+    const targetFactor = isExcited ? 2.2 : 0.0;
     speedFactorRef.current = THREE.MathUtils.lerp(
       speedFactorRef.current,
       targetFactor,
-      Math.min(1, delta * 4.0)
+      Math.min(1, delta * 3.5)
     );
 
+    if (speedFactorRef.current <= 0.01) {
+      speedFactorRef.current = 0;
+      return;
+    }
+
     // Advance swimming angle based on current speed
-    swimAngleRef.current += delta * 0.72 * speedFactorRef.current;
+    swimAngleRef.current += delta * 0.95 * speedFactorRef.current;
     const angle = swimAngleRef.current;
 
     if (fishGroupRef.current) {
@@ -124,7 +134,7 @@ export function Fishbowl({ materials }: FishbowlProps) {
 
       const posX = Math.cos(angle) * radiusX;
       const posZ = Math.sin(angle) * radiusZ;
-      const posY = 0.088 + Math.sin(t * 1.5 * speedFactorRef.current) * 0.012;
+      const posY = 0.088 + Math.sin(t * 2.0 * speedFactorRef.current) * 0.012;
 
       fishGroupRef.current.position.set(posX, posY, posZ);
 
@@ -133,30 +143,30 @@ export function Fishbowl({ materials }: FishbowlProps) {
       fishGroupRef.current.rotation.y = heading - Math.PI / 2;
 
       // Subtle body banking into turns
-      fishGroupRef.current.rotation.z = Math.sin(t * 1.5 * speedFactorRef.current) * 0.09;
-      fishGroupRef.current.rotation.x = Math.cos(t * 1.5 * speedFactorRef.current) * 0.05;
+      fishGroupRef.current.rotation.z = Math.sin(t * 2.0 * speedFactorRef.current) * 0.09;
+      fishGroupRef.current.rotation.x = Math.cos(t * 2.0 * speedFactorRef.current) * 0.05;
 
-      // Rhythmic caudal tail fin flutter (speeds up dynamically on excitement)
+      // Rhythmic caudal tail fin flutter
       if (tailRef.current) {
-        const flutterFreq = 7.2 * Math.min(2.0, speedFactorRef.current);
+        const flutterFreq = 8.0 * Math.min(2.0, speedFactorRef.current);
         tailRef.current.rotation.y = Math.sin(t * flutterFreq) * (0.32 * Math.min(1.4, speedFactorRef.current));
       }
 
-      // Invalidate demand render loop
+      // Invalidate demand render loop only while swimming
       invalidate();
     }
   });
 
   return (
     <group position={bowlPosition} name="fishbowl-module">
-      {/* Invisible Generous Touch / Hover Hitbox */}
+      {/* Invisible Generous Touch / Hover Hitbox (Raycast-Ready, No visible=false) */}
       <mesh
         position={[0, 0.10, 0]}
-        visible={false}
         onPointerOver={(e) => {
           e.stopPropagation();
           document.body.style.cursor = "pointer";
           setIsExcited(true);
+          invalidate();
         }}
         onPointerOut={() => {
           document.body.style.cursor = "auto";
@@ -165,11 +175,12 @@ export function Fishbowl({ materials }: FishbowlProps) {
         onClick={(e) => {
           e.stopPropagation();
           setIsExcited(true);
+          invalidate();
           setTimeout(() => setIsExcited(false), 2400);
         }}
       >
-        <sphereGeometry args={[0.18, 12, 12]} />
-        <meshBasicMaterial transparent opacity={0} />
+        <sphereGeometry args={[0.16, 16, 12]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
       </mesh>
       
       {/* ── 1. Turned Scandinavian Birch Base Ring ── */}

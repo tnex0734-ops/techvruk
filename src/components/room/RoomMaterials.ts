@@ -9,61 +9,94 @@ import {
   getLeafTexture,
   getPlasterTexture,
   getDaylightBackdropTexture,
+  getWalnutWoodTexture,
+  getOakWoodTexture,
+  getWoodPlankFloorTexture,
+  getCheckerFabricTexture,
+  getParchmentPaperTexture,
+  getNotebookDottedTexture,
+  getBookCoverTexture,
+  getPinboardFabricTexture,
 } from "./RoomTextures";
 
 /**
- * Architectural PBR Materials & Custom Finishes
+ * Architectural PBR Materials & Custom Finishes (Warm Tactile Scrapbook Direction)
  * 
  * Strict Quality Guidelines:
- * - Natural, realistic architectural materials (Scandinavian birch, linen, wool, anodized aluminum, matte steel).
- * - Procedural textures: Retina IDE laptop screen, archival quote prints, organic wood grain, linen & wool weaves, botanical leaves.
- * - Selective signature red accent (#C91F2B) on chair upholstery and subtle graphic elements.
+ * - Warm, tactile student/designer bedroom aesthetic from PORTFOLIO_ROOM_REDIRECTION_KIT/VISUAL_DIRECTION.md.
+ * - Palette: Warm plaster, natural oak, warm walnut, cornflower blue, butter yellow, muted coral, sage, deep ink.
+ * - Procedural PBR textures: Plank floor, walnut wardrobe, oak desk, checker throw, parchment paper, dotted notebook, book cover, pinboard.
+ * - Restrained cool luminous aqua for desk phone hologram.
  * - Fully disposed / memoized per scene instance.
  */
 
 export const ROOM_PALETTE = {
-  wall: "#F5F3EF",          // Warm architectural off-white plaster
-  wallAccent: "#EFECE6",    // Slightly deeper tone for architectural depth
-  floor: "#E8E2D9",         // Light matte concrete / bleached oak floor
-  woodLight: "#D5C5B1",     // Light Scandinavian birch/oak (cabinetry & desk)
-  woodTrim: "#BAA791",      // Cabinet seams & wood trim details
-  woodDark: "#948270",      // Plinth kickplate and shadow accents
-  metalDark: "#222226",     // Dark graphite / anodized aluminum (desk frame, window trim)
-  metalSilver: "#C5C7CC",   // Laptop hinge & stand highlights
-  metalAluminum: "#D8DADE", // Apple-style matte anodized aluminum for laptop body
-  metalGold: "#D4AF37",     // Polished gold trophy finish
-  fabricWhite: "#F8F8F9",   // Crisp cotton bed linen
-  fabricDuvet: "#EDE7DE",   // Warm natural natural linen duvet fabric
-  fabricPillow: "#FAF8F5",  // Soft lofted linen pillows
-  fabricThrow: "#C7BDAE",   // Neutral wool throw blanket
-  fabricBeige: "#D8CEBE",   // Natural woven linen for storage boxes
+  wall: "#F3EEDB",          // Warm architectural plaster base
+  wallAccent: "#EBE5D0",    // Architectural wall depth tone
+  floor: "#C2A88F",         // Warm natural wood plank floor
+  woodLight: "#B78352",     // Natural golden oak
+  woodTrim: "#94653B",      // Oak seams & wood trim details
+  woodDark: "#583A27",      // Walnut kickplate & shadow accents
+  woodWalnut: "#76513B",    // Rich warm walnut wardrobe
+  woodOak: "#B78352",       // Natural oak desk & bed frame
+  parchment: "#F7F1E5",     // Warm paper, pages, assignments, notes
+  chalk: "#FFFDF7",         // Clean paper highlight, card edges
+  deepInk: "#273246",       // Primary ink, headers, dark cloth cover
+  softGraphite: "#5F5B57",  // Secondary ink, descriptions, doodles
+  cornflower: "#8CB7E5",    // Cornflower blue accent, checker motif
+  paleBlue: "#DCEAF4",      // Secondary paper & fabric panels
+  butterYellow: "#EFCB75",  // Bookmarks, sun doodles, pins, CTA accents
+  mutedCoral: "#DE8D7F",    // Thread tags, sticker accents
+  sage: "#A3B29A",          // Plant accents, muted badges
+  metalDark: "#273246",     // Deep ink graphite metal
+  metalSilver: "#C5C7CC",   // Hardware highlights
+  metalAluminum: "#D8DADE", // Apple-style aluminum
+  metalGold: "#EFCB75",     // Warm brass / gold trophy finish
+  fabricWhite: "#FAF7F0",   // Crisp cotton bed linen
+  fabricDuvet: "#EDE5D8",   // Warm natural linen duvet fabric
+  fabricPillow: "#FAF7F0",  // Soft lofted linen pillows
+  fabricThrow: "#8CB7E5",   // Cornflower blue throw blanket
+  fabricBeige: "#D8CEBE",   // Natural woven linen
   glass: "#DCEEF7",         // Architectural window glass
   fishbowlGlass: "#FFFFFF", // Crystal clear refractive fishbowl glass
   daylightBackdrop: "#F2F7FA", // Soft daylight plane outside window
-  water: "#EBF7FA",         // Crystal water volume inside fishbowl
+  water: "#EBF7FA",         // Crystal water volume
   waterSurface: "#E0F5F8",  // Reflective liquid meniscus
-  fishOrange: "#FF5214",    // Vibrant warm goldfish orange
-  fishDorsal: "#E63E00",    // Rich orange-red dorsal ridge
+  fishOrange: "#FF5214",    // Goldfish orange
+  fishDorsal: "#E63E00",    // Dorsal ridge
   fishBelly: "#FFF6ED",     // Pearlescent cream belly
-  fishFin: "#FFA680",       // Translucent salmon fin
-  plantLeaf: "#244F32",     // Deep botanical forest green
-  plantLeafMature: "#1D4227", // Deep lush mature botanical green
-  plantLeafMedium: "#2B5E38", // Vibrant botanical green
-  plantLeafYoung: "#3D7A4D",  // Fresh lime-olive young leaf green
-  plantStem: "#44704B",     // Organic stem green
+  fishFin: "#FFA680",       // Translucent fin
+  plantLeaf: "#244F32",     // Botanical forest green
+  plantLeafMature: "#1D4227",
+  plantLeafMedium: "#2B5E38",
+  plantLeafYoung: "#3D7A4D",
+  plantStem: "#44704B",
   soil: "#261D18",          // Rich dark potting mix
-  plantPot: "#ECE8E1",      // Warm matte ceramic pot
-  riverStone: "#726B63",    // Smooth aquarium pebbles
-  accentRed: "#C91F2B",     // Portfolio signature red accent (chair cushion / frame border)
-  deskMat: "#26262B",       // Charcoal desk pad for high-contrast accessory framing
-  doorFrame: "#DDD6CB",     // Clean architectural door architrave
-  doorPanel: "#E6DFD3",     // Warm Scandinavian oak door leaf
-  windowFrame: "#E5E0D8",   // Architectural window casing
-  keycap: "#202024",        // Low-profile keyboard keycaps
+  plantPot: "#ECE8E1",      // Ceramic pot
+  riverStone: "#726B63",
+  accentRed: "#DE8D7F",     // Muted coral accent
+  deskMat: "#273246",       // Deep ink desk pad
+  doorFrame: "#DDD6CB",
+  doorPanel: "#E6DFD3",
+  windowFrame: "#E5E0D8",
+  keycap: "#202024",
+  hologramAqua: "#B9DCDD",  // Restrained pale aqua hologram
 } as const;
 
+let cachedRoomMaterials: any = null;
+
 export function createRoomMaterials() {
+  if (cachedRoomMaterials) return cachedRoomMaterials;
+
   const woodTexture = getWoodGrainTexture();
+  const walnutTexture = getWalnutWoodTexture();
+  const oakTexture = getOakWoodTexture();
+  const floorPlankTexture = getWoodPlankFloorTexture();
+  const checkerTexture = getCheckerFabricTexture();
+  const parchmentTexture = getParchmentPaperTexture();
+  const notebookTexture = getNotebookDottedTexture();
+  const bookCoverTexture = getBookCoverTexture();
+  const pinboardTexture = getPinboardFabricTexture();
   const fabricTexture = getFabricTexture();
   const woolTexture = getWoolTexture();
   const leafTexture = getLeafTexture();
@@ -73,7 +106,7 @@ export function createRoomMaterials() {
   const quote1Texture = getQuotePrintTexture1();
   const quote2Texture = getQuotePrintTexture2();
 
-  return {
+  const materials = {
     wall: new THREE.MeshStandardMaterial({
       color: ROOM_PALETTE.wall,
       bumpMap: plasterTexture,
@@ -90,10 +123,71 @@ export function createRoomMaterials() {
     }),
     floor: new THREE.MeshStandardMaterial({
       color: ROOM_PALETTE.floor,
+      map: floorPlankTexture,
       bumpMap: plasterTexture,
-      bumpScale: 0.003,
-      roughness: 0.76,
+      bumpScale: 0.002,
+      roughness: 0.72,
+      metalness: 0.02,
+    }),
+    woodWalnut: new THREE.MeshStandardMaterial({
+      color: ROOM_PALETTE.woodWalnut,
+      map: walnutTexture,
+      roughness: 0.48,
       metalness: 0.03,
+    }),
+    woodOak: new THREE.MeshStandardMaterial({
+      color: ROOM_PALETTE.woodOak,
+      map: oakTexture,
+      roughness: 0.52,
+      metalness: 0.02,
+    }),
+    checkerFabric: new THREE.MeshStandardMaterial({
+      color: "#FFFFFF",
+      map: checkerTexture,
+      roughness: 0.92,
+      metalness: 0.0,
+    }),
+    parchmentPaper: new THREE.MeshStandardMaterial({
+      color: ROOM_PALETTE.parchment,
+      map: parchmentTexture,
+      roughness: 0.88,
+      metalness: 0.01,
+      roughnessMap: plasterTexture,
+    }),
+    notebookDotted: new THREE.MeshStandardMaterial({
+      color: "#FFFFFF",
+      map: notebookTexture,
+      roughness: 0.85,
+      metalness: 0.01,
+    }),
+    bookCover: new THREE.MeshStandardMaterial({
+      color: "#FFFFFF",
+      map: bookCoverTexture,
+      roughness: 0.65,
+      metalness: 0.04,
+    }),
+    pinboard: new THREE.MeshStandardMaterial({
+      color: "#FFFFFF",
+      map: pinboardTexture,
+      roughness: 0.94,
+      metalness: 0.01,
+    }),
+    hologram: new THREE.MeshPhysicalMaterial({
+      color: ROOM_PALETTE.hologramAqua,
+      emissive: "#6CAFB2",
+      emissiveIntensity: 0.28,
+      roughness: 0.08,
+      transmission: 0.85,
+      thickness: 0.04,
+      transparent: true,
+      opacity: 0.72,
+      ior: 1.48,
+      depthWrite: false,
+    }),
+    thread: new THREE.MeshStandardMaterial({
+      color: ROOM_PALETTE.mutedCoral,
+      roughness: 0.60,
+      metalness: 0.05,
     }),
     woodLight: new THREE.MeshStandardMaterial({
       color: ROOM_PALETTE.woodLight,
@@ -339,6 +433,9 @@ export function createRoomMaterials() {
       metalness: 0.08,
     }),
   };
+
+  cachedRoomMaterials = materials;
+  return materials;
 }
 
 export type RoomMaterials = ReturnType<typeof createRoomMaterials>;

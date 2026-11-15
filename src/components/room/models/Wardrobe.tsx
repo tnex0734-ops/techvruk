@@ -73,8 +73,9 @@ export function Wardrobe({
   useFrame((_, delta) => {
     if (!isMovingRef.current) return;
 
-    const targetAngle1 = isSelected ? -1.35 : (isHovered ? -0.10 : 0);
-    const targetAngle2 = isSelected ? 1.35 : (isHovered ? 0.10 : 0);
+    // Doors remain gracefully closed as the solid tactile wooden backdrop for the achievement stickers
+    const targetAngle1 = isHovered ? -0.04 : 0;
+    const targetAngle2 = isHovered ? 0.04 : 0;
 
     if (prefersReducedMotionRef.current) {
       angle1Ref.current = targetAngle1;
@@ -151,7 +152,7 @@ export function Wardrobe({
       {/* Left Gable (Outer Panel) */}
       <mesh
         position={[0, 0.045, -d.length / 2 + 0.015]}
-        material={materials.woodLight}
+        material={materials.woodWalnut || materials.woodLight}
       >
         <boxGeometry args={[d.width, d.height - 0.09, 0.03]} />
       </mesh>
@@ -159,7 +160,7 @@ export function Wardrobe({
       {/* Right Gable (Outer Panel) */}
       <mesh
         position={[0, 0.045, d.length / 2 - 0.015]}
-        material={materials.woodLight}
+        material={materials.woodWalnut || materials.woodLight}
       >
         <boxGeometry args={[d.width, d.height - 0.09, 0.03]} />
       </mesh>
@@ -167,7 +168,7 @@ export function Wardrobe({
       {/* Top Cornice Cap */}
       <mesh
         position={[0, d.height / 2 - 0.015, 0]}
-        material={materials.woodTrim}
+        material={materials.woodDark}
       >
         <boxGeometry args={[d.width + 0.02, 0.03, d.length + 0.02]} />
       </mesh>
@@ -273,7 +274,7 @@ export function Wardrobe({
           args={[doorThickness, doorHeight, leafW]}
           radius={0.004}
           smoothness={4}
-          material={materials.woodLight}
+          material={materials.woodWalnut || materials.woodLight}
           castShadow
           receiveShadow
         />
@@ -312,7 +313,7 @@ export function Wardrobe({
             args={[doorThickness, doorHeight, leafW]}
             radius={0.004}
             smoothness={4}
-            material={materials.woodLight}
+            material={materials.woodWalnut || materials.woodLight}
             castShadow
             receiveShadow
           />
@@ -351,7 +352,7 @@ export function Wardrobe({
             args={[doorThickness, doorHeight, leafW]}
             radius={0.004}
             smoothness={4}
-            material={materials.woodLight}
+            material={materials.woodWalnut || materials.woodLight}
             castShadow
             receiveShadow
           />

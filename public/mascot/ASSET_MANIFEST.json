@@ -1,0 +1,90 @@
+{
+  "hero-palette-reference.jpg": {
+    "file": "assets/hero-palette-reference.jpg",
+    "bytes": 11735,
+    "sha256": "184b1ea07000610a7d1c980b26eb64c45b9dd4320fddb6b264a9d2cd7639d7e7",
+    "dimensions": [
+      1200,
+      300
+    ],
+    "mode": "RGB",
+    "has_alpha": false
+  },
+  "pixel-dissolve-noise-256.png": {
+    "file": "assets/pixel-dissolve-noise-256.png",
+    "bytes": 65915,
+    "sha256": "aeeebbc27d8a2c294c475f7281a98df27675f820a61cce3f10c556fc471d87e9",
+    "dimensions": [
+      256,
+      256
+    ],
+    "mode": "L",
+    "has_alpha": false
+  },
+  "taushik-mascot-fullbody-640.webp": {
+    "file": "assets/taushik-mascot-fullbody-640.webp",
+    "bytes": 138544,
+    "sha256": "3da122aa722035748645ebf83265710434dbcb4901949ded7fc931241f04bb8c",
+    "dimensions": [
+      584,
+      1400
+    ],
+    "mode": "RGBA",
+    "has_alpha": true
+  },
+  "taushik-mascot-fullbody-source.png": {
+    "file": "assets/taushik-mascot-fullbody-source.png",
+    "bytes": 1674452,
+    "sha256": "73d690989080e891ac2950d1cd81ba63a951f330d49bb166b2214074297cd56d",
+    "dimensions": [
+      1024,
+      1536
+    ],
+    "mode": "RGBA",
+    "has_alpha": true
+  },
+  "taushik-mascot-fullbody.png": {
+    "file": "assets/taushik-mascot-fullbody.png",
+    "bytes": 1242595,
+    "sha256": "72dc0de9f9e481a5c9c5acabfb49df55b24f691e19fa28370298f52208bfee89",
+    "dimensions": [
+      641,
+      1536
+    ],
+    "mode": "RGBA",
+    "has_alpha": true
+  },
+  "taushik-mascot-fullbody.webp": {
+    "file": "assets/taushik-mascot-fullbody.webp",
+    "bytes": 147738,
+    "sha256": "2a11eae1b36b3a1f804192dd11ee7af79b911b18de4732cff665eeabaa9f917b",
+    "dimensions": [
+      641,
+      1536
+    ],
+    "mode": "RGBA",
+    "has_alpha": true
+  },
+  "taushik-mascot-preview-checker.jpg": {
+    "file": "assets/taushik-mascot-preview-checker.jpg",
+    "bytes": 141643,
+    "sha256": "c35ce72035fc6d8751bb1be41b2843f7f39bec7e556579ec54acd6d96b7650eb",
+    "dimensions": [
+      641,
+      1536
+    ],
+    "mode": "RGB",
+    "has_alpha": false
+  },
+  "taushik-mascot-preview-dark.jpg": {
+    "file": "assets/taushik-mascot-preview-dark.jpg",
+    "bytes": 129638,
+    "sha256": "2600c361cdf0ecf293480cdc24e4cd953127550340c1b3dfc3642b1da585cb2e",
+    "dimensions": [
+      641,
+      1536
+    ],
+    "mode": "RGB",
+    "has_alpha": false
+  }
+}
